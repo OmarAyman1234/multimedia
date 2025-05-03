@@ -9,6 +9,7 @@ abstract class RegisteredUser {
   private $joinDate;
   private $roleId;
 
+
   public function getId() {
     return $this->id;
   }
@@ -23,11 +24,18 @@ abstract class RegisteredUser {
   public function setEmail($newEmail) {
     $this->email = $newEmail;
   }
+  public function setUsername($newUsername) {
+    $this->username = $newUsername;
+  }
 
   // Should be hashed!
   public function setPassword($newPassword) {
     $this->password = $newPassword;
   }
+  public function getPassword($newPassword) {
+    return $this->password;
+  }
+
 
   public function setIsDeleted() {
     $this->isDeleted = !$this->isDeleted;

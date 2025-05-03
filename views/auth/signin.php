@@ -33,7 +33,7 @@
               >
                 <a href="index.html" class="">
                   <h3 class="text-primary">
-                    <i class="fa fa-user-edit me-2"></i>DarkPan
+                    Multimedia
                   </h3>
                 </a>
                 <h3>Sign In</h3>
