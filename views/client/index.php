@@ -37,7 +37,7 @@
           <div class="ms-md-auto" style="width: 160px;">
             <select class="form-select bg-dark text-white border-light" id="languageSelect">
               <option value="en" selected>English</option>
-              <option value="ar">Arabic</option>
+              <option value="ar">Arabic </option>
               <option value="fr">French</option>
             </select>
           </div>
