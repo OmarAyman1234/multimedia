@@ -62,7 +62,7 @@ class AuthController
         if($this->db->openConnection()){
             $query = "INSERT INTO registeredusers (username, email, password, roleId) VALUES ('$uUsername', '$uEmail', '$uPassword', 3)"; 
             $result = $this->db->insert($query);
-            $query1 = "INSERT INTO lists (name, userID) VALUES ('Bookmark', '$result')";
+            $query1 = "INSERT INTO lists (name, userId) VALUES ('Bookmark', '$result')";
             $result1 = $this->db->insert($query1);
             if ($result != false){
                 if (session_status() === PHP_SESSION_NONE) {
