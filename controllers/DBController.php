@@ -24,6 +24,16 @@ class DBController {
         }
     }
 
+    public function insert($qry){
+        $result = $this->connection->query($qry);
+        if (!$result){
+            echo "Error : ".mysqli_error($this->connection);
+        }
+        else{
+            return $this->connection->insert_id;
+        }
+    }
+
     public function select($qry) {
         $result = $this->connection->query($qry);
         if (!$result) {

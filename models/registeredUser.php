@@ -9,6 +9,7 @@ abstract class RegisteredUser {
   private $joinDate;
   private $roleId;
 
+
   public function getId() {
     return $this->id;
   }
@@ -17,9 +18,10 @@ abstract class RegisteredUser {
     return $this->username;
 
   }
- public function setUsername($newUsername) {
+  public function setUsername($newUsername) {
     $this->username= $newUsername;
   }
+
   public function getEmail() {
     return $this->email;
   }
