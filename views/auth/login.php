@@ -24,7 +24,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                     header("location: ../client/blank.php");
                     exit();
                 } elseif ($_SESSION["roleId"] == 2) {
-                    header("Location: ../client/test.php");
+                    header("Location: ../client/index.php");
                     exit();
                 } else {
                     header("Location: ../client/index.php");

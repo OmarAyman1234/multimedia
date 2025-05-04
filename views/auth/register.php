@@ -1,16 +1,18 @@
 <?php
+session_start();
 require_once "../../models/registeredUser.php";
-require_once "../../controllers/AuthControllers.php";
-  if(isset($_POST['email']) && isset($_POST['uername']) && isset($_POST['password']) && isset($_POST['confirmPassword'])){
-    if(!empty($_POST['email']) && !empty($_POST['uername']) && !empty($_POST['password']) && !empty($_POST['confirmPassword'])){
-      if($_POST['password'] == $_POST['confirmPassword']){
+require_once "../../controllers/AuthController.php";
+require_once "../../models/client.php";
+if (isset($_POST['username']) && isset($_POST['password'])){
+  if (!empty($_POST['username']) && !empty($_POST['password'])){
+       if($_POST['password'] == $_POST['confirmPassword']){
         $newClient = new Client;
         $newClient->setEmail($_POST['email']);
-        $newClient->setUsername($_POST['uername']);
+        $newClient->setUsername($_POST['username']);
         $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $newClient->setPassword(newPassword: $hashedPassword);
         $newClient->setRoleId(3);
-        $authControl = new AuthControllers;
+        $authControl = new AuthController;
         if($authControl->register($newClient)){
           header("location: ../client/index.php");
         }
@@ -20,6 +22,8 @@ require_once "../../controllers/AuthControllers.php";
       }
     }
   }
+  
+
 ?>
 
 
@@ -63,14 +67,14 @@ require_once "../../controllers/AuthControllers.php";
                 </a>
                 <h3>Register</h3>
               </div>
-              <form methode="POST" action="register.php">
+              <form method="POST" action="register.php">
                 <div class="form-floating mb-3">
                   <input
                     type="email"
                     class="form-control"
-                    id="floatingInput"
                     placeholder="name@example.com"
                     name = "email"
+                    id = "floatingInput"
                   />
                   <label for="floatingInput">Email address</label>
                 </div>
@@ -78,18 +82,18 @@ require_once "../../controllers/AuthControllers.php";
                   <input
                     type="text"
                     class="form-control"
-                    id="floatingPassword"
                     placeholder="Username"
                     name = "username"
+                    id="floatingUsername"
                   />
-                  <label for="floatingPassword">Username</label>
+                  <label for="floatingUsername">Username</label>
                 </div>
                 <div class="form-floating mb-4">
                   <input
                     type="password"
                     class="form-control"
-                    id="floatingPassword"
                     placeholder="Password"
+                    id="floatingPassword"                  
                     name = "password"
                   />
                   <label for="floatingPassword">Password</label>
@@ -98,11 +102,11 @@ require_once "../../controllers/AuthControllers.php";
                   <input
                     type="password"
                     class="form-control"
-                    id="floatingPassword"
                     placeholder="Password"
                     name = "confirmPassword"
+                    id = "floatingConfirmPassword"
                   />
-                  <label for="floatingPassword">Confirm Password</label>
+                  <label for="floatingConfirmPassword">Confirm Password</label>
                 </div>
                 <div
                   class="d-flex align-items-center justify-content-between mb-4"
@@ -124,7 +128,7 @@ require_once "../../controllers/AuthControllers.php";
                 </button>
             </form>
               <p class="text-center mb-0">
-                Already has account? <a href="signin.php">Sign in</a>
+                Already has account? <a href="login.php">Sign in</a>
               </p>
             </div>
           </div>
