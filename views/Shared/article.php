@@ -1,4 +1,10 @@
 <?php
+
+// store interactions
+// edit article
+// report article
+// search inside article
+
 require_once '../../controllers/ArticleController.php';
 
 $id = $_GET['id'];
