@@ -17,8 +17,17 @@
 
   <div class="navbar-nav align-items-center ms-auto">
     
-    <button type="button" class="btn btn-light m-2">Customize Feed</button>
+    <?php 
+    if(isset($_SESSION['username'])) {
+    ?>
+      <button type="button" class="btn btn-light m-2">Customize Feed</button>
+    <?php
+    }
+    ?>
 
+    <?php
+    if(isset($_SESSION['username'])) {
+    ?>
     <div class="nav-item dropdown">
       <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
         <img
@@ -33,7 +42,12 @@
         <a href="#" class="dropdown-item text-main">
           My Profile
         </a>
-        <!-- <a href="#" class="dropdown-item text-main">
+
+        <?php 
+        if($_SESSION['roleId'] == 1)
+        {
+        ?>
+        <a href="#" class="dropdown-item text-main">
           Manage Users <i class="fa fa-user-edit"></i>
         </a>
         <a href="#" class="dropdown-item text-main">
@@ -41,11 +55,27 @@
         </a>
         <a href="#" class="dropdown-item text-main">
           Generate Report
-        </a> -->
+        </a>
+        <?php
+        }
+        ?>
         <a href="#" class="dropdown-item text-main">
           Log Out
         </a>
       </div>
     </div>
+    <?php
+    }
+    else {
+    ?>
+      <a href="../auth/register.php" class="btn btn-outline-primary m-2">
+        Register
+      </a>
+      <a href="../auth/login.php" class="btn btn-primary m-2">
+        Login
+      </a>
+    <?php
+    }
+    ?>
   </div>
 </nav>
