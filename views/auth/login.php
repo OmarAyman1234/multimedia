@@ -23,7 +23,8 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                 if ($_SESSION["roleId"] == 1) {
                     header("location: ../client/blank.php");
                     exit();
-                } elseif ($_SESSION["roleId"] == 2) {
+                } else if ($_SESSION["roleId"] == 2) {
+                    // test.php is deleted
                     header("Location: ../client/test.php");
                     exit();
                 } else {
