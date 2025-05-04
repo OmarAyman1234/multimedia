@@ -10,18 +10,24 @@
       </h3>
     </a>
     <div class="d-flex align-items-center ms-4 mb-4">
-      <div class="position-relative">
-        <img
-          class="rounded-circle"
-          src="../assets/img/user.jpg"
-          alt="User"
-          style="width: 40px; height: 40px"
-        />
-      </div>
-      <div class="ms-3">
-        <h6 class="mb-0 text-title"> <?php   echo $_SESSION['username'] ?></h6>
-        <span class="text-main"><?php   echo $_SESSION['roleName']    ?></span>
-      </div>
+      <?php 
+      if(isset($_SESSION['username']) && isset($_SESSION['roleName'])) {
+      ?>
+        <div class="position-relative">
+          <img
+            class="rounded-circle"
+            src="../assets/img/user.jpg"
+            alt="User"
+            style="width: 40px; height: 40px"
+          />
+        </div>
+        <div class="ms-3">
+          <h6 class="mb-0 text-title"> <?php   echo $_SESSION['username'] ?></h6>
+          <span class="text-main"><?php   echo $_SESSION['roleName']    ?></span>
+        </div>
+      <?php
+      }
+      ?>
     </div>
     <div class="navbar-nav w-100">
       <a href="index.php" class="nav-item nav-link text-main">
