@@ -15,8 +15,11 @@ abstract class RegisteredUser {
 
   public function getUsername() {
     return $this->username;
-  }
 
+  }
+ public function setUsername($newUsername) {
+    $this->username= $newUsername;
+  }
   public function getEmail() {
     return $this->email;
   }
@@ -27,6 +30,9 @@ abstract class RegisteredUser {
   // Should be hashed!
   public function setPassword($newPassword) {
     $this->password = $newPassword;
+  }
+  public function getPassword() {
+    return $this->password;
   }
 
   public function setIsDeleted() {
