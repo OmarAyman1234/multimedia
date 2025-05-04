@@ -1,3 +1,7 @@
+<?php   
+  if(session_status() === PHP_SESSION_NONE)
+    session_start()
+?>
 <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
   <a href="#" class="sidebar-toggler flex-shrink-0">
     <i class="fa fa-bars"></i>
@@ -23,7 +27,7 @@
           alt="User"
           style="width: 40px; height: 40px"
         />
-        <span class="d-none d-lg-inline-flex text-main">John Doe</span>
+        <span class="d-none d-lg-inline-flex text-main"><?php echo $_SESSION['username']?></span>
       </a>
       <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
         <a href="#" class="dropdown-item text-main">

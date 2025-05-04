@@ -1,3 +1,7 @@
+<?php   
+  if(session_status() === PHP_SESSION_NONE)
+    session_start()
+?>
 <div class="sidebar pe-4 pb-3 overflow-hidden">
   <nav class="navbar bg-secondary navbar-dark">
     <a href="index.php" class="navbar-brand mx-4 mb-3">
@@ -15,8 +19,8 @@
         />
       </div>
       <div class="ms-3">
-        <h6 class="mb-0 text-title">John Doe</h6>
-        <span class="text-main">Admin</span>
+        <h6 class="mb-0 text-title"> <?php   echo $_SESSION['username'] ?></h6>
+        <span class="text-main"><?php   echo $_SESSION['roleName']    ?></span>
       </div>
     </div>
     <div class="navbar-nav w-100">
