@@ -12,17 +12,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 $id = $_SESSION['userId'];
 
-
 $lists = ListController::getLists($id);
-
-
 if (isset($_POST['list_id_to_delete'])) {
-    $listId = $_POST['list_id_to_delete'];
-
-    ListController::deleteList(listId: $listId);
+  $listId = $_POST['list_id_to_delete'];
+  // Assuming you have a ListController class with a static method deleteList
+  ListController::deleteList(listId: $listId);
 }
-?>
 
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -64,7 +61,7 @@ if (isset($_POST['list_id_to_delete'])) {
       <div class="col-12 col-sm-6 text-center text-sm-end text-main">
         <?php if ($list['name'] != 'Bookmark'): ?>
           <i onclick="location.href='addlist.php'" class="bi bi-pencil"></i>
-          <form method="post" action="lists.php" class="delete-form">
+          <form method="POST" action="lists.php" class="delete-form">
             <input type="hidden" name="list_id_to_delete" value="<?php echo htmlspecialchars($list['id']); ?>">
             <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
               <i class="bi bi-trash3"></i>
@@ -76,9 +73,6 @@ if (isset($_POST['list_id_to_delete'])) {
   </div>
   <br>
 <?php endforeach; ?>
-        <?php      
-       
-       ?>
 
 </div>
 <button type="button" class="btn btn-light m-2" onclick="location.href='addList.php'"><i class="bi bi-plus-square"></i> Add list</button>
