@@ -16,6 +16,10 @@ class DBController {
         return true;
     }
 
+    public function getConnection() {
+        return $this->connection;
+    }
+
     public function closeConnection() {
         if ($this->connection) {
             $this->connection->close();
