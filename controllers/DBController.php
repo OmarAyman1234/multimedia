@@ -48,6 +48,15 @@ class DBController {
         }
     }
 
+    public function update($qry) {
+        $result = $this->connection->query($qry);
+        if(!$result) {
+            echo "Error in query: " . mysqli_error($this->connection);
+            return false;
+        }
+        return true;
+    }
+
     public function delete($qry){
         $result = $this->connection->query($qry);
         if (!$result){
