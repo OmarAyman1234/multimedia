@@ -8,7 +8,7 @@ class AuthController
     public $db;
 
     public function login(Client $user)
-{
+    {
     $this->db = new DBcontroller();
 
     if ($this->db->openConnection()) {
@@ -52,6 +52,33 @@ class AuthController
         echo "Error in database connection.";
         return false;
     }
-}
+    }
+    public function register(Client $user){
+        $this->db = new DBController;
+        $uUsername = $user->getUsername();
+        $uPassword = $user->getPassword();
+        $uEmail = $user->getEmail();
+        if($this->db->openConnection()){
+            $query = "INSERT INTO registeredusers (username, email, password, roleId) VALUES ('$uUsername', '$uEmail', '$uPassword', 3)"; 
+            $result = $this->db->insert($query);
+            $query1 = "INSERT INTO lists (name, userId) VALUES ('Bookmark', '$result')";
+            $result1 = $this->db->insert($query1);
+            if ($result != false){
+                if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+                $_SESSION["userId"] = $result;
+                $_SESSION["username"] = $uUsername;
+                $_SESSION['roleId'] = 3;
+                $_SESSION['roleName']='Client';
+            }
+            return true;
+            }
+        }
+        else{
+            echo "Error in database connection";
+            return false;
+        }
+    }
+
 }
 ?>

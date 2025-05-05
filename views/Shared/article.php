@@ -1,4 +1,10 @@
 <?php
+
+// store interactions
+// edit article
+// report article
+// search inside article
+
 require_once '../../controllers/ArticleController.php';
 
 $id = $_GET['id'];
@@ -48,7 +54,17 @@ $articleLangs = ArticleController::getAvailableLanguages($id);
             </select>
           </div>
         </div>
-        <span class="badge bg-primary py-2 mb-3"><?php echo $article[0]['categoryName']; ?></span>
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <span class="badge bg-info text-dark py-2"><?php echo $article[0]['categoryName']; ?></span>
+          <?php
+          if(isset($_SESSION['username'])) {
+          ?>
+            <button class="btn btn-danger">Report <i class="fa fa-exclamation-circle"></i></button>
+          <?php
+          }
+          ?>
+        </div>
+
         <div class="mb-4 border-1 border border-white rounded-1">
           <img src="<?php echo $article[0]['image'] ?>" alt="Article banner" class="img-fluid w-100 rounded shadow" style="max-height: 400px; object-fit: cover;">
         </div>
@@ -57,6 +73,15 @@ $articleLangs = ArticleController::getAvailableLanguages($id);
         </article>
         <div class="d-flex flex-column align-items-center mt-4">
           <hr class="w-100" style="border-top: 3px solid white; margin-bottom: 20px;">
+
+          <?php
+          if(isset($_SESSION['roleId']) && $_SESSION['roleId'] == 2) {
+          ?>
+            <button class="btn btn-light mb-3 px-5">Edit <i class="fa fa-pen"></i></button>
+          <?php
+          }
+          ?>
+          
           <img src="../assets/img/user.jpg" alt="Author Image" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px;">
           <p class="text-main mb-0">
             Published on <?php echo $article[0]['publishDate']?> by <strong><?php echo $article[0]['editorUsername']?></strong>
