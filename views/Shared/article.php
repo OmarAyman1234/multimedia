@@ -4,8 +4,15 @@
 // edit article
 // report article
 // search inside article
+// bookmark
+// add to list
 
 require_once '../../controllers/ArticleController.php';
+require_once '../../controllers/InteractionController.php';
+require_once '../../models/interaction.php';
+
+if(session_status() === PHP_SESSION_NONE)
+  session_start();
 
 $id = $_GET['id'];
 if (!$id) {
@@ -19,8 +26,17 @@ if (!$article) {
   exit;
 }
 
+if(isset($_POST['newComment']) && isset($_SESSION['roleId'])) {
+  if(!empty($_POST['newComment'])) {
+    $interaction = new Interaction(2, $_POST['newComment']);
+    InteractionController::addComment($interaction, $id);
+  }
+}
+
 $translations = ArticleController::getArticleTranslations($id);
 $articleLangs = ArticleController::getAvailableLanguages($id);
+$articleLikes = ArticleController::getArticleLikesCount($id);
+$articleComments = ArticleController::getArticleComments($id);
 ?>
 
 <!DOCTYPE html>
@@ -82,6 +98,51 @@ $articleLangs = ArticleController::getAvailableLanguages($id);
           }
           ?>
           
+
+          <div class="d-flex justify-content-start align-items-center gap-4 mt-3 mb-4">
+  <span class="text-light"><i class="fa fa-thumbs-up m-1"></i><?php echo $articleLikes ?></span>
+  <span class="text-light"><i class="fa fa-comments m-1"></i><?php echo count($articleComments) ?>   Comments</span>
+</div>
+
+<div class="container mt-5">
+  <h4 class="text-light mb-4">Comments (<?php echo count($articleComments); ?>)</h4>
+
+  
+  <?php if (count($articleComments) === 0): ?>
+    <p class="text-muted">No comments yet. Be the first to comment!</p>
+  <?php endif?>
+    
+    <!-- Comment box -->
+    <form class="mt-4" method="POST" action="article.php?id=<?php echo $id ?>">
+    <div class="mb-3">
+      <textarea name="newComment" class="form-control bg-dark text-white border-light" rows="3" placeholder="Add a comment..."></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Post Comment</button>
+  </form>
+    
+    
+    <?php foreach (array_reverse($articleComments) as $comment): ?>
+      <div class="d-flex mb-4 bg-dark p-3 rounded">
+        <img src="<?php echo $comment['profilePicture']; ?>" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover;">
+        <div>
+          <div class="d-flex align-items-center mb-1">
+            <strong class="text-title me-2"><?php echo $comment['username']; ?></strong>
+            <small style="color: rgb(150, 150, 150)"><?php echo $comment['date']; ?></small>
+          </div>
+          <p class="text-main mb-0"><?php echo $comment['content']; ?></p>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  
+
+
+</div>
+
+
+
+
+<div class="d-flex flex-column align-items-center mt-4">
+
           <img src="../assets/img/user.jpg" alt="Author Image" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px;">
           <p class="text-main mb-0">
             Published on <?php echo $article[0]['publishDate']?> by <strong><?php echo $article[0]['editorUsername']?></strong>
