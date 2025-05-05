@@ -1,3 +1,22 @@
+<?php
+session_start();
+
+require_once "../../controllers/AuthController.php";
+require_once "../../models/client.php";
+require_once "../../controllers/DBController.php";
+
+
+// echo $_SESSION["userId"];
+$rl=0;
+if(isset($_SESSION["userId"])){
+    $rl= $_SESSION["userId"];
+
+}
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -58,14 +77,37 @@
                     </div> -->
                 </div>
                 <div class="navbar-nav w-100">
+                <?php if($rl){
+                ?>
+                <div class="d-flex align-items-center ms-4 mb-4">
+                    <div class="position-relative">
+                        <img class="rounded-circle" src="../assets/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0">Jhon Doe</h6>
+                        <span>Client</span>
+                    </div>
+                </div>
+                <?php
+             } ?>
                     <!-- <a href="index.html" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a> -->
                     <!-- <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Widgets</a>
+                     
                     <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Forms</a>-->
-                    <a href="blank.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Register</a>
-                    <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Sign in</a> 
+                    <?php if(!$rl){ ?>
+                        <a href="../auth/login.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Register</a>
+                    <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Sign in</a><?php
+                    } ?>
+                     <?php if($rl){ ?>
+                        <a href="../auth/login.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Articles</a>
+                    <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Lists</a><?php
+                    } ?>
                     <!-- <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
                         <div class="dropdown-menu bg-transparent border-0">
+                            
+
                             <a href="signin.html" class="dropdown-item">Sign In</a>
                             <a href="signup.html" class="dropdown-item">Sign Up</a>
                             <a href="404.html" class="dropdown-item">404 Error</a>
@@ -82,6 +124,7 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                
                 <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
                 </a>
@@ -93,42 +136,7 @@
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     
-                    <!-- <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-bell me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Notificatin</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Profile updated</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">New user added</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all notifications</a>
-                        </div>
-                    </div> -->
-                    <!-- <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">John Doe</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">My Profile</a>
-                            <a href="#" class="dropdown-item">Settings</a>
-                            <a href="#" class="dropdown-item">Log Out</a>
-                        </div>
-                    </div>
-                </div> -->
+                    
             </nav>
             <!-- Navbar End -->
              <div class="dicc">
@@ -239,6 +247,30 @@
                         Explore how language equity is <br>reshaping the future of learning.</p>
                 </div>
             </div>
+
+
+            <?php 
+            if(!$rl){
+                ?>
+                 <div class="div">
+                <div class="div222">
+                    <div class="div222-1">
+                        <p class="p1">Deliver amazing digital <br> experiences.</p>
+                        <p class="p2">We’ve helped thousands of companies, just like yours, change their businesses.</p>
+                    </div>
+                    <div class="div222-2">
+                        <button>Talk to us today</button>
+                        <button>Sign in</button>
+                        <button>Register</button>
+                    </div>
+                </div>
+             </div>
+                <?php
+            }
+            ?>  
+
+            
+             
             <div class="section10">
                 <p class="par11"> <span class="span17"><b>Organic Block</b> Example</span> <br>
                     <span class="span18"><b>News From The Blog</b></span> <br>
@@ -302,6 +334,7 @@
                         </div>
                     </div>
                 </div>
+
             
 
             <!-- Footer Start -->
@@ -341,19 +374,9 @@
     </div>
 
     <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../assets/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/lib/chart/chart.min.js"></script>
-    <script src="../assets/lib/easing/easing.min.js"></script>
-    <script src="../assets/lib/waypoints/waypoints.min.js"></script>
-    <script src="../assets/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="../assets/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="../assets/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="../assets/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="../assets/js/main.js"></script>
     <script src="../assets/js/index.js"></script>
+    <?php require_once '../utils/scripts.php' ?>
+    
 
 
 </body>

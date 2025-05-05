@@ -17,6 +17,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         $auth = new AuthController();
         $loginSuccess = $auth->login($registeredUser);
 
+
         if ($loginSuccess) {
            
             if (isset($_SESSION["roleId"])) {
@@ -27,7 +28,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                     header("Location: ../client/test.php");
                     exit();
                 } else {
-                    header("Location: ../client/index.php");
+                    header("Location: ../Shared/main.php");
                     exit();
                 }
             } else {

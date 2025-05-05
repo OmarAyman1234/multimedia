@@ -1,40 +1,82 @@
+
 const articles = [
     {
-        content1: `<P class="par9">What if every child, in every country, could access trusted information <br> in their
-                    native language? That’s not just a dream — it’s our mission. <br> In this post, we walk you through how our multilingual encyclopedia is <br> changing the way the world learns.</P>`,
+        content1: `<P class="par9">
+    What if every child, in every country, could access trusted <br>
+    information in their native language? That’s not just a dream — <br>
+    it’s our mission. In this post, we walk you through how <br>
+    our multilingual encyclopedia is opening minds and <br>
+    changing the way the world learns, one word at a time.
+</P>
+`,
         content2: `<p class="par7">Informations</p>`,   
         content3: `<p class="par8">Building an Encyclopedia <br> for the World </p>`, 
-        image: "img1/blog-img-01.jpeg"
+        image: "../assets/img/blog-img-01.jpeg"
     },
     {
-        content1: `<P class="par9">Imagine opening a textbook and not understanding a single word. <br> That’s the daily reality for millions of learners around the world. <br> In this blog, we explore how language can be the bridge—or the barrier—to <br> knowledge, and how multilingual education changes lives.</P>`,
+        content1: `<P class="par9">
+    Imagine opening a textbook and not understanding a single word. <br>
+    That’s the daily reality for millions of learners worldwide. <br>
+    In this blog, we explore how language can be the bridge — <br>
+    or the barrier — to knowledge, and how multilingual <br>
+    education has the power to transform lives.
+</P>
+`,
         content2: `<p class="par7">Informations</p>`,   
         content3: `<p class="par8">Why Language Matters <br> in Education </p>`, 
-        image: "img1/blog-img-03.jpeg"
+        image: "../assets/img/blog-img-03.jpeg"
     },
     {
-        content1: `<P class="par9">The internet is full of information — but not all of it is <br> accessible, and not all of it is true. <br> Our platform relies on real people from real communities to review,<br> and refine articles. This is how we ensure truth travels far — and stays accurate.</P>`,
+        content1: `<P class="par9">
+    The internet is full of information — but not all of it is accessible, <br>
+    and not all of it is true. Our platform relies on real people <br>
+    from real communities to review and refine content. <br>
+    This human approach helps us build trust, ensure accuracy, <br>
+    and make reliable knowledge available to everyone.
+</P>
+`,
         content2: `<p class="par7">Informations</p>`,   
         content3: `<p class="par8">The Power of Community<br>-Curated Knowledge</p>`, 
-        image: "img1/blog-img-04.jpeg"
+        image: "../assets/img/blog-img-04.jpeg"
     },
     {
-        content1: `<P class="par9">You don’t need a PhD to make a difference. <br> Whether you speak Swahili, Hindi, French, or Filipino — your words have <br>power. Learn how you can contribute, translate, or edit articles and join a <br> growing global community of knowledge sharers.</P>`,
+        content1: `<P class="par9">
+    You don’t need a PhD to make a difference. Whether you speak <br>
+    Swahili, Hindi, French, or Filipino — your words have power. <br>
+    Learn how you can contribute to our platform: translate, <br>
+    edit, or improve articles and help grow a vibrant, <br>
+    global community of knowledge sharers.
+</P>
+`,
         content2: `<p class="par7">Informations</p>`,   
         content3: `<p class="par8">How You Can Help <br> Us Share Knowledge </p>`, 
-        image: "img1/8d83a-rita-chou-qz8vplwqz6a-unsplash.webp"
+        image: "../assets/img/8d83a-rita-chou-qz8vplwqz6a-unsplash.webp"
     },
     {
-        content1: `<P class="par9">🚀 Article 5: The future of space exploration is not far away. <br> We look at how technology is pushing us closer to <br> new horizons every day.</P>`,
+        content1: `<P class="par9">
+    🚀 Article 5: The future of space exploration is not far away. <br>
+    Technology is advancing faster than ever, unlocking possibilities <br>
+    we once thought were science fiction. From Mars missions to <br>
+    lunar habitats, each breakthrough brings us closer to a new era. <br>
+    In this post, we explore how innovation is propelling us forward.
+</P>
+`,
         content2: `<p class="par7">Space Exploration</p>`,   
         content3: `<p class="par8">Exploring the <br> Boundaries of Space</p>`, 
-        image: "img1/services.jpg"
+        image: "../assets/img/services.jpg"
     },
     {
-        content1: `<P class="par9">🌱 Article 6: The Green Revolution — How sustainability <br> will change industries worldwide. <br> We discuss how businesses can adapt to the green economy.</P>`,
+        content1: `<P class="par9">
+    🌱 Article 6: The Green Revolution — How sustainability <br>
+    is reshaping the future of global industries and economies. <br>
+    From renewable energy to eco-friendly innovations, change <br>
+    is underway. Businesses must adapt or risk falling behind. <br>
+    In this post, we explore the path to a greener tomorrow.
+</P>
+`,
         content2: `<p class="par7">Sustainability</p>`,   
         content3: `<p class="par8">Adapting to the <br> Green Economy</p>`, 
-        image: "img1/tree-architecture-sky-mansion-house-building-1007350-pxhere.com-edit.jpg"
+        image: "../assets/img/tree-architecture-sky-mansion-house-building-1007350-pxhere.com-edit.jpg"
     }
 ];
 function shuffleArray(array) {

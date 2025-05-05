@@ -1,7 +1,7 @@
-<?php   
+<!-- <?php   
   if(session_status() === PHP_SESSION_NONE)
     session_start()
-?>
+?> -->
 <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
   <a href="#" class="sidebar-toggler flex-shrink-0">
     <i class="fa fa-bars"></i>

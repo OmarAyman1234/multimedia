@@ -47,7 +47,6 @@ class AuthController
             $_SESSION['roleName']='Client';
             }
         }
-       
         return true;
     } else {
         echo "Error in database connection.";

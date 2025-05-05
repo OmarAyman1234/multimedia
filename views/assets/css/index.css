@@ -347,7 +347,7 @@ footer img{
 .divaa{
     height: 600px; 
     margin-top: 0px;
-    
+    background-image: url(../img/b-o-w-qin-highresscreenshot00005.jpg);
     background-size: cover;
     background-position:bottom;
     color: aliceblue;
@@ -356,8 +356,7 @@ footer img{
     
 }
 .dicc{
-    background-image: url(../assets/img/b-o-w-qin-highresscreenshot00005.jpg);
-     
+    /* background-image: url("../assets/img/b-o-w-qin-highresscreenshot00005.jpg"); */
     background-size: cover;
     background-position:bottom;
     color: aliceblue;
@@ -585,4 +584,51 @@ video {
     justify-content: center;
     align-items: center;
     gap: 50px;
+}
+
+.div{
+    background: linear-gradient(75.84deg, #DDD2FF 0%, #D2FFD6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 390px;
+    margin-top: 30px;
+}
+.div222{
+    display: flex;
+    gap: 80px;
+    background-color: #1c1c1e;
+    width:1300px;
+    height: 300px;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+}
+.div222-2 button{
+    width: 200px;
+    height: 50px;
+    background-color: white;
+    border-radius: 10px;
+    color: black;
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin-top: 20px;
+
+}
+.p1{
+    font-size: 57px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 600;
+    color: white;
+    
+}
+.p2{
+    font-size: 23px;
+    color: #a0a0a3;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 500;
+    margin-top: 10px;
 }
