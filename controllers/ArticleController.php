@@ -61,6 +61,44 @@ class ArticleController {
       return $result;
     }
   }
+
+  public static function getArticleLikesCount($articleId) {
+    $db = new DBController;
+    $db->openConnection();
+
+    $query = "SELECT i.*, u.* FROM interactions as i JOIN registeredusers as u ON u.id=i.userId WHERE typeId=1 and i.articleId=$articleId";
+    $result = $db->select($query);
+
+    if($result === false) {
+      echo 'Error in query';
+      return 0;
+    } 
+    else if(count($result) === 0) {
+      return 0;
+    }
+    else {
+      return count($result);
+    }
+
+  }
+  public static function getArticleComments($articleId) {
+    $db = new DBController;
+    $db->openConnection();
+
+    $query = "SELECT i.*, u.* FROM interactions as i JOIN registeredusers as u ON u.id=i.userId WHERE typeId=2 and i.articleId=$articleId";
+    $result = $db->select($query);
+
+    if($result === false) {
+      echo 'Error in query';
+      return [];
+    } 
+    else if(count($result) === 0) {
+      return [];
+    }
+    else {
+      return $result;
+    }
+  }
 }
 
 

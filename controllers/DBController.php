@@ -16,6 +16,10 @@ class DBController {
         return true;
     }
 
+    public function getConnection() {
+        return $this->connection;
+    }
+
     public function closeConnection() {
         if ($this->connection) {
             $this->connection->close();
@@ -41,6 +45,16 @@ class DBController {
             return false;
         } else {
             return $result->fetch_all(MYSQLI_ASSOC);
+        }
+    }
+
+    public function delete($qry){
+        $result = $this->connection->query($qry);
+        if (!$result){
+            echo "Error : ".mysqli_error($this->connection);
+        }
+        else{
+            return true;
         }
     }
     
