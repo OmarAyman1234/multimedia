@@ -11,6 +11,11 @@ class InteractionController {
       exit;
     }
 
+    if(empty($i->getContent())) {
+      echo 'Comment cannot be empty!';
+      exit;
+    }
+
     $typeId = $i->getTypeId();
     $content = $i->getContent();
     $userId = $_SESSION['userId'];
@@ -24,6 +29,7 @@ class InteractionController {
     } 
     
     else {
+      header("location: article.php?id=$articleId");
       return $result; // Result is the last inserted ID.
     }
 
