@@ -37,7 +37,7 @@
           <?php
             }
           ?>
-          <a href="index.php" class="nav-item nav-link text-main">
+          <a href="../client/lists.php" class="nav-item nav-link text-main">
             <i class="fa fa-list me-2"></i>Lists
           </a>
           <div class="nav-item dropdown">

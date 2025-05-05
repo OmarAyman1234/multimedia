@@ -1,7 +1,7 @@
 <?php
 
 class DBController {
-    public $dbhost = "localhost";
+    public $dbhost = "localhost:2008";
     public $dbUser = "root";
     public $dbName = "multimedia";
     public $dbPassword = "";
@@ -41,6 +41,16 @@ class DBController {
             return false;
         } else {
             return $result->fetch_all(MYSQLI_ASSOC);
+        }
+    }
+
+    public function delete($qry){
+        $result = $this->connection->query($qry);
+        if (!$result){
+            echo "Error : ".mysqli_error($this->connection);
+        }
+        else{
+            return true;
         }
     }
     
