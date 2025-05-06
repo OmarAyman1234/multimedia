@@ -1,7 +1,7 @@
 <?php
 
 class DBController {
-    public $dbhost = "localhost:2008";
+    public $dbhost = "localhost";
     public $dbUser = "root";
     public $dbName = "multimedia";
     public $dbPassword = "";
