@@ -3,7 +3,12 @@
         session_start();
     }
     require_once "../../controllers/ListController.php";
-    require_once "../../controllers/"
+    $userId = $_GET['id'];
+    if(!$userId){
+      header('location: ../Shared/404.php');
+    }
+
+
     if(isset($_POST['listName']))
     {
       if(!empty($_POST['listName']))
@@ -11,7 +16,7 @@
         $listName = $_POST["listName"];
         $listID = $_SESSION['userId'];
         ListController::addList($listID,  $listName);
-        header("Location: lists.php");
+        header("Location: ../client/lists.php?id=<?php echo htmlspecialchars($userId); ?>");
       }
     }
 

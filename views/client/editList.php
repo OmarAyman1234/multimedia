@@ -1,5 +1,5 @@
 <?php
-require_once "../../controllers/ListController.php";
+require_once "../../controllers/ListsController.php";
 require_once "../../controllers/AuthController.php";
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -13,13 +13,16 @@ if (session_status() === PHP_SESSION_NONE) {
     
     
     // Check if form was submitted with newName
-$name = $_POST['names'];
+if (isset($_POST['newName'])){
+  if (!empty($_POST['newName'])){
+
+    $name = $_POST['newName'];
+  }
+}
 $listId = $_GET['id'];
-echo $listId;
-echo $name;
 if (isset($_POST['newName']) && !empty($_POST['newName'])) {
-  // AuthController::editList(listId: $listId, newName: $name);
-  header("Location: lists.php");
+  ListsController::editList(listId: $listId, newName: $name);
+  header("Location: ../client/lists.php?id=<?php echo htmlspecialchars($listId); ?>");
   exit(); // Always exit after header redirect
 }
 
@@ -61,11 +64,11 @@ if (isset($_POST['newName']) && !empty($_POST['newName'])) {
                 </a>
               </div>
 
-              <form action="editList.php" method="POST"> 
-  <div class="form-floating mb-3">
-    <input type="text" name="names" class="form-control" id="floatingInput" placeholder="text" />
-    <label for="floatingInput">New Name </label>
-  </div>
+              <form action="editList.php?id=<?php echo htmlspecialchars($listId); ?>" method="POST"> 
+                <div class="form-floating mb-3">
+                  <input type="text" name="newName" class="form-control" id="floatingInput" placeholder="text" />
+                  <label for="floatingInput">New Name </label>
+                </div>
 
                 </div>
 

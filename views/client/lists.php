@@ -7,10 +7,17 @@ require_once "../../controllers/ListController.php";
 //   exit;
 // } 
 
+
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 $id = $_SESSION['userId'];
+$userId = $_GET['id'];
+if (!$userId) {
+  header('location: ../Shared/404.php');
+  exit;
+}
+// $id = $_GET['id'];
 
 $lists = ListController::getLists($id);
 if (isset($_POST['list_id_to_delete'])) {
@@ -65,7 +72,7 @@ if (isset($_POST['list_id_to_delete'])) {
          <a href="editList.php?id=<?php echo htmlspecialchars($list['id']); ?>"><i class="bi bi-pencil"></i></a>
       <!-- </div> -->
           
-          <form method="POST" action="lists.php" class="delete-form">
+          <form method="POST" action="lists.php?id=<?php echo htmlspecialchars($list['userId']); ?>" class="delete-form">
             <input type="hidden" name="list_id_to_delete" value="<?php echo htmlspecialchars($list['id']); ?>">
             <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
               <i class="bi bi-trash3"></i>
@@ -79,7 +86,7 @@ if (isset($_POST['list_id_to_delete'])) {
 <?php endforeach; ?>
 
 </div>
-<button type="button" class="btn btn-light m-2" onclick="location.href='addList.php'"><i class="bi bi-plus-square"></i> Add list</button>
+<button type="button" class="btn btn-light m-2" onclick="location.href='addList.php?id=<?php echo htmlspecialchars($_GET['id']); ?>'"><i class="bi bi-plus-square"></i> Add list</button>
       <!-- Footer Start -->
       <?php require_once '../utils/footer.php' ?>
       <!-- Footer End -->
