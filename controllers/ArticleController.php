@@ -84,7 +84,6 @@ class ArticleController {
   public static function getArticleComments($articleId) {
     $db = new DBController;
     $db->openConnection();
-
     $query = "SELECT i.*, u.* FROM interactions as i JOIN registeredusers as u ON u.id=i.userId WHERE typeId=2 and i.articleId=$articleId";
     $result = $db->select($query);
 

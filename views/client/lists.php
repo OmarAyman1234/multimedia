@@ -21,6 +21,7 @@ if (isset($_POST['list_id_to_delete'])) {
 
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,7 +61,10 @@ if (isset($_POST['list_id_to_delete'])) {
       </div>
       <div class="col-12 col-sm-6 text-center text-sm-end text-main">
         <?php if ($list['name'] != 'Bookmark'): ?>
-          <i onclick="location.href='addlist.php'" class="bi bi-pencil"></i>
+          <!-- <div class="col-12 col-sm-6 text-main text-center text-sm-start"> -->
+         <a href="editList.php?id=<?php echo htmlspecialchars($list['id']); ?>"><i class="bi bi-pencil"></i></a>
+      <!-- </div> -->
+          
           <form method="POST" action="lists.php" class="delete-form">
             <input type="hidden" name="list_id_to_delete" value="<?php echo htmlspecialchars($list['id']); ?>">
             <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">

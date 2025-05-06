@@ -79,6 +79,39 @@ class AuthController
             return false;
         }
     }
+    public static function editlist($listId, $newName){
+        $db = new DBController;
+        $db->openConnection();
+        $query = "UPDATE `lists` SET `name`='$newName' WHERE id = '" . $listId . "'";
+        $result = $db->delete($query);
+        if($result === false) {
+            echo 'Error in query';
+            return false;
+        } 
+        else {
+            return $result;
+        } 
+
+    }
+    public static function fetchArticles($listId){
+        $db = new DBController;
+        $db->openConnection(); 
+        $query = "SELECT a.id AS article_id, a.title, a.content, a.image 
+          FROM articles a 
+          JOIN lists_articles la ON a.id = la.articleId 
+          WHERE la.listId = " . $listId; // Direct embedding - DANGEROUS!
+        $result = $db->select($query);
+        if($result === false) {
+            echo 'Error in query';
+            return;
+        } 
+        else if(count($result) === 0) {
+            header('location: 404.php');
+        }
+        else {
+            return $result;
+        } 
+    }
 
 }
 ?>
