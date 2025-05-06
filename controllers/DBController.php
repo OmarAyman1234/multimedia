@@ -1,12 +1,12 @@
 <?php
-
+ 
 class DBController {
     public $dbhost = "localhost";
     public $dbUser = "root";
     public $dbName = "multimedia";
     public $dbPassword = "";
     public $connection;
-
+    
     public function openConnection() {
         $this->connection = new mysqli($this->dbhost, $this->dbUser, $this->dbPassword, $this->dbName);
         if ($this->connection->connect_error) {
@@ -46,6 +46,15 @@ class DBController {
         } else {
             return $result->fetch_all(MYSQLI_ASSOC);
         }
+    }
+
+    public function update($qry) {
+        $result = $this->connection->query($qry);
+        if(!$result) {
+            echo "Error in query: " . mysqli_error($this->connection);
+            return false;
+        }
+        return true;
     }
 
     public function delete($qry){

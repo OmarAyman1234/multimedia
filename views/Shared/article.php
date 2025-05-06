@@ -26,10 +26,14 @@ if (!$article) {
   exit;
 }
 
+$_SESSION['errMsg'] = ''; //empty it so that if the page is reloaded the errMsg disappears.
 if(isset($_POST['newComment']) && isset($_SESSION['roleId'])) {
   if(!empty($_POST['newComment'])) {
     $interaction = new Interaction(2, $_POST['newComment']);
     InteractionController::addComment($interaction, $id);
+  } 
+  else {
+    $_SESSION['errMsg'] = 'Cannot post an empty comment.';
   }
 }
 
@@ -47,13 +51,36 @@ $articleComments = ArticleController::getArticleComments($id);
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <link href="img/favicon.ico" rel="icon" />
   <?php require_once '../utils/linkTags.php' ?>
+  <style>
+    .top-right-alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 25rem;
+      z-index: 1050;
+    }
+  </style>
 </head>
 <body>
+
+  <?php if(isset($_SESSION['errMsg']) && !empty($_SESSION['errMsg'])):?>
+  <div class="top-right-alert">
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+      <i class="fa fa-exclamation-circle me-2"></i> <?=$_SESSION['errMsg']?>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+  <?php endif ?>
+
   <div class="container-fluid position-relative d-flex p-0">
+
     <?php require_once '../utils/spinner.php'?>
+
     <?php require_once '../utils/sidebar.php'?>
+
     <div class="content">
       <?php require_once '../utils/nav.php'?>
+
       <div class="container-fluid mt-4">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
           <h1 class="mb-3 mb-md-0 text-title" id="articleTitle"><?php echo $article[0]['title']?></h1>
@@ -99,50 +126,52 @@ $articleComments = ArticleController::getArticleComments($id);
           ?>
           
 
-          <div class="d-flex justify-content-start align-items-center gap-4 mt-3 mb-4">
-  <span class="text-light"><i class="fa fa-thumbs-up m-1"></i><?php echo $articleLikes ?></span>
-  <span class="text-light"><i class="fa fa-comments m-1"></i><?php echo count($articleComments) ?>   Comments</span>
-</div>
-
-<div class="container mt-5">
-  <h4 class="text-light mb-4">Comments (<?php echo count($articleComments); ?>)</h4>
-
-  
-  <?php if (count($articleComments) === 0): ?>
-    <p class="text-muted">No comments yet. Be the first to comment!</p>
-  <?php endif?>
-    
-    <!-- Comment box -->
-    <form class="mt-4" method="POST" action="article.php?id=<?php echo $id ?>">
-    <div class="mb-3">
-      <textarea name="newComment" class="form-control bg-dark text-white border-light" rows="3" placeholder="Add a comment..."></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Post Comment</button>
-  </form>
-    
-    
-    <?php foreach (array_reverse($articleComments) as $comment): ?>
-      <div class="d-flex mb-4 bg-dark p-3 rounded">
-        <img src="<?php echo $comment['profilePicture']; ?>" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover;">
-        <div>
-          <div class="d-flex align-items-center mb-1">
-            <strong class="text-title me-2"><?php echo $comment['username']; ?></strong>
-            <small style="color: rgb(150, 150, 150)"><?php echo $comment['date']; ?></small>
-          </div>
-          <p class="text-main mb-0"><?php echo $comment['content']; ?></p>
+        <div class="d-flex justify-content-start align-items-center gap-4 mt-3 mb-4">
+          <span class="text-light"><i class="fa fa-thumbs-up m-1"></i><?php echo $articleLikes ?></span>
+          <span class="text-light"><i class="fa fa-comments m-1"></i><?php echo count($articleComments) ?>   Comments</span>
         </div>
-      </div>
-    <?php endforeach; ?>
+
+        <div class="container mt-5">
+          <h4 class="text-light mb-4">Comments (<?php echo count($articleComments); ?>)</h4>
+
+          <?php if (count($articleComments) === 0): ?>
+            <p class="text-muted">No comments yet. Be the first to comment!</p>
+          <?php endif?>
+    
+          <!-- Comment box -->
+          <form class="mt-4 mb-3" method="POST" action="article.php?id=<?=$id?>">
+            <div class="mb-3">
+              <textarea name="newComment" class="form-control bg-dark text-white border-light" rows="3" placeholder="Add a comment..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+          </form>
+    
+    
+          <?php foreach (array_reverse($articleComments) as $comment): ?>
+            <div class="d-flex mb-4 p-3 rounded" style="background:rgb(60, 60, 60); align-items: flex-start;">
+              <img src="<?php echo $comment['profilePicture']; ?>" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover;">
+              <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                  <div>
+                    <strong class="text-title me-2"><?php echo $comment['username']; ?></strong>
+                    <small style="color: rgb(150, 150, 150)"><?php echo $comment['date']; ?></small>
+                  </div>
+                  <div>
+                    <a href="editComment.php?id=<?php echo $comment['commentId']; ?>" class="text-decoration-none me-2" title="Edit">
+                      <i class="bi bi-pencil-square text-light"></i>
+                    </a>
+                    <a href="delete.php?id=<?php echo $comment['commentId']; ?>" class="text-decoration-none" title="Delete" onclick="return confirm('Are you sure you want to delete this comment?')">
+                      <i class="bi bi-trash text-danger"></i>
+                    </a>
+                  </div>
+                </div>
+                <p class="text-main mb-0" style="white-space: pre-wrap; word-break: break-word;"><?php echo $comment['content']; ?></p>
+              </div>
+            </div>
+          <?php endforeach; ?>
   
-
-
-</div>
-
-
-
-
-<div class="d-flex flex-column align-items-center mt-4">
-
+        <div class="d-flex flex-column align-items-center mt-4">
+          <hr class="w-100" style="border-top: 3px solid white; margin-bottom: 20px;">
           <img src="../assets/img/user.jpg" alt="Author Image" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px;">
           <p class="text-main mb-0">
             Published on <?php echo $article[0]['publishDate']?> by <strong><?php echo $article[0]['editorUsername']?></strong>

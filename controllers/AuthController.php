@@ -5,34 +5,63 @@ require_once('../../controllers/DBController.php');
 
 class AuthController
 {
-    public $db;
-
+     public $db;
     public function login(Client $user)
-    {
-    $this->db = new DBcontroller();
+{
+    $this->db = new DBController();
 
     if ($this->db->openConnection()) {
-    
-        $query = "SELECT * FROM registeredusers WHERE username='" . $user->getUsername() . "' AND password='" . $user->getPassword() . "'";
+        $username = $user->getUsername();
+        $password = $user->getPassword();
 
+        
+        $query = "SELECT * FROM registeredusers WHERE username = '$username'";
         $result = $this->db->select($query);
 
-        if ($result === false) {
-            echo "Error in query.";
-            return false;
-        }
-
-        if (count($result) == 0) {
+        if ($result === false || count($result) == 0) {
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
             }
-            $_SESSION["errmsg"] = "Wrong username or password.";
+            $_SESSION["errmsg"] = "username is not found ";
             return false;
         }
 
+        $storedHash = $result[0]['password'];
+
+       
+        if (!password_verify($password, $storedHash)) {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION["errmsg"] = "error in password ";
+            return false;
+        }
+
+       
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+
+        $_SESSION["userId"] = $result[0]["id"];
+        $_SESSION["username"] = $result[0]["username"];
+        $_SESSION['roleId'] = $result[0]['roleId'];
+
+        if (isset($_SESSION["roleId"])) {
+            if ($_SESSION["roleId"] == 1) {
+                $_SESSION['roleName'] = 'Admin';
+            } elseif ($_SESSION["roleId"] == 2) {
+                $_SESSION['roleName'] = 'Editor';
+            } else {
+                $_SESSION['roleName'] = 'Client';
+            }
+        }
+        return true;
+    } else {
+        echo "error in connection to database";
+        return false;
+    }
+
+
 
         $_SESSION["userId"] = $result[0]["id"];
         $_SESSION["username"] = $result[0]["username"];
@@ -48,11 +77,8 @@ class AuthController
             }
         }
         return true;
-    } else {
-        echo "Error in database connection.";
-        return false;
-    }
-    }
+}
+    
     public function register(Client $user){
         $this->db = new DBController;
         $uUsername = $user->getUsername();
@@ -81,4 +107,5 @@ class AuthController
     }
 
 }
+
 ?>
