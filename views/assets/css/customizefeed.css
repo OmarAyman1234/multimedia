@@ -1,0 +1,28 @@
+.text-cadetblue {
+    color: cadetblue;
+  }
+  
+.card-img-top {
+    height: 200px;       /* uniform image height */
+    object-fit: cover;   /* crop/scale to fill */
+}
+  
+a {
+    color: cadetblue;
+    text-decoration: none;
+}
+a:hover {
+    color: #2a9d8f;
+    text-decoration: underline;
+}
+.btn-cadetblue {
+    background-color: cadetblue;
+    color: #fff;
+    border: none;
+}
+.btn-cadetblue:hover {
+    background-color: #2a9d8f;
+  }
+.text-cadetblue {
+    color: cadetblue;
+}

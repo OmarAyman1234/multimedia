@@ -20,7 +20,7 @@
     <?php 
     if(isset($_SESSION['username'])) {
     ?>
-      <button type="button" class="btn btn-light m-2">Customize Feed</button>
+      <a href="../Shared/customizefeed.php"><button type="button" class="btn btn-light m-2">Customize Feed</button></a>
     <?php
     }
     ?>

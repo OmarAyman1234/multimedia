@@ -99,6 +99,39 @@ class ArticleController {
       return $result;
     }
   }
+  public function getAllArticles(){
+    $db=new DBController;
+    if($db->openConnection()){
+      $quary="select articles.id,articles.image,articles.title,articles.content,articles.categoryId,categories.name as categoryName from articles join categories on categories.id=articles.categoryId";
+      return $db->select($quary);
+    }
+    else{
+      echo "Error in connection";
+      return false;
+    }
+  }
+  public function getCategory(){
+    $db=new DBController;
+    if($db->openConnection()){
+      $quary="select * from categories";
+      return $db->select($quary);
+    }
+    else{
+      echo "Error in connection";
+      return false;
+    }
+  }
+  public function getArticlesByCategory($categoryId){
+    $db=new DBController;
+    if($db->openConnection()){
+      $quary="select articles.id,articles.image,articles.title,articles.content,articles.categoryId,categories.name as categoryName from articles join categories on categories.id=articles.categoryId where articles.categoryId=$categoryId";
+      return $db->select($quary);
+    }
+    else{
+      echo "Error in connection";
+      return false;
+    }
+  }
 }
 
 
