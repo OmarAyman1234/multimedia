@@ -11,13 +11,17 @@ if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 1) {
     exit;
 }
 
-// Fetch all users from the database
-$users = UserController::getAllRegisteredUsers();
+// Fetch all users from the database, excluding the currently logged-in admin
+$users = array_filter(UserController::getAllRegisteredUsers(), function ($user) {
+    return $user['id'] != $_SESSION['userId']; // Exclude the logged-in admin
+});
 
 // Handle user deletion
 if (isset($_GET['deleteRegisteredUserId'])) {
     $deleteUserId = $_GET['deleteRegisteredUserId'];
-    UserController::deleteRegisteredUser($deleteUserId);
+    if ($deleteUserId != $_SESSION['userId']) { // Prevent deleting own data
+        UserController::deleteRegisteredUser($deleteUserId);
+    }
     header('Location: UserManagement.php');
     exit;
 }
@@ -28,7 +32,9 @@ if (isset($_POST['updateSpecificUserRole'])) {
     $specificNewRoleId = $_POST['specificNewRoleId'];
 
     try {
-        UserController::updateUserRole($specificUserId, $specificNewRoleId);
+        if ($specificUserId != $_SESSION['userId']) { // Prevent editing own role
+            UserController::updateUserRole($specificUserId, $specificNewRoleId);
+        }
         header('Location: UserManagement.php');
         exit;
     } catch (Exception $e) {
