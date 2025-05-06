@@ -105,6 +105,7 @@ class AuthController
             return false;
         }
     }
+
 }
 
 ?>

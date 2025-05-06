@@ -1,15 +1,28 @@
 <?php
-    require_once "../../controllers/ListController.php";
-    if(isset($_POST['newName']))
-    {
-      if(!empty($_POST['newName']))
-      {
-        $newName = $_POST["newName"];
-        $listID = 18;
-        ListController::addList($listID,  $listName);
-        header("Location: lists.php");
-      }
-    }
+require_once "../../controllers/ListController.php";
+require_once "../../controllers/AuthController.php";
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// if (isset($_GET['id'])) {
+  // }
+  // else{
+    //   echo "Error";
+    // }
+    
+    
+    // Check if form was submitted with newName
+$name = $_POST['names'];
+$listId = $_GET['id'];
+echo $listId;
+echo $name;
+if (isset($_POST['newName']) && !empty($_POST['newName'])) {
+  // AuthController::editList(listId: $listId, newName: $name);
+  header("Location: lists.php");
+  exit(); // Always exit after header redirect
+}
+
 
 ?>
 
@@ -43,15 +56,15 @@
               <div class="d-flex align-items-center justify-content-between mb-3">
                 <a href="index.html">
                   <h3 class="text-primary">
-                    Add List
+                    Edit List
                   </h3>
                 </a>
               </div>
 
               <form action="editList.php" method="POST"> 
   <div class="form-floating mb-3">
-    <input type="text" name="newName" class="form-control" id="floatingInput" placeholder="text" />
-    <label for="floatingInput">List Name </label>
+    <input type="text" name="names" class="form-control" id="floatingInput" placeholder="text" />
+    <label for="floatingInput">New Name </label>
   </div>
 
                 </div>
