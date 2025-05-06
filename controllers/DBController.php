@@ -1,12 +1,12 @@
 <?php
-
+ 
 class DBController {
     public $dbhost = "localhost";
     public $dbUser = "root";
     public $dbName = "multimedia";
     public $dbPassword = "";
     public $connection;
-
+    
     public function openConnection() {
         $this->connection = new mysqli($this->dbhost, $this->dbUser, $this->dbPassword, $this->dbName);
         if ($this->connection->connect_error) {
