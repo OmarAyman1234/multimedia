@@ -1,5 +1,6 @@
 <?php
 
+
 // store interactions
 // edit article
 // report article
@@ -39,6 +40,9 @@ $translations = ArticleController::getArticleTranslations($id);
 $articleLangs = ArticleController::getAvailableLanguages($id);
 $articleLikes = ArticleController::getArticleLikesCount($id);
 $articleComments = ArticleController::getArticleComments($id);
+
+
+
 ?>
 
 <!DOCTYPE html>
