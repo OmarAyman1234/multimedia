@@ -5,13 +5,19 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Ensure only admins can access this page
+if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 1) {
+    header('Location: ../auth/login.php'); // Redirect non-admins to the login page
+    exit;
+}
+
 // Fetch all users from the database
-$users = UserController::getAllRegisteredUsers(); // Updated function to fetch from `registeredusers`
+$users = UserController::getAllRegisteredUsers();
 
 // Handle user deletion
 if (isset($_GET['deleteRegisteredUserId'])) {
-    $deleteUserId = $_GET['deleteUserId'];
-    UserController::deleteRegisteredUser($deleteUserId); // Updated function to delete from `registeredusers`
+    $deleteUserId = $_GET['deleteRegisteredUserId'];
+    UserController::deleteRegisteredUser($deleteUserId);
     header('Location: UserManagement.php');
     exit;
 }
@@ -77,9 +83,9 @@ if (isset($_POST['updateSpecificUserRole'])) {
                   <td><?php echo $user['id']; ?></td>
                   <td><?php echo $user['username']; ?></td>
                   <td><?php echo $user['email']; ?></td>
-                  <td><?php echo $user['roleName']; ?></td> <!-- Display role name -->
+                  <td><?php echo $user['roleName']; ?></td>
                   <td>
-                    <a href="UserManagement.php?deleteUserId=<?php echo $user['id']; ?>" class="btn btn-danger btn-sm">Delete</a>
+                    <a href="UserManagement.php?deleteRegisteredUserId=<?php echo $user['id']; ?>" class="btn btn-danger btn-sm">Delete</a>
                   </td>
                 </tr>
               <?php endforeach; ?>
