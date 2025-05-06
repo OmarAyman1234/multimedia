@@ -89,7 +89,7 @@ $articleComments = ArticleController::getArticleComments($id);
           if(isset($_SESSION['username'])) {
             ?>
             <form method="POST" action="lists.php" class="delete-form">
-            <input type="hidden" name="articleId" value="<?php echo htmlspecialchars($listArticle['id']); ?>">
+            <!-- <input type="hidden" name="articleId" value="<?php echo htmlspecialchars($listArticle['id']); ?>"> -->
             <button class="btn btn-danger">Remove From List </button>
           </form>
           <?php
