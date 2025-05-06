@@ -1,6 +1,9 @@
 <?php   
-  if(session_status() === PHP_SESSION_NONE)
-    session_start()
+  if(session_status() === PHP_SESSION_NONE){
+
+    session_start();
+  }
+  $id = $_SESSION['userId'];
 ?>
 <div class="sidebar pe-4 pb-3 overflow-hidden">
   <nav class="navbar bg-secondary navbar-dark">
@@ -37,7 +40,7 @@
           <?php
             }
           ?>
-          <a href="../../views/client/lists.php" class="nav-item nav-link text-main">
+          <a href="../client/lists.php?id=<?php echo htmlspecialchars($id); ?>" class="nav-item nav-link text-main">
             <i class="fa fa-list me-2"></i>Lists
           </a>
           <div class="nav-item dropdown">
