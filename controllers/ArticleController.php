@@ -1,27 +1,26 @@
 <?php
 
 require_once '../../models/article.php';
+require_once '../../models/interaction.php';
 require_once '../../controllers/DBController.php';
 
 class ArticleController {
 
   public static function getArticle($articleId) {
-    // $db = new DBController;
-    // $db->openConnection();
-
-    $query = "SELECT a.*, rg.username AS editorUsername, cat.name AS categoryName FROM articles AS a JOIN registeredUsers AS rg ON a.editorId = rg.id JOIN categories AS cat ON cat.id = a.categoryId WHERE a.id=$articleId";
-    // $result = $db->select($query);
-    $result = DBController::select($query);
-
-    if($result === false) {
-      echo 'Error in query';
-      return;
-    } 
-    else if(count($result) === 0) {
-      header('location: 404.php');
+    if(!$articleId) {
+      header('location: ../../views/Shared/404.php');
+      exit;
     }
+
+    //model function
+    $article = Article::getArticleById($articleId);
+
+    if($article === false) {
+      header('location: ../../views/Shared/404.php');
+      exit;
+    } 
     else {
-      return $result;
+      return $article;
     }
   }
 
@@ -64,42 +63,13 @@ class ArticleController {
   }
 
   public static function getArticleLikesCount($articleId) {
-    $db = new DBController;
-    $db->openConnection();
-
-    $query = "SELECT i.*, u.* FROM interactions as i JOIN registeredusers as u ON u.id=i.userId WHERE typeId=1 and i.articleId=$articleId";
-    $result = $db->select($query);
-
-    if($result === false) {
-      echo 'Error in query';
-      return 0;
-    } 
-    else if(count($result) === 0) {
-      return 0;
-    }
-    else {
-      return count($result);
-    }
-
+    return Interaction::getArticleLikesCount($articleId);
   }
+
   public static function getArticleComments($articleId) {
-    $db = new DBController;
-    $db->openConnection();
-
-    $query = "SELECT i.*, u.* FROM interactions as i JOIN registeredusers as u ON u.id=i.userId WHERE typeId=2 and i.articleId=$articleId";
-    $result = $db->select($query);
-
-    if($result === false) {
-      echo 'Error in query';
-      return [];
-    } 
-    else if(count($result) === 0) {
-      return [];
-    }
-    else {
-      return $result;
-    }
+    return Interaction::getArticleComments($articleId);
   }
+  
   public function getAllArticles(){
     $db=new DBController;
     if($db->openConnection()){
