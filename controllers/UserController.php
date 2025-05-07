@@ -1,12 +1,11 @@
 <?php
 require_once __DIR__ . '/../models/Admin.php';
+require_once __DIR__ . '/AuthController.php';
 
 class UserController {
     public static function index() {
-        session_start();
-
         // Ensure only admins can access this page
-        if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 1) {
+        if (!AuthController::isAdmin()) {
             header('Location: ../auth/login.php');
             exit;
         }
@@ -20,9 +19,8 @@ class UserController {
     }
 
     public static function deleteUser() {
-        session_start();
-
-        if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 1) {
+        // Ensure only admins can delete users
+        if (!AuthController::isAdmin()) {
             header('Location: ../auth/login.php');
             exit;
         }
@@ -32,15 +30,14 @@ class UserController {
             if ($deleteUserId != $_SESSION['userId']) { // Prevent deleting own account
                 Admin::deleteUser($deleteUserId);
             }
-            header('Location: UserManagement.php');
+            header('Location: ../views/admin/userManagement.php');
             exit;
         }
     }
 
     public static function updateUserRole() {
-        session_start();
-
-        if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 1) {
+        // Ensure only admins can update roles
+        if (!AuthController::isAdmin()) {
             header('Location: ../auth/login.php');
             exit;
         }
@@ -53,12 +50,32 @@ class UserController {
                 if ($specificUserId != $_SESSION['userId']) { // Prevent editing own role
                     Admin::updateUserRole($specificUserId, $specificNewRoleId);
                 }
-                header('Location: UserManagement.php');
+                header('Location: ../views/admin/userManagement.php');
                 exit;
             } catch (Exception $e) {
                 echo '<div class="alert alert-danger">Error: ' . $e->getMessage() . '</div>';
             }
         }
+    }
+}
+
+// Routing logic
+if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+
+    switch ($action) {
+        case 'index':
+            UserController::index();
+            break;
+        case 'deleteUser':
+            UserController::deleteUser();
+            break;
+        case 'updateUserRole':
+            UserController::updateUserRole();
+            break;
+        default:
+            echo "Invalid action.";
+            break;
     }
 }
 ?>

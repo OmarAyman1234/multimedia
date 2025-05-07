@@ -1,12 +1,13 @@
 <?php
 require_once 'RegisteredUser.php';
-require_once __DIR__ . '/../controllers/DBController.php'; // Include DBController
+require_once __DIR__ . '/../controllers/DBController.php'; // Corrected path for DBController
 
 class Admin extends RegisteredUser {
     public static function getAllUsers() {
-        // Use static method from DBController
+        // Open database connection
         DBController::openConnection();
 
+        // Query to fetch all users with their roles
         $query = "
             SELECT
                 registeredusers.id, 
@@ -24,8 +25,10 @@ class Admin extends RegisteredUser {
                 registeredusers.isDeleted = 0
         ";
 
+        // Execute the query
         $result = DBController::select($query);
 
+        // Handle errors
         if ($result === false) {
             throw new Exception("Error fetching users: " . DBController::getConnection()->error);
         }
@@ -34,13 +37,15 @@ class Admin extends RegisteredUser {
     }
 
     public static function updateUserRole($userId, $newRoleId) {
-        // Use static method from DBController
+        // Open database connection
         DBController::openConnection();
 
+        // Query to update the user's role
         $query = "UPDATE registeredusers SET roleId = ? WHERE id = ?";
         $stmt = DBController::getConnection()->prepare($query);
         $stmt->bind_param('ii', $newRoleId, $userId);
 
+        // Execute the query and handle errors
         if ($stmt->execute()) {
             return true;
         } else {
@@ -49,13 +54,15 @@ class Admin extends RegisteredUser {
     }
 
     public static function deleteUser($userId) {
-        // Use static method from DBController
+        // Open database connection
         DBController::openConnection();
 
+        // Query to mark the user as deleted
         $query = "UPDATE registeredusers SET isDeleted = 1 WHERE id = ?";
         $stmt = DBController::getConnection()->prepare($query);
         $stmt->bind_param('i', $userId);
 
+        // Execute the query and handle errors
         if ($stmt->execute()) {
             return true;
         } else {

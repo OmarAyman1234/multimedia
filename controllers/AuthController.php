@@ -1,7 +1,6 @@
 <?php
-// require_once('./models/client.php');
-require_once '../../models/client.php';
-require_once('../../controllers/DBController.php');
+require_once __DIR__ . '/../models/client.php';
+require_once __DIR__ . '/DBController.php';
 
 class AuthController
 {
