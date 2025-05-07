@@ -4,13 +4,11 @@ require_once __DIR__ . '/AuthController.php';
 
 class UserController {
     public static function index() {
-        // Ensure only admins can access this page
         if (!AuthController::isAdmin()) {
             header('Location: ../auth/login.php');
             exit;
         }
 
-        // Fetch all users except the logged-in admin
         $users = array_filter(Admin::getAllUsers(), function ($user) {
             return $user['id'] != $_SESSION['userId'];
         });
@@ -19,7 +17,6 @@ class UserController {
     }
 
     public static function deleteUser() {
-        // Ensure only admins can delete users
         if (!AuthController::isAdmin()) {
             header('Location: ../auth/login.php');
             exit;
@@ -27,7 +24,7 @@ class UserController {
 
         if (isset($_GET['deleteRegisteredUserId'])) {
             $deleteUserId = $_GET['deleteRegisteredUserId'];
-            if ($deleteUserId != $_SESSION['userId']) { // Prevent deleting own account
+            if ($deleteUserId != $_SESSION['userId']) { 
                 Admin::deleteUser($deleteUserId);
             }
             header('Location: ../views/admin/userManagement.php');
@@ -36,7 +33,6 @@ class UserController {
     }
 
     public static function updateUserRole() {
-        // Ensure only admins can update roles
         if (!AuthController::isAdmin()) {
             header('Location: ../auth/login.php');
             exit;
@@ -47,7 +43,7 @@ class UserController {
             $specificNewRoleId = $_POST['specificNewRoleId'];
 
             try {
-                if ($specificUserId != $_SESSION['userId']) { // Prevent editing own role
+                if ($specificUserId != $_SESSION['userId']) { 
                     Admin::updateUserRole($specificUserId, $specificNewRoleId);
                 }
                 header('Location: ../views/admin/userManagement.php');

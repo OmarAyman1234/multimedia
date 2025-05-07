@@ -4,7 +4,6 @@ require_once __DIR__ . '/DBController.php';
 
 class AuthController
 {
-    // public $db;
 
     public static function isAdmin() {
         if(session_status() === PHP_SESSION_NONE)
@@ -95,14 +94,36 @@ class AuthController
         return false;
     }
     }
-    public static function registerController(Client $client){
-        if ($client->register($client)){
-            header('location: ../client/index.php');
+    public function register(Client $user){
+        $this->db = new DBController;
+        $uUsername = $user->getUsername();
+        $uPassword = $user->getPassword();
+        $uEmail = $user->getEmail();
+        if($this->db->openConnection()){
+            $query = "INSERT INTO registeredusers (username, email, password, roleId) VALUES ('$uUsername', '$uEmail', '$uPassword', 3)"; 
+            $result = $this->db->insert($query);
+            $query1 = "INSERT INTO lists (name, userId) VALUES ('Bookmark', '$result')";
+            $result1 = $this->db->insert($query1);
+            if ($result != false){
+                if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+                $_SESSION["userId"] = $result;
+                $_SESSION["username"] = $uUsername;
+                $_SESSION['roleId'] = 3;
+                $_SESSION['roleName']='Client';
+            }
+            return true;
+            }
         }
         else{
-            header('location: ../Shared/404.php');
+            echo "Error in database connection";
+            return false;
         }
     }
+ 
+ 
+
+
 
 }
 ?>

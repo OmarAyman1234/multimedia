@@ -2,13 +2,12 @@
 require_once '../../controllers/UserController.php';
 require_once '../../controllers/AuthController.php';
 
-// Ensure only admins can access this page
 if (!AuthController::isAdmin()) {
     header('Location: ../auth/login.php');
     exit;
 }
 
-// Fetch all users except the logged-in admin
+
 $users = array_filter(Admin::getAllUsers(), function ($user) {
     return $user['id'] != $_SESSION['userId'];
 });
