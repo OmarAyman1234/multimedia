@@ -5,7 +5,50 @@ require_once('../../controllers/DBController.php');
 
 class AuthController
 {
-    public $db;
+    // public $db;
+
+    public static function isAdmin() {
+        if(session_status() === PHP_SESSION_NONE)
+            session_start();
+
+        if($_SESSION['roleId'] == 1)
+            return true;
+
+        return false;
+    }
+
+    public static function isEditor() {
+        if(session_status() === PHP_SESSION_NONE)
+            session_start();
+
+        if($_SESSION['roleId'] == 2)
+            return true;
+
+        return false;
+    }
+
+    public static function isClient() {
+        if(session_status() === PHP_SESSION_NONE)
+            session_start();
+
+        if($_SESSION['roleId'] == 3)
+            return true;
+
+        return false;
+    }
+
+    public static function isLoggedIn() {
+        if(session_status() === PHP_SESSION_NONE)
+            session_start();
+
+        if(isset($_SESSION['username']) && isset($_SESSION['roleId']))
+            return true;
+
+        return false;
+    }
+    
+
+    //login at RegisteredUser Model, register I don't know yet.
 
     public function login(Client $user)
     {
