@@ -1,23 +1,32 @@
 <?php
 
+require_once '../../controllers/DBController.php';
+
 class Article {
   private $id;
   private $title;
   private $image;
   private $content;
   private $categoryId;
+  private $categoryName;
   private $editorId;
+  private $editorUsername;
   private $isEdited;
   private $publishDate;
   
-  // public function __construct($title, $image, $content, $categoryId, $editorId)
-  // {
-  //   $this->title = $title;
-  //   $this->image = $image;
-  //   $this->content = $content;
-  //   $this->categoryId = $categoryId;
-  //   $this->editorId = $editorId;
-  // }
+  public function __construct(array $data = []) {
+    if (isset($data['id'])) $this->id = $data['id'];
+    if (isset($data['title'])) $this->title = $data['title'];
+    if (isset($data['image'])) $this->image = $data['image'];
+    if (isset($data['content'])) $this->content = $data['content'];
+    if (isset($data['categoryId'])) $this->categoryId = $data['categoryId'];
+    if (isset($data['categoryName'])) $this->categoryName = $data['categoryName'];
+    if (isset($data['editorId'])) $this->editorId = $data['editorId'];
+    if (isset($data['editorUsername'])) $this->editorUsername = $data['editorUsername'];
+    if (isset($data['isEdited'])) $this->isEdited = $data['isEdited'];
+    if (isset($data['publishDate'])) $this->publishDate = $data['publishDate'];
+  }
+
 
   public function getId() {
     return $this->id;
@@ -54,11 +63,26 @@ class Article {
     $this->categoryId = $newId;
   }
 
+  public function getCategoryName() {
+      return $this->categoryName;
+  }
+  public function setCategoryName($name) {
+      $this->categoryName = $name;
+  }
+
+  
   public function getEditorId() {
     return $this->editorId;
   }
   public function setEditorId($id) {
     $this->editorId = $id;
+  }
+  
+  public function getEditorUsername() {
+    return $this->editorUsername;
+  }
+  public function setEditorUsername($username) {
+    $this->editorUsername = $username;
   }
 
   public function getIsEdited() {
@@ -73,6 +97,19 @@ class Article {
   }
   public function setPublishDate($date) {
     $this->publishDate = $date;
+  }
+
+  public static function getArticleById($articleId) {
+    $query = "SELECT a.*, rg.username AS editorUsername, cat.name AS categoryName FROM articles AS a JOIN registeredUsers AS rg ON a.editorId = rg.id JOIN categories AS cat ON cat.id = a.categoryId WHERE a.id=$articleId";
+    $result = DBController::select($query);
+
+    if($result) {
+      $article = new Article($result[0]);
+      return $article;
+    } 
+    else {
+      return false;
+    }
   }
 }
 
