@@ -1,66 +1,79 @@
 <?php
  
 class DBController {
-    public $dbhost = "localhost";
-    public $dbUser = "root";
-    public $dbName = "multimedia";
-    public $dbPassword = "";
-    public $connection;
+    private static $dbhost = "localhost";
+    private static $dbUser = "root";
+    private static $dbPassword = "";
+    private static $dbName = "multimedia";
+    private static $connection;
     
-    public function openConnection() {
-        $this->connection = new mysqli($this->dbhost, $this->dbUser, $this->dbPassword, $this->dbName);
-        if ($this->connection->connect_error) {
-            echo "Error in connection: " . $this->connection->connect_error;
-            return false;
+    public static function openConnection() {
+        if(DBController::$connection) {
+            return DBController::$connection;
         } 
-        return true;
+        else {
+            DBController::$connection = new mysqli(DBController::$dbhost, DBController::$dbUser, DBController::$dbPassword, DBController::$dbName);
+            
+            if (DBController::$connection->connect_error) {
+                echo "Error in connection: " . DBController::$connection->connect_error;
+                return false;
+            }
+
+            return DBController::$connection;
+        }
     }
 
-    public function getConnection() {
-        return $this->connection;
+    public static function getConnection() {
+        return DBController::$connection;
     }
 
-    public function closeConnection() {
-        if ($this->connection) {
-            $this->connection->close();
+    public static function closeConnection() {
+        if(DBController::$connection) {
+            DBController::$connection->close();
         } else {
             echo "Connection is not open.";
         }
     }
 
-    public function insert($qry){
-        $result = $this->connection->query($qry);
+    public static function insert($qry){
+        DBController::openConnection();
+        $result = DBController::$connection->query($qry);
         if (!$result){
-            echo "Error : ".mysqli_error($this->connection);
+            echo "Error : ".mysqli_error(DBController::$connection);
+            return false;
         }
         else{
-            return $this->connection->insert_id;
+            return DBController::$connection->insert_id;
         }
     }
 
-    public function select($qry) {
-        $result = $this->connection->query($qry);
+    public static function select($qry) {
+        DBController::openConnection();
+        $result = DBController::$connection->query($qry);
         if (!$result) {
-            echo "Error in query: " . mysqli_error($this->connection);
+            echo "Error in query: " . mysqli_error(DBController::$connection);
             return false;
         } else {
             return $result->fetch_all(MYSQLI_ASSOC);
         }
     }
 
-    public function update($qry) {
-        $result = $this->connection->query($qry);
+    public static function update($qry) {
+        DBController::openConnection();
+        $result = DBController::$connection->query($qry);
         if(!$result) {
-            echo "Error in query: " . mysqli_error($this->connection);
+            echo "Error in query: " . mysqli_error(DBController::$connection);
             return false;
         }
         return true;
     }
 
-    public function delete($qry){
-        $result = $this->connection->query($qry);
+    public static function delete($qry){
+        DBController::openConnection();
+        $result = DBController::$connection->query($qry);
         if (!$result){
-            echo "Error : ".mysqli_error($this->connection);
+            echo "Error : " . mysqli_error(DBController::$connection);
+            return false;
         }
         else{
             return true;
