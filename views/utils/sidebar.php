@@ -3,7 +3,8 @@
 
     session_start();
   }
-  $userid = $_SESSION['userId'];
+  
+  $userId = $_SESSION['userId'];
 ?>
 <div class="sidebar pe-4 pb-3 overflow-hidden">
   <nav class="navbar bg-secondary navbar-dark">
@@ -40,7 +41,7 @@
           <?php
             }
           ?>
-          <a href="../client/lists.php?id=<?php echo htmlspecialchars($userid); ?>" class="nav-item nav-link text-main">
+          <a href="../../views/client/lists.php?id=<?php echo htmlspecialchars($userId); ?>" class="nav-item nav-link text-main">
             <i class="fa fa-list me-2"></i>Lists
           </a>
           <div class="nav-item dropdown">
