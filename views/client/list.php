@@ -29,12 +29,7 @@ if (!$article) {
   exit;
 }
 
-if(isset($_POST['newComment']) && isset($_SESSION['roleId'])) {
-  if(!empty($_POST['newComment'])) {
-    $interaction = new Interaction(2, $_POST['newComment']);
-    InteractionController::addComment($interaction, $id);
-  }
-}
+
 
 if(isset($_POST['articleID'])){
   $articleId = $_POST['articleID'];

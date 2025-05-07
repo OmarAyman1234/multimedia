@@ -2,6 +2,7 @@
 session_start();
 require_once "../../models/registeredUser.php";
 require_once "../../controllers/AuthController.php";
+require_once "../../controllers/ArticleController.php";
 require_once "../../models/client.php";
 if (isset($_POST['username']) && isset($_POST['password'])){
   if (!empty($_POST['username']) && !empty($_POST['password'])){
@@ -12,16 +13,10 @@ if (isset($_POST['username']) && isset($_POST['password'])){
         $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $newClient->setPassword(newPassword: $hashedPassword);
         $newClient->setRoleId(3);
-        $authControl = new AuthController;
-        if($authControl->register($newClient)){
-          header("location: ../client/index.php");
-        }
+        AuthController::registerController($newClient);
       }
-      else{
-        echo "Please check your password confirmation";
-      }
-    }
   }
+}
   
 
 ?>
