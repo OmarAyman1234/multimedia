@@ -1,18 +1,28 @@
 <?php
+require_once '../../controllers/DBController.php';
 
 class Interaction {
   private $id;
-  private $typeId;
+  private $typeId; //1: Like, 2: Comment
   private $date;
   private $content; // If empty: like, else a comment.
   private $userId;
   private $articleId;
   private $isDeleted;
+  private $username;
+  private $userProfilePic;
 
-  public function __construct($typeId, $content)
+  public function __construct(array $data = [])
   {
-    $this->typeId = $typeId;
-    $this->content = $content;
+    if(isset($data['id'])) $this->id = $data['id'];
+    if(isset($data['typeId'])) $this->typeId = $data['typeId'];
+    if(isset($data['date'])) $this->date = $data['date'];
+    if(isset($data['content'])) $this->content = $data['content'];
+    if(isset($data['userId'])) $this->userId = $data['userId'];
+    if(isset($data['articleId'])) $this->articleId = $data['articleId'];
+    if(isset($data['isDeleted'])) $this->isDeleted = $data['isDeleted'];
+    if(isset($data['username'])) $this->username = $data['username'];
+    if(isset($data['userProfilePic'])) $this->userProfilePic = $data['userProfilePic'];
   }
 
   // Getters
@@ -44,6 +54,14 @@ class Interaction {
     return $this->isDeleted;
   }
 
+  public function getUsername() {
+    return $this->username;
+  }
+
+  public function getUserProfilePic() {
+    return $this->userProfilePic;
+  }
+
   // Setters
   public function setId($id) {
     $this->id = $id;
@@ -71,6 +89,39 @@ class Interaction {
 
   public function setIsDeleted($isDeleted) {
     $this->isDeleted = $isDeleted;
+  }
+
+  public function setUsername($username) {
+    $this->username = $username;
+  }
+
+  public function setUserProfilePic($userProfilePic) {
+    $this->userProfilePic = $userProfilePic;
+  }
+
+  public static function getArticleLikesCount($articleId) {
+    $query = "SELECT i.typeId FROM interactions as i WHERE typeId=1 and i.articleId=$articleId";
+    $result = DBController::select($query);
+    
+    return empty($result) ? 0 : count($result);
+  }
+  
+  public static function getArticleComments($articleId) {
+    $query = "SELECT i.*, u.username as username, u.profilePicture as userProfilePic FROM interactions as i JOIN registeredusers as u ON u.id=i.userId WHERE typeId=2 and i.articleId=$articleId";
+    $result = DBController::select($query);
+
+    if(empty($result)) {
+      return [];
+    }
+
+    $comments = [];
+
+    foreach ($result as $row) {
+      $interaction = new Interaction($row);
+      $comments[] = $interaction;
+    }
+
+    return $comments;
   }
 }
 
