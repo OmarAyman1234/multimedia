@@ -3,11 +3,10 @@
         session_start();
     }
     require_once "../../controllers/ListController.php";
-    $userId = $_GET['id'];
-    if(!$userId){
-      header('location: ../Shared/404.php');
-    }
-
+    $userId = $_SESSION['userId'];
+    // if(!$userId){
+    //   header('location: ../Shared/404.php');
+    // }
 
     if(isset($_POST['listName']))
     {

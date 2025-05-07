@@ -86,7 +86,7 @@ if (isset($_POST['list_id_to_delete'])) {
 <?php endforeach; ?>
 
 </div>
-<button type="button" class="btn btn-light m-2" onclick="location.href='addList.php?id=<?php echo htmlspecialchars($_GET['id']); ?>'"><i class="bi bi-plus-square"></i> Add list</button>
+<button type="button" class="btn btn-light m-2" onclick="location.href='addList.php'"><i class="bi bi-plus-square"></i> Add list</button>
       <!-- Footer Start -->
       <?php require_once '../utils/footer.php' ?>
       <!-- Footer End -->

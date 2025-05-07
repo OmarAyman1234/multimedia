@@ -38,7 +38,7 @@ if(isset($_POST['newComment']) && isset($_SESSION['roleId'])) {
 
 if(isset($_POST['articleID'])){
   $articleId = $_POST['articleID'];
-  ListsController::deleteArticle(13, $_POST['articleID']);
+  ListsController::deleteArticle($id, $articleId);
   header('location: ../Shared/404.php'); 
 }
 
@@ -76,7 +76,7 @@ $articleComments = ArticleController::getArticleComments($id);
           
           ?>
           <form method="POST" action="list.php?id=<?php echo htmlspecialchars($_GET['id']); ?>" class="delete-form">
-                <input type="hidden" name="articleID" value="<?php echo htmlspecialchars($$listArticle['article_id']); ?>">          
+                <input type="hidden" name="articleID" value="<?php echo htmlspecialchars($listArticle['article_id']); ?>">          
                 <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
               <h1 class="mb-3 mb-md-0 text-title" id="articleTitle"><?php echo $listArticle['title']?></h1>
             </button>
