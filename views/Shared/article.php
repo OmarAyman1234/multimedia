@@ -14,40 +14,32 @@ require_once '../../models/interaction.php';
 if(session_status() === PHP_SESSION_NONE)
   session_start();
 
-$id = $_GET['id'];
-if (!$id) {
-  header('location: 404.php');
-  exit;
-}
+$id = $_GET['id'] ?? null;
 
 $article = ArticleController::getArticle($id);
-if (!$article) {
-  header('location: 404.php');
-  exit;
-}
-
-$_SESSION['errMsg'] = ''; //empty it so that if the page is reloaded the errMsg disappears.
-if(isset($_POST['newComment']) && isset($_SESSION['roleId'])) {
-  if(!empty($_POST['newComment'])) {
-    $interaction = new Interaction(2, $_POST['newComment']);
-    InteractionController::addComment($interaction, $id);
-  } 
-  else {
-    $_SESSION['errMsg'] = 'Cannot post an empty comment.';
-  }
-}
-
 $translations = ArticleController::getArticleTranslations($id);
 $articleLangs = ArticleController::getAvailableLanguages($id);
-$articleLikes = ArticleController::getArticleLikesCount($id);
+$likesCount = ArticleController::getArticleLikesCount($id);
 $articleComments = ArticleController::getArticleComments($id);
+
+$_SESSION['errMsg'] = ''; //empty it so that if the page is reloaded the errMsg disappears.
+// if(isset($_POST['newComment']) && isset($_SESSION['roleId'])) {
+//   if(!empty($_POST['newComment'])) {
+//     $interaction = new Interaction(2, $_POST['newComment']);
+//     InteractionController::addComment($interaction, $id);
+//   } 
+//   else {
+//     $_SESSION['errMsg'] = 'Cannot post an empty comment.';
+//   }
+// }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title><?php echo $article[0]['title']?></title>
+  <title><?php echo $article->getTitle()?></title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <link href="img/favicon.ico" rel="icon" />
   <?php require_once '../utils/linkTags.php' ?>
@@ -83,7 +75,7 @@ $articleComments = ArticleController::getArticleComments($id);
 
       <div class="container-fluid mt-4">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
-          <h1 class="mb-3 mb-md-0 text-title" id="articleTitle"><?php echo $article[0]['title']?></h1>
+          <h1 class="mb-3 mb-md-0 text-title" id="articleTitle"><?php echo $article->getTitle()?></h1>
           <div class="ms-md-auto" style="width: 160px;">
             <select class="form-select bg-dark text-white border-light" id="languageSelect">
               <option value="1" selected>English</option>
@@ -98,7 +90,7 @@ $articleComments = ArticleController::getArticleComments($id);
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-between mb-3">
-          <span class="badge bg-info text-dark py-2"><?php echo $article[0]['categoryName']; ?></span>
+          <span class="badge bg-info text-dark py-2"><?php echo $article->getCategoryName() ?></span>
           <?php
           if(isset($_SESSION['username'])) {
           ?>
@@ -109,10 +101,10 @@ $articleComments = ArticleController::getArticleComments($id);
         </div>
 
         <div class="mb-4 border-1 border border-white rounded-1">
-          <img src="<?php echo $article[0]['image'] ?>" alt="Article banner" class="img-fluid w-100 rounded shadow" style="max-height: 400px; object-fit: cover;">
+          <img src="<?php echo $article->getImage() ?>" alt="Article banner" class="img-fluid w-100 rounded shadow" style="max-height: 400px; object-fit: cover;">
         </div>
         <article class="text-main" id="articleContent">
-          <p><?php echo $article[0]['content']?></p>
+          <p><?php echo $article->getContent()?></p>
         </article>
         <div class="d-flex flex-column align-items-center mt-4">
           <hr class="w-100" style="border-top: 3px solid white; margin-bottom: 20px;">
@@ -127,7 +119,7 @@ $articleComments = ArticleController::getArticleComments($id);
           
 
         <div class="d-flex justify-content-start align-items-center gap-4 mt-3 mb-4">
-          <span class="text-light"><i class="fa fa-thumbs-up m-1"></i><?php echo $articleLikes ?></span>
+          <span class="text-light"><i class="fa fa-thumbs-up m-1"></i><?php echo $likesCount ?></span>
           <span class="text-light"><i class="fa fa-comments m-1"></i><?php echo count($articleComments) ?>   Comments</span>
         </div>
 
@@ -149,23 +141,23 @@ $articleComments = ArticleController::getArticleComments($id);
     
           <?php foreach (array_reverse($articleComments) as $comment): ?>
             <div class="d-flex mb-4 p-3 rounded" style="background:rgb(60, 60, 60); align-items: flex-start;">
-              <img src="<?php echo $comment['profilePicture']; ?>" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover;">
+              <img src="<?php echo $comment->getUserProfilePic() ?>" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover;">
               <div class="flex-grow-1">
                 <div class="d-flex justify-content-between align-items-start mb-1">
                   <div>
-                    <strong class="text-title me-2"><?php echo $comment['username']; ?></strong>
-                    <small style="color: rgb(150, 150, 150)"><?php echo $comment['date']; ?></small>
+                    <strong class="text-title me-2"><?php echo $comment->getUsername() ?></strong>
+                    <small style="color: rgb(150, 150, 150)"><?php echo $comment->getDate() ?></small>
                   </div>
                   <div>
-                    <a href="editComment.php?id=<?php echo $comment['commentId']; ?>" class="text-decoration-none me-2" title="Edit">
+                    <a href="editComment.php?id=<?php echo $comment->getId() ?>" class="text-decoration-none me-2" title="Edit">
                       <i class="bi bi-pencil-square text-light"></i>
                     </a>
-                    <a href="delete.php?id=<?php echo $comment['commentId']; ?>" class="text-decoration-none" title="Delete" onclick="return confirm('Are you sure you want to delete this comment?')">
+                    <a href="delete.php?id=<?php echo $comment->getId() ?>" class="text-decoration-none" title="Delete" onclick="return confirm('Are you sure you want to delete this comment?')">
                       <i class="bi bi-trash text-danger"></i>
                     </a>
                   </div>
                 </div>
-                <p class="text-main mb-0" style="white-space: pre-wrap; word-break: break-word;"><?php echo $comment['content']; ?></p>
+                <p class="text-main mb-0" style="white-space: pre-wrap; word-break: break-word;"><?php echo $comment->getContent() ?></p>
               </div>
             </div>
           <?php endforeach; ?>
@@ -174,7 +166,7 @@ $articleComments = ArticleController::getArticleComments($id);
           <hr class="w-100" style="border-top: 3px solid white; margin-bottom: 20px;">
           <img src="../assets/img/user.jpg" alt="Author Image" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px;">
           <p class="text-main mb-0">
-            Published on <?php echo $article[0]['publishDate']?> by <strong><?php echo $article[0]['editorUsername']?></strong>
+            Published on <?php echo $article->getPublishDate()?> by <strong><?php echo $article->getEditorUsername()?></strong>
           </p>
         </div>
       </div>
