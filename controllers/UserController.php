@@ -1,61 +1,64 @@
 <?php
-require_once __DIR__ . '/../controllers/DBController.php';
+require_once __DIR__ . '/../models/Admin.php';
 
 class UserController {
-    public static function getAllRegisteredUsers() {
-        $db = new DBController();
-        $db->openConnection();
+    public static function index() {
+        session_start();
 
-        $query = "
-            SELECT
-                registeredusers.id, 
-                registeredusers.username, 
-                registeredusers.email, 
-                registeredusers.roleId, 
-                roles.name AS roleName
-            FROM 
-                registeredusers
-            INNER JOIN 
-                roles 
-            ON 
-                registeredusers.roleId = roles.id
-            WHERE 
-                registeredusers.isDeleted = 0
-        ";
-
-        $result = $db->select($query);
-
-        if ($result === false) {
-            throw new Exception("Error fetching users: " . $db->getConnection()->error);
+        // Ensure only admins can access this page
+        if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 1) {
+            header('Location: ../auth/login.php');
+            exit;
         }
 
-        return $result;
+        // Fetch all users except the logged-in admin
+        $users = array_filter(Admin::getAllUsers(), function ($user) {
+            return $user['id'] != $_SESSION['userId'];
+        });
+
+        require_once __DIR__ . '/../views/admin/userManagement.php';
     }
 
-    public static function updateUserRole($userId, $newRoleId) {
-        $db = new DBController();
-        $db->openConnection();
+    public static function deleteUser() {
+        session_start();
 
-        $query = "UPDATE registeredusers SET roleId = ? WHERE id = ?";
-        $stmt = $db->getConnection()->prepare($query);
-        $stmt->bind_param('ii', $newRoleId, $userId);
+        if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 1) {
+            header('Location: ../auth/login.php');
+            exit;
+        }
 
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            throw new Exception("Error updating user role: " . $stmt->error);
+        if (isset($_GET['deleteRegisteredUserId'])) {
+            $deleteUserId = $_GET['deleteRegisteredUserId'];
+            if ($deleteUserId != $_SESSION['userId']) { // Prevent deleting own account
+                Admin::deleteUser($deleteUserId);
+            }
+            header('Location: UserManagement.php');
+            exit;
         }
     }
 
-    public static function deleteRegisteredUser($Id) {
-        $db = new DBController();
-        $db->openConnection();
+    public static function updateUserRole() {
+        session_start();
 
-        $query = "UPDATE registeredusers SET isDeleted = 1 WHERE Id = ?";
-        $stmt = $db->getConnection()->prepare($query);
-        $stmt->bind_param('i', $Id);
+        if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 1) {
+            header('Location: ../auth/login.php');
+            exit;
+        }
 
-        return $stmt->execute();
+        if (isset($_POST['updateSpecificUserRole'])) {
+            $specificUserId = $_POST['specificUserId'];
+            $specificNewRoleId = $_POST['specificNewRoleId'];
+
+            try {
+                if ($specificUserId != $_SESSION['userId']) { // Prevent editing own role
+                    Admin::updateUserRole($specificUserId, $specificNewRoleId);
+                }
+                header('Location: UserManagement.php');
+                exit;
+            } catch (Exception $e) {
+                echo '<div class="alert alert-danger">Error: ' . $e->getMessage() . '</div>';
+            }
+        }
     }
 }
 ?>

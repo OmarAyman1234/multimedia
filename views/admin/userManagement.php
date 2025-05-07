@@ -7,20 +7,20 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Ensure only admins can access this page
 if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 1) {
-    header('Location: ../auth/login.php'); // Redirect non-admins to the login page
+    header('Location: ../auth/login.php'); 
     exit;
 }
 
-// Fetch all users from the database, excluding the currently logged-in admin
-$users = array_filter(UserController::getAllRegisteredUsers(), function ($user) {
-    return $user['id'] != $_SESSION['userId']; // Exclude the logged-in admin
+// Fetch all users except the logged-in admin
+$users = array_filter(Admin::getAllUsers(), function ($user) {
+    return $user['id'] != $_SESSION['userId'];
 });
 
 // Handle user deletion
 if (isset($_GET['deleteRegisteredUserId'])) {
     $deleteUserId = $_GET['deleteRegisteredUserId'];
-    if ($deleteUserId != $_SESSION['userId']) { // Prevent deleting own data
-        UserController::deleteRegisteredUser($deleteUserId);
+    if ($deleteUserId != $_SESSION['userId']) {
+        Admin::deleteUser($deleteUserId);
     }
     header('Location: UserManagement.php');
     exit;
@@ -32,8 +32,8 @@ if (isset($_POST['updateSpecificUserRole'])) {
     $specificNewRoleId = $_POST['specificNewRoleId'];
 
     try {
-        if ($specificUserId != $_SESSION['userId']) { // Prevent editing own role
-            UserController::updateUserRole($specificUserId, $specificNewRoleId);
+        if ($specificUserId != $_SESSION['userId']) { 
+            Admin::updateUserRole($specificUserId, $specificNewRoleId);
         }
         header('Location: UserManagement.php');
         exit;
@@ -91,7 +91,7 @@ if (isset($_POST['updateSpecificUserRole'])) {
                   <td><?php echo $user['email']; ?></td>
                   <td><?php echo $user['roleName']; ?></td>
                   <td>
-                    <a href="UserManagement.php?deleteRegisteredUserId=<?php echo $user['id']; ?>" class="btn btn-danger btn-sm">Delete</a>
+                    <a href="UserController.php?action=deleteUser&deleteRegisteredUserId=<?php echo $user['id']; ?>" class="btn btn-danger btn-sm">Delete</a>
                   </td>
                 </tr>
               <?php endforeach; ?>
@@ -102,7 +102,7 @@ if (isset($_POST['updateSpecificUserRole'])) {
         <!-- Update Specific User Role Section -->
         <div class="container mt-4">
             <h2>Update Specific User Role</h2>
-            <form method="POST" action="UserManagement.php">
+            <form method="POST" action="UserController.php?action=updateUserRole">
                 <div class="mb-3">
                     <label for="specificUserId" class="form-label">Select User</label>
                     <select class="form-control" id="specificUserId" name="specificUserId" required>
