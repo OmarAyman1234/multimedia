@@ -18,7 +18,12 @@ $id = $_GET['id'] ?? null;
 
 $article = ArticleController::getArticle($id);
 $translations = ArticleController::getArticleTranslations($id);
-$articleLangs = ArticleController::getAvailableLanguages($id);
+
+$articleLangs = [];
+foreach ($translations as $transl) {
+  $articleLangs[] = ['id' => $transl->getLanguageId(), 'name' => $transl->getLanguageName()];
+}
+
 $likesCount = ArticleController::getArticleLikesCount($id);
 $articleComments = ArticleController::getArticleComments($id);
 
@@ -183,8 +188,8 @@ $_SESSION['errMsg'] = ''; //empty it so that if the page is reloaded the errMsg 
   <script>
     const translations = <?php echo json_encode($translations); ?>;
     const defaultArticle = {
-      title: <?php echo json_encode($article[0]['title']); ?>,
-      content: <?php echo json_encode($article[0]['content']); ?>
+      title: <?php echo json_encode($article->getTitle()); ?>,
+      content: <?php echo json_encode($article->getContent()); ?>
     };
 
     document.getElementById('languageSelect').addEventListener('change', function() {
