@@ -4,8 +4,8 @@ require_once __DIR__ . '/../controllers/DBController.php'; // Include DBControll
 
 class Admin extends RegisteredUser {
     public static function getAllUsers() {
-        $db = new DBController();
-        $db->openConnection();
+        // Use static method from DBController
+        DBController::openConnection();
 
         $query = "
             SELECT
@@ -24,21 +24,21 @@ class Admin extends RegisteredUser {
                 registeredusers.isDeleted = 0
         ";
 
-        $result = $db->select($query);
+        $result = DBController::select($query);
 
         if ($result === false) {
-            throw new Exception("Error fetching users: " . $db->getConnection()->error);
+            throw new Exception("Error fetching users: " . DBController::getConnection()->error);
         }
 
         return $result;
     }
 
     public static function updateUserRole($userId, $newRoleId) {
-        $db = new DBController();
-        $db->openConnection();
+        // Use static method from DBController
+        DBController::openConnection();
 
         $query = "UPDATE registeredusers SET roleId = ? WHERE id = ?";
-        $stmt = $db->getConnection()->prepare($query);
+        $stmt = DBController::getConnection()->prepare($query);
         $stmt->bind_param('ii', $newRoleId, $userId);
 
         if ($stmt->execute()) {
@@ -49,11 +49,11 @@ class Admin extends RegisteredUser {
     }
 
     public static function deleteUser($userId) {
-        $db = new DBController();
-        $db->openConnection();
+        // Use static method from DBController
+        DBController::openConnection();
 
         $query = "UPDATE registeredusers SET isDeleted = 1 WHERE id = ?";
-        $stmt = $db->getConnection()->prepare($query);
+        $stmt = DBController::getConnection()->prepare($query);
         $stmt->bind_param('i', $userId);
 
         if ($stmt->execute()) {
