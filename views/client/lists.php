@@ -61,7 +61,7 @@ if (isset($_POST['list_id_to_delete'])) {
       <div class="bg-secondary rounded-top p-4">
         <div class="row">
           <div class="col-12 col-sm-6 text-main text-center text-sm-start">
-            <a href="list.php?id=<?php $list['id']?>"><?php echo htmlspecialchars($list['name']); ?></a>
+            <a href="list.php?id=<?php echo $list['id']?>"><?php echo htmlspecialchars($list['name']); ?></a>
           </div>
           <div class="col-12 col-sm-6 text-center text-sm-end text-main">
             <?php if ($list['name'] != 'Bookmarks'): ?>
@@ -82,7 +82,7 @@ if (isset($_POST['list_id_to_delete'])) {
       <br>
       <?php endforeach; ?>
     </div>
-    
+
       <button type="button" class="btn btn-light m-2" onclick="location.href='addList.php'"><i class="bi bi-plus-square"></i> Add list</button>
 
       <!-- Footer Start -->
