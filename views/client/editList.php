@@ -4,22 +4,9 @@ require_once "../../controllers/AuthController.php";
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
 $userId = $_SESSION['userId'];
 
-// if (isset($_GET['id'])) {
-  // }
-  // else{
-    //   echo "Error";
-    // }
-    
-    
-    // Check if form was submitted with newName
-// if (isset($_POST['newName'])){
-//   if (!empty($_POST['newName'])){
-
-//     $name = $_POST['newName'];
-//   }
-// }
 $listId = $_GET['id'];
 if (isset($_POST['newName']) && !empty($_POST['newName'])) {
   $list = new Lists;
