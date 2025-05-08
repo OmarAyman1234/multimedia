@@ -51,7 +51,7 @@ class ListsController{
                 return false;
             } 
             else {
-                header("Location: ../views/client/lists.php?id=$userId");
+                header("Location: ../../views/client/lists.php?id=$userId");
                 return $result;
             } 
         }
