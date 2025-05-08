@@ -1,27 +1,30 @@
 <?php
-session_start();
-require_once "../../models/registeredUser.php";
-require_once "../../models/users.php";
+if(session_status() === PHP_SESSION_NONE)
+  session_start();
+
+require_once "../../models/user.php";
+require_once "../../models/client.php";
 require_once "../../controllers/AuthController.php";
 require_once "../../controllers/ArticleController.php";
 require_once "../../models/client.php";
-if (isset($_POST['username']) && isset($_POST['password'])){
-  if (!empty($_POST['username']) && !empty($_POST['password'])){
-       if($_POST['password'] == $_POST['confirmPassword']){
-        $newClient = new users;
-        $newClient->setEmail($_POST['email']);
-        $newClient->setUsername($_POST['username']);
+
+if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])){
+  if (!empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['email'])){
+      if($_POST['password'] == $_POST['confirmPassword']){
         $hashedPassword = password_hash($_POST['password'], PASSWORD_BCRYPT);
-        $newClient->setPassword(newPassword: $hashedPassword);
-        $newClient->setRoleId(3);
-        AuthController::registerController($newClient);
-      }
+        $newClient = new Client($_POST['username'], $_POST['email'], $hashedPassword);
+        AuthController::register($newClient);
+    }
+  } 
+  else {
+    $_SESSION['errMsg'] = 'Please fill out all fields!';
   }
 }
-  
 
+// Store the error message and clear it from session
+$errorMessage = isset($_SESSION['errMsg']) ? $_SESSION['errMsg'] : '';
+unset($_SESSION['errMsg']); // Clear the error message after use
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -35,17 +38,37 @@ if (isset($_POST['username']) && isset($_POST['password'])){
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon" />
 
-  <!-- Link to external CSS stylesheets -->
-  <?php require_once '../utils/linkTags.php' ?>
+    <!-- Link to external CSS stylesheets -->
+    <?php require_once '../utils/linkTags.php' ?>
+    
+    <!-- Custom CSS to ensure alerts are on top -->
+    <style>
+      .top-right-alert {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 25rem;
+        z-index: 9999;
+      }
+    </style>
   </head>
 
   <body>
+    <?php if(!empty($errorMessage)):?>
+    <div class="top-right-alert">
+      <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <i class="fa fa-exclamation-circle me-2"></i> <?=$errorMessage?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+    <?php endif ?>
+    
     <div class="container-fluid position-relative d-flex p-0">
-    <!-- Spinner Start -->
-    <?php require_once '../utils/spinner.php'?>
-    <!-- Spinner End -->
-
-      <!-- Sign In Start -->
+      <!-- Spinner Start -->
+      <?php require_once '../utils/spinner.php'?>
+      <!-- Spinner End -->
+    
+      <!-- Register Start -->
       <div class="container-fluid">
         <div
           class="row h-100 align-items-center justify-content-center"
@@ -56,7 +79,7 @@ if (isset($_POST['username']) && isset($_POST['password'])){
               <div
                 class="d-flex align-items-center justify-content-between mb-3"
               >
-                <a href="index.html" class="">
+                <a href="../Shared/main.php" class="">
                   <h3 class="text-primary">
                     Multimedia
                   </h3>
@@ -64,76 +87,61 @@ if (isset($_POST['username']) && isset($_POST['password'])){
                 <h3>Register</h3>
               </div>
               <form method="POST" action="register.php">
+                <div class="form-floating mb-4">
+                  <input
+                    type="text"
+                    class="form-control text-main"
+                    placeholder="Username"
+                    name="username"
+                    id="floatingUsername"
+                  />
+                  <label for="floatingUsername">Username</label>
+                </div>
                 <div class="form-floating mb-3">
                   <input
                     type="email"
-                    class="form-control"
+                    class="form-control text-main"
                     placeholder="name@example.com"
-                    name = "email"
-                    id = "floatingInput"
+                    name="email"
+                    id="floatingInput"
                   />
                   <label for="floatingInput">Email address</label>
                 </div>
                 <div class="form-floating mb-4">
                   <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Username"
-                    name = "username"
-                    id="floatingUsername"
-                  />
-                  <label for="floatingUsername">Username</label>
-                </div>
-                <div class="form-floating mb-4">
-                  <input
                     type="password"
-                    class="form-control"
+                    class="form-control text-main"
                     placeholder="Password"
                     id="floatingPassword"                  
-                    name = "password"
+                    name="password"
                   />
                   <label for="floatingPassword">Password</label>
                 </div>
                 <div class="form-floating mb-4">
                   <input
                     type="password"
-                    class="form-control"
+                    class="form-control text-main"
                     placeholder="Password"
-                    name = "confirmPassword"
-                    id = "floatingConfirmPassword"
+                    name="confirmPassword"
+                    id="floatingConfirmPassword"
                   />
                   <label for="floatingConfirmPassword">Confirm Password</label>
-                </div>
-                <div
-                  class="d-flex align-items-center justify-content-between mb-4"
-                >
-                  <div class="form-check">
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      id="exampleCheck1"
-                    />
-                    <label class="form-check-label" for="exampleCheck1"
-                      >Check me out</label
-                    >
-                  </div>
-                  <a href="">Forgot Password</a>
                 </div>
                 <button type="submit" class="btn btn-primary py-3 w-100 mb-4">
                   Register
                 </button>
-            </form>
+              </form>
               <p class="text-center mb-0">
-                Already has account? <a href="login.php">Sign in</a>
+                Already have an account? <a href="login.php">Sign in</a>
               </p>
             </div>
           </div>
         </div>
       </div>
-      <!-- Sign In End -->
+      <!-- Register End -->
     </div>
 
-  <!-- JavaScript Libraries and Template JS -->
-  <?php require_once '../utils/scripts.php' ?>
+    <!-- JavaScript Libraries and Template JS -->
+    <?php require_once '../utils/scripts.php' ?>
   </body>
 </html>
