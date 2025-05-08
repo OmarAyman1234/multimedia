@@ -3,20 +3,23 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
+
 require_once '../../controllers/ArticleController.php';
 require_once '../../controllers/DBController.php';
-$mark = 0;
-$art = new ArticleController;
-$articles = $art->getAllArticles();
-$categories=$art->getCategory();
+require_once '../../controllers/FeedController.php';
+
+$articles=FeedController::getAllArticles();
+$categories=FeedController::getAllCategory();
 if(isset($_POST['category'])){
   if(!empty($_POST['category'])){
     $categoryId = $_POST['category'];
-    $catarticles = $art->getArticlesByCategory($categoryId);
+    $catarticles = FeedController::getArticlesByCategory($categoryId);
     $mark = 1;
 }
 }
-
+else{
+  $mark = 0;
+}
 ?>
 
 
@@ -38,9 +41,6 @@ if(isset($_POST['category'])){
 
 <body>
   <div class="container-fluid position-relative d-flex p-0">
-    <!-- Spinner Start -->
-    <?php require_once '../utils/spinner.php' ?>
-    <!-- Spinner End -->
 
     <!-- Sidebar Start -->
     <?php require_once '../utils/sidebar.php' ?>
@@ -91,9 +91,6 @@ if(isset($_POST['category'])){
     </div>
   </div>
 </div>
-
-
-
       <div class="container py-5">
         <div class="row mb-4">
           <div class="col text-center">
