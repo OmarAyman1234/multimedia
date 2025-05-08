@@ -3,45 +3,24 @@ require_once '../../models/registeredUser.php';
 require_once '../../controllers/AuthController.php';
 require_once '../../models/client.php';
 
-
-session_start();
-
-$errmsg = ""; 
+if(session_status() === PHP_SESSION_NONE) 
+  session_start();
 
 if (isset($_POST['username']) && isset($_POST['password'])) {
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
-        $registeredUser = new Client();
-        $registeredUser->setUsername($_POST['username']);
-        $registeredUser->setPassword($_POST['password']);
+        
+      $loginStatus = AuthController::login($_POST['username'], $_POST['password']);
 
-        $auth = new AuthController();
-        $loginSuccess = $auth->login($registeredUser);
-
-
-        if ($loginSuccess) {
-           
-            if (isset($_SESSION["roleId"])) {
-                if ($_SESSION["roleId"] == 1) {
-                    header("location: ../client/blank.php");
-                    exit();
-                } else if ($_SESSION["roleId"] == 2) {
-                    // test.php is deleted
-                    header("Location: ../client/test.php");
-                    exit();
-                } else {
-                    header("Location: ../Shared/index.php");
-                    exit();
-                }
-            } else {
-                $errmsg = "Role ID ";
-            }
-        } else {
-            $errmsg = $_SESSION["errmsg"] ?? "Login failed. Please try again.";
-        }
-    } else {
-        $errmsg = "Please fill all fields.";
+      $loginStatus === false ? $_SESSION["errMsg"] = "Incorrect credentials": "";
+    }
+    else {
+        $_SESSION['errMsg'] = "Please fill all fields.";
     }
 }
+
+// Store the error message and clear it from session
+$errorMessage = isset($_SESSION['errMsg']) ? $_SESSION['errMsg'] : '';
+unset($_SESSION['errMsg']); // Clear the error message after use
 ?>
 
 
@@ -49,16 +28,34 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>DarkPan - Bootstrap 5 Admin Template</title>
+    <title>Login - Mulitmedia</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="" name="keywords" />
     <meta content="" name="description" />
+    <style>
+      .top-right-alert {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          width: 25rem;
+          z-index: 9999;
+        }
+    </style>
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon" />
     <?php require_once '../utils/linkTags.php' ?>
   </head>
 
   <body>
+    <?php if(!empty($errorMessage)):?>
+      <div class="top-right-alert">
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+          <i class="fa fa-exclamation-circle me-2"></i> <?=$errorMessage?>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      </div>
+    <?php endif ?>
+    
     <div class="container-fluid position-relative d-flex p-0">
       <!-- Spinner Start -->
       <?php require_once '../utils/spinner.php'?>
@@ -70,44 +67,30 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
           <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
             <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
               <div class="d-flex align-items-center justify-content-between mb-3">
-                <a href="index.html">
+                <a href="../Shared/index.php">
                   <h3 class="text-primary">
-                    <i class="fa fa-user-edit me-2"></i>DarkPan
+                    Multimedia
                   </h3>
                 </a>
                 <h3>Sign In</h3>
               </div>
 
               <form action="login.php" method="POST"> 
-  <div class="form-floating mb-3">
-    <input type="text" name="username" class="form-control" id="floatingInput" placeholder="text" />
-    <label for="floatingInput">Username </label>
-  </div>
-  <div class="form-floating mb-4">
-    <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password" />
-    <label for="floatingPassword">Password</label>
-  </div>
- 
-
-              
-                
-                
+                <div class="form-floating mb-3">
+                  <input type="text" name="username" class="form-control text-main" id="floatingInput" placeholder="text" />
+                  <label for="floatingInput">Username </label>
                 </div>
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                  </div>
-                  <a href="">Forgot Password</a>
+                <div class="form-floating mb-4">
+                  <input type="password" name="password" class="form-control text-main" id="floatingPassword" placeholder="Password" />
+                  <label for="floatingPassword">Password</label>
                 </div>
                 <button type="submit" class="btn btn-primary py-3 w-100 mb-4">
                   Sign In
                 </button>
               </form>
-           
 
               <p class="text-center mb-0">
-                Don't have an Account? <a href="">Sign Up</a>
+                Don't have an Account? <a href="register.php">Sign Up</a>
               </p>
             </div>
           </div>

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/DBController.php';
 require_once '../../models/client.php';
+require_once '../../models/registereduser.php';
 require_once '../../models/user.php';
 
 class AuthController
@@ -44,6 +45,15 @@ class AuthController
             return true;
 
         return false;
+    }
+
+    public static function getRoleName($roleId) {
+        if($roleId == 1) 
+            return 'Admin';
+        else if($roleId == 2)
+            return 'Editor';
+        else
+            return 'Client';
     }
     
 
@@ -95,9 +105,38 @@ class AuthController
     //     return false;
     // }
     // }
+
+    public static function login($username, $password) {
+        $userData = RegisteredUser::login($username, $password);
+
+        if (!$userData || count($userData) === 0) {
+            // user not found
+            return false;
+        }
+
+        $hashedPassword = $userData[0]['password'];
+        if(password_verify($password, $hashedPassword)) {
+
+            if(session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            $_SESSION['userId'] = $userData[0]['id'];
+            $_SESSION['username'] = $username;
+            $_SESSION['roleId'] = $userData[0]['roleId'];
+            $_SESSION['roleName'] = AuthController::getRoleName($userData[0]['roleId']);
+            header('location: ../../views/Shared/index.php');
+
+            return true;
+        } 
+        else {
+            return false;
+        }
+    }
+
     public static function register(Client $c){
         $c->setPassword(password_hash($c->getPassword(), PASSWORD_BCRYPT));
-        
+
         $result = User::register($c);
 
         if ($result){
@@ -108,7 +147,7 @@ class AuthController
                 $_SESSION["username"] = $c->getUsername();
                 $_SESSION['roleId'] = 3;
                 $_SESSION['roleName']='Client';
-                header('location: ../../views/Shared/main.php');
+                header('location: ../../views/Shared/index.php');
         
             return true;
         }
