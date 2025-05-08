@@ -60,8 +60,8 @@ if (isset($_GET['action'])) {
     $action = $_GET['action'];
 
     switch ($action) {
-        case 'index':
-            UserController::index();
+        case 'mainPage':
+            UserController::mainPage(); 
             break;
         case 'deleteUser':
             UserController::deleteUser();
