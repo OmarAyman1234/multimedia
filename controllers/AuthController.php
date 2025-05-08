@@ -96,6 +96,8 @@ class AuthController
     // }
     // }
     public static function register(Client $c){
+        $c->setPassword(password_hash($c->getPassword(), PASSWORD_BCRYPT));
+        
         $result = User::register($c);
 
         if ($result){

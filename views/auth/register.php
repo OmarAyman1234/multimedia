@@ -11,8 +11,7 @@ require_once "../../models/client.php";
 if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])){
   if (!empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['email'])){
       if($_POST['password'] == $_POST['confirmPassword']){
-        $hashedPassword = password_hash($_POST['password'], PASSWORD_BCRYPT);
-        $newClient = new Client($_POST['username'], $_POST['email'], $hashedPassword);
+        $newClient = new Client($_POST['username'], $_POST['email'], $_POST['password']);
         AuthController::register($newClient);
     }
   } 
