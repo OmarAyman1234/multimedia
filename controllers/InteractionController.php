@@ -1,40 +1,23 @@
 <?php
 require_once '../../controllers/DBController.php';
+require_once '../../controllers/AuthController.php';
 require_once '../../models/interaction.php';
 
 if(session_status() === PHP_SESSION_NONE)
   session_start();
 
 class InteractionController {
-  public static function addComment(Interaction $i, $articleId) {
-    $db = new DBController;
-    $db->openConnection();
+  public static function addComment($content, $articleId, $userId) {
 
-    if(!isset($_SESSION['userId'])) {
+    if(AuthController::isLoggedIn()) {
+      Interaction::addComment($content, $articleId, $userId);
+      header("location: ../../views/Shared/article.php?id=$articleId");
       exit;
     }
-
-    if(empty($i->getContent())) {
-      $_SESSION['errMsg'] = 'Comment cannot be empty!';
-      exit;
-    }
-
-    $typeId = $i->getTypeId();
-    $content = $i->getContent();
-    $userId = $_SESSION['userId'];
-
-    $query = "INSERT INTO interactions (typeId, content, userId, articleId) VALUES ($typeId, '$content', $userId, $articleId)";
-    $result = $db->insert($query);
-
-    if($result === false) {
-      $_SESSION['errMsg'] = "Error in query";
-      return false;
-    } 
-    
     else {
-      header("location: article.php?id=$articleId");
-      return $result; // Result is the last inserted ID.
-    }
+      header('location: ../../views/auth/login.php');
+      exit;
+    }   
   }
 
   public static function getComment($commentId) {
@@ -65,8 +48,19 @@ class InteractionController {
 
       return $result; // Returns true or false.
     }
+  }
 
-
+  public static function deleteComment($commentId, $userId) {
+    //userId is needed to check that the comment if the user's, not another user's comment.
+    $db = new DBController;
+    if($db->openConnection()) {
+      if($userId == $_SESSION['userId']) {
+        $query = "SELECT * FROM interactions where id=$commentId and userId=$userId";
+      }
+      else {
+        $_SESSION['errMsg'] = 'Unauthorized to delete that comment';
+      }
+    }
   }
 }
 ?>

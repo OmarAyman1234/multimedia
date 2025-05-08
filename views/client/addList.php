@@ -2,7 +2,8 @@
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    require_once "../../controllers/ListController.php";
+    require_once "../../controllers/ListsController.php";
+    require_once "../../controllers/AuthController.php";
     $userId = $_SESSION['userId'];
     // if(!$userId){
     //   header('location: ../Shared/404.php');
@@ -12,12 +13,13 @@
     {
       if(!empty($_POST['listName']))
       {
-        $listName = $_POST["listName"];
-        $listID = $_SESSION['userId'];
-        ListController::addList($listID,  $listName);
-        header("Location: ../client/lists.php?id=<?php echo htmlspecialchars($userId); ?>");
+        $newList = new Lists();
+        $newList->setListName($_POST["listName"]);
+        $newList->setUserId($_SESSION['userId']);
+        ListsController::addList($newList);
+        
       }
-    }
+  }
 
 ?>
 

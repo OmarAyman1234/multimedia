@@ -23,24 +23,26 @@ if (!$id) {
   exit;
 }
 
-$article = ArticleController::getArticle($id);
-if (!$article) {
-  header('location: ../Shared/404.php');
-  exit;
-}
+// $article = ArticleController::getArticle($id);
 
 
 
-if(isset($_POST['articleID'])){
-  $articleId = $_POST['articleID'];
-  ListsController::deleteArticle($id, $articleId);
+
+if(isset($_POST['articleToRemove'])){
+  $articleId = $_POST['articleToRemove'];
+  ListsController::removeArticleFromList($id, $articleId);
   header('location: ../Shared/404.php'); 
 }
+if(isset($_POST['articleID'])){
+  $articleId = $_POST['articleID'];
+  header('location: ../Shared/article.php?id=<php echo htmlspecialchars($articleId); ?>'); 
+}
 
-// $listId = $_GET['id']; 
+// $listId = $_GET['id'];
+
 $listArticles = ListsController::fetchListArticles($id);
 $translations = ArticleController::getArticleTranslations($id);
-$articleLangs = ArticleController::getAvailableLanguages($id);
+// $articleLangs = ArticleController::getAvailableLanguages($id);
 $articleLikes = ArticleController::getArticleLikesCount($id);
 $articleComments = ArticleController::getArticleComments($id);
 
@@ -52,7 +54,7 @@ $articleComments = ArticleController::getArticleComments($id);
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title><?php echo $article[0]['title']?></title>
+  <title><?php echo $listsArticle['title']?></title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <link href="img/favicon.ico" rel="icon" />
   <?php require_once '../utils/linkTags.php' ?>
@@ -63,13 +65,13 @@ $articleComments = ArticleController::getArticleComments($id);
     <?php require_once '../utils/sidebar.php'?>
     <div class="content">
       <?php require_once '../utils/nav.php'?>
-      <div class="container-fluid mt-4">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
           <?php 
           foreach($listArticles as $listArticle)
           {
           
           ?>
+      <div class="container-fluid mt-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
           <form method="POST" action="list.php?id=<?php echo htmlspecialchars($_GET['id']); ?>" class="delete-form">
                 <input type="hidden" name="articleID" value="<?php echo htmlspecialchars($listArticle['article_id']); ?>">          
                 <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
@@ -78,25 +80,16 @@ $articleComments = ArticleController::getArticleComments($id);
           </form>
 
           <div class="ms-md-auto" style="width: 160px;">
-            <!-- <select class="form-select bg-dark text-white border-light" id="languageSelect">
-              <option value="1" selected>English</option>
-              <?php 
-              foreach ($articleLangs as $articleLang) {
-              ?>
-                <option value="<?php echo $articleLang['id']?>"><?php echo $articleLang['name']?></option>
-              <?php
-              }
-              ?>
-            </select> -->
+  
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-between mb-3">
-          <span class="badge bg-info text-dark py-2"><?php echo $article[0]['categoryName']; ?></span>
+          <span class="badge bg-info text-dark py-2"><?php //echo $listArticle['categoryid']; ?></span>
           <?php
           if(isset($_SESSION['username'])) {
             ?>
             <form method="POST" action="list.php?id=<?php echo htmlspecialchars($_GET['id']); ?>" class="delete-form">
-            <input type="hidden" name="articleID" value="<?php echo htmlspecialchars($$listArticle['article_id']); ?>">
+            <input type="hidden" name="articleToRemove" value="<?php echo htmlspecialchars($listArticle['article_id']); ?>">
             <button class="btn btn-danger">Remove From List </button>
           </form>
           <?php
@@ -105,18 +98,12 @@ $articleComments = ArticleController::getArticleComments($id);
         </div>
 
         <div class="mb-4 border-1 border border-white rounded-1">
-          <img src="<?php echo $listArticle[0]['image'] ?>" alt="Article banner" class="img-fluid w-100 rounded shadow" style="max-height: 400px; object-fit: cover;">
+          <img src="<?php echo $listArticle['image'] ?>" alt="Article banner" class="img-fluid w-100 rounded shadow" style="max-height: 400px; object-fit: cover;">
         </div>
         <div class="d-flex flex-column align-items-center mt-4">
           <hr class="w-100" style="border-top: 3px solid white; margin-bottom: 20px;">
 
-          <?php
-          if(isset($_SESSION['roleId']) && $_SESSION['roleId'] == 2) {
-            ?>
-            <button class="btn btn-light mb-3 px-5">Edit <i class="fa fa-pen"></i></button>
-          <?php
-          }
-          ?>
+
           
 
           <div class="d-flex justify-content-start align-items-center gap-4 mt-3 mb-4">
@@ -124,14 +111,7 @@ $articleComments = ArticleController::getArticleComments($id);
 </div>
 
 <div class="container mt-5">
-  <!-- <h4 class="text-light mb-4">Comments (<?php echo count($articleComments); ?>)</h4> -->
-
   
-    
-    <!-- Comment box -->
-  
-
-
 </div>
           <?php 
           }?>
@@ -143,14 +123,14 @@ $articleComments = ArticleController::getArticleComments($id);
 
           <img src="../assets/img/user.jpg" alt="Author Image" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px;">
           <p class="text-main mb-0">
-            Published on <?php echo $article[0]['publishDate']?> by <strong><?php echo $article[0]['editorUsername']?></strong>
+            <!-- Published on <?php //echo $article[0]['publishDate']?> by <strong><//?php// echo $article[0]['editorUsername']?></strong>
           </p>
         </div>
       </div>
       <?php require_once '../utils/footer.php' ?>
     </div>
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top">
-      <i class="bi bi-arrow-up"></i>
+      <i class="bi bi-arrow-up"></i> -->
     </a>
   </div>
 
@@ -161,8 +141,8 @@ $articleComments = ArticleController::getArticleComments($id);
   <script>
     const translations = <?php echo json_encode($translations); ?>;
     const defaultArticle = {
-      title: <?php echo json_encode($article[0]['title']); ?>,
-      content: <?php echo json_encode($article[0]['content']); ?>
+      title: <?php echo json_encode($listArticle['title']); ?>,
+     // content: <//?php// echo json_encode($article[0]['content']); ?>
     };
 
     document.getElementById('languageSelect').addEventListener('change', function() {

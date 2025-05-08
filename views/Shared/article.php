@@ -28,15 +28,15 @@ $likesCount = ArticleController::getArticleLikesCount($id);
 $articleComments = ArticleController::getArticleComments($id);
 
 $_SESSION['errMsg'] = ''; //empty it so that if the page is reloaded the errMsg disappears.
-// if(isset($_POST['newComment']) && isset($_SESSION['roleId'])) {
-//   if(!empty($_POST['newComment'])) {
-//     $interaction = new Interaction(2, $_POST['newComment']);
-//     InteractionController::addComment($interaction, $id);
-//   } 
-//   else {
-//     $_SESSION['errMsg'] = 'Cannot post an empty comment.';
-//   }
-// }
+
+if(isset($_POST['newComment'])) {
+  if(!empty($_POST['newComment'])) {
+    InteractionController::addComment($_POST['newComment'], $id, $_SESSION['userId']);
+  } 
+  else {
+    $_SESSION['errMsg'] = 'Cannot post an empty comment.';
+  }
+}
 
 ?>
 
