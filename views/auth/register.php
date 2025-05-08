@@ -78,7 +78,7 @@ unset($_SESSION['errMsg']); // Clear the error message after use
               <div
                 class="d-flex align-items-center justify-content-between mb-3"
               >
-                <a href="../Shared/main.php" class="">
+                <a href="../Shared/index.php" class="">
                   <h3 class="text-primary">
                     Multimedia
                   </h3>
