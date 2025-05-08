@@ -68,6 +68,8 @@ class ListsController{
                 return;
             } 
             else {
+                // session started before when checking if the user is logged in
+                header("Location: ../../views/client/lists.php?id=" . $_SESSION['userId']);           
                 return $result;
             }        
         } 
