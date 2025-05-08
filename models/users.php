@@ -1,9 +1,12 @@
 <?php
-    class Guest extends RegisteredUser{
-        public  function  register(Guest $guest){
-            $uUsername = $guest->getUsername();
-            $uPassword = $guest->getPassword();
-            $uEmail = $guest->getEmail();
+  require_once 'Users.php';
+  require_once 'registeredUser.php';
+
+    class users extends RegisteredUser{
+        public  function  register(users $user){
+            $uUsername = $user->getUsername();
+            $uPassword = $user->getPassword();
+            $uEmail = $user->getEmail();
             if(DBController::openConnection()){
                 $query = "INSERT INTO registeredusers (username, email, password, roleId) VALUES ('$uUsername', '$uEmail', '$uPassword', 3)"; 
                 $result = DBController::insert($query);

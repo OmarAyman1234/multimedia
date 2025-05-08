@@ -1,8 +1,8 @@
 <?php
 // require_once('./models/client.php');
 require_once '../../models/client.php';
-require_once '../../models/guest.php';
-require_once('../../controllers/DBController.php');
+// require_once '../models/users.php';
+// require_once('../../controllers/DBController.php');
 
 class AuthController
 {
@@ -97,7 +97,7 @@ class AuthController
         return false;
     }
     }
-    public static function registerController(Guest $guest){
+    public static function registerController(users $guest){
         $result = $guest->register($guest);
         if ($result != false){
             if (session_status() === PHP_SESSION_NONE) {

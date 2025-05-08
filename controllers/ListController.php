@@ -18,25 +18,10 @@ class ListController{
             return $result;
         }          
     }
-    public static function addList($listId, $listName){
-        $db = new  DBController;
-        $db->openConnection();
-        $query = "INSERT INTO lists (name, userId) VALUES ('$listName', '$listId')"; 
-        $result = $db->insert($query);
-        if($result === false) {
-            echo 'Error in query';
-            return;
-        } 
-        else {
-            return $result;
-        } 
 
-    }
     public static function deleteList($listId){
-        $db = new  DBController;
-        $db->openConnection();
-        $query = "UPDATE lists SET isDeleted = 1 WHERE id = '" . $listId . "'";
-        $result = $db->delete($query);
+        $list = new Lists();        
+        $result = $list->deleteList($listId);
         if($result === false) {
             echo 'Error in query';
             return;
@@ -46,6 +31,43 @@ class ListController{
         }        
 
     }
+    public static function editlist($listId, $newName){
+        $db = new DBController;
+        $db->openConnection();
+        $query = "UPDATE `lists` SET `name`='$newName' WHERE id = '" . $listId . "'";
+        $result = $db->delete($query);
+        if($result === false) {
+            echo 'Error in query';
+            return false;
+        } 
+        else {
+            return $result;
+        } 
+
+    }
+
+    public static function fetchArticles($listId){
+        $list = new Lists();
+        $result = $list->getListArticles($listId);
+        if($result === false) {
+            echo 'Error in query';
+            return;
+        } 
+        else if(count($result) === 0) {
+            header('location: 404.php');
+        }
+        else {
+            return $result;
+        } 
+    }
+
+
+
+
+
+
+
+
 }
 
 

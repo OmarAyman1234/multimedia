@@ -63,7 +63,9 @@ class Lists {
     }
 
     public  function removeArticleFromList( $listId,$articleId){
-
+        $query = "DELETE FROM lists_articles WHERE articleId = " . $articleId . " and listId = " . $listId;
+        $result = DBController::delete($query);
+        return $result;
     }
 }
 

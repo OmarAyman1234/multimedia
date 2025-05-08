@@ -23,24 +23,26 @@ if (!$id) {
   exit;
 }
 
-$article = ArticleController::getArticle($id);
-if (!$article) {
-  header('location: ../Shared/404.php');
-  exit;
-}
+// $article = ArticleController::getArticle($id);
 
 
 
-if(isset($_POST['articleID'])){
-  $articleId = $_POST['articleID'];
-  ListsController::deleteArticle($id, $articleId);
+
+if(isset($_POST['articleToRemove'])){
+  $articleId = $_POST['articleToRemove'];
+  ListsController::removeArticleFromList($id, $articleId);
   header('location: ../Shared/404.php'); 
 }
+if(isset($_POST['articleID'])){
+  $articleId = $_POST['articleID'];
+  header('location: ../Shared/article.php?id=<php echo htmlspecialchars($articleId); ?>'); 
+}
 
-// $listId = $_GET['id']; 
+// $listId = $_GET['id'];
+
 $listArticles = ListsController::fetchListArticles($id);
 $translations = ArticleController::getArticleTranslations($id);
-$articleLangs = ArticleController::getAvailableLanguages($id);
+// $articleLangs = ArticleController::getAvailableLanguages($id);
 $articleLikes = ArticleController::getArticleLikesCount($id);
 $articleComments = ArticleController::getArticleComments($id);
 
@@ -63,13 +65,13 @@ $articleComments = ArticleController::getArticleComments($id);
     <?php require_once '../utils/sidebar.php'?>
     <div class="content">
       <?php require_once '../utils/nav.php'?>
-      <div class="container-fluid mt-4">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
           <?php 
           foreach($listArticles as $listArticle)
           {
           
           ?>
+      <div class="container-fluid mt-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
           <form method="POST" action="list.php?id=<?php echo htmlspecialchars($_GET['id']); ?>" class="delete-form">
                 <input type="hidden" name="articleID" value="<?php echo htmlspecialchars($listArticle['article_id']); ?>">          
                 <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
@@ -82,12 +84,12 @@ $articleComments = ArticleController::getArticleComments($id);
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-between mb-3">
-          <span class="badge bg-info text-dark py-2"><?php echo $listArticle['categoryid']; ?></span>
+          <span class="badge bg-info text-dark py-2"><?php //echo $listArticle['categoryid']; ?></span>
           <?php
           if(isset($_SESSION['username'])) {
             ?>
             <form method="POST" action="list.php?id=<?php echo htmlspecialchars($_GET['id']); ?>" class="delete-form">
-            <input type="hidden" name="articleID" value="<?php echo htmlspecialchars($listArticle['article_id']); ?>">
+            <input type="hidden" name="articleToRemove" value="<?php echo htmlspecialchars($listArticle['article_id']); ?>">
             <button class="btn btn-danger">Remove From List </button>
           </form>
           <?php
@@ -96,7 +98,7 @@ $articleComments = ArticleController::getArticleComments($id);
         </div>
 
         <div class="mb-4 border-1 border border-white rounded-1">
-          <img src="<?php echo $listArticle[0]['image'] ?>" alt="Article banner" class="img-fluid w-100 rounded shadow" style="max-height: 400px; object-fit: cover;">
+          <img src="<?php echo $listArticle['image'] ?>" alt="Article banner" class="img-fluid w-100 rounded shadow" style="max-height: 400px; object-fit: cover;">
         </div>
         <div class="d-flex flex-column align-items-center mt-4">
           <hr class="w-100" style="border-top: 3px solid white; margin-bottom: 20px;">

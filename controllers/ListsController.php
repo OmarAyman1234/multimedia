@@ -49,7 +49,7 @@ class ListsController{
             return false;
         } 
         else {
-            header("Location: ../views/client/lists.php?=" . htmlspecialchars($userId));           
+            header("Location: lists.php?userId=" . htmlspecialchars($userId));           
             return true;
         } 
     }
@@ -72,8 +72,8 @@ class ListsController{
 
     public static function removeArticleFromList( $listId,$articleId){
 
-        $query = "DELETE FROM lists_articles WHERE articleId = " . $articleId . " and listId = " . $listId;
-        $result = $db->delete($query);
+        $li = new Lists();
+        $result = $li->removeArticleFromList($listId, $articleId);
         if($result === false) {
             echo 'Error in query';
             return;

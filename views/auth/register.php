@@ -1,14 +1,14 @@
 <?php
 session_start();
 require_once "../../models/registeredUser.php";
-require_once "../../models/guest.php";
+require_once "../../models/users.php";
 require_once "../../controllers/AuthController.php";
 require_once "../../controllers/ArticleController.php";
 require_once "../../models/client.php";
 if (isset($_POST['username']) && isset($_POST['password'])){
   if (!empty($_POST['username']) && !empty($_POST['password'])){
        if($_POST['password'] == $_POST['confirmPassword']){
-        $newClient = new Guest;
+        $newClient = new users;
         $newClient->setEmail($_POST['email']);
         $newClient->setUsername($_POST['username']);
         $hashedPassword = password_hash($_POST['password'], PASSWORD_BCRYPT);
