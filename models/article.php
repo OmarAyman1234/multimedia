@@ -121,6 +121,14 @@ class Article {
         return false;
       }
   }
+  public static function shuffleArticles($articles) {
+    shuffle($articles);
+    return $articles;
+  }
+  public static function getShuffledArticles($articles) {
+    $shuffledArticles = self::shuffleArticles($articles);
+    return array_slice($shuffledArticles, 0, 4);
+  }
 }
 
 ?>

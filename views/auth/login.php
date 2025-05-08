@@ -29,7 +29,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                     header("Location: ../client/test.php");
                     exit();
                 } else {
-                    header("Location: ../Shared/main.php");
+                    header("Location: ../Shared/index.php");
                     exit();
                 }
             } else {

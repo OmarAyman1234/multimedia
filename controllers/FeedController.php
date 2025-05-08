@@ -14,7 +14,6 @@ class FeedController {
         return category::getAllCategory();
       }
       public static function getArticlesByCategory($categoryId){
-        
         $category=new category();
         $category->setId($categoryId);
         return $category->getArticlesByCategory($category);

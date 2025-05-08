@@ -3,8 +3,11 @@
 
     session_start();
   }
+  if(isset($_SESSION['userId'])){
+    $userId = $_SESSION['userId'];
+  }
   
-  $userId = $_SESSION['userId'];
+
 ?>
 <div class="sidebar pe-4 pb-3 overflow-hidden">
   <nav class="navbar bg-secondary navbar-dark">

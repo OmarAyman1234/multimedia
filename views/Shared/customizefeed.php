@@ -3,22 +3,14 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
-
 require_once '../../controllers/ArticleController.php';
 require_once '../../controllers/DBController.php';
 require_once '../../controllers/FeedController.php';
-
 $articles=FeedController::getAllArticles();
 $categories=FeedController::getAllCategory();
 if(isset($_POST['category'])){
-  if(!empty($_POST['category'])){
-    $categoryId = $_POST['category'];
-    $catarticles = FeedController::getArticlesByCategory($categoryId);
-    $mark = 1;
-}
-}
-else{
-  $mark = 0;
+  $_SESSION['category']=$_POST['category'];
+  header("Location: index.php");
 }
 ?>
 
@@ -38,6 +30,28 @@ else{
   <?php require_once '../utils/linkTags.php' ?>
 
 </head>
+<style>
+  .btn-cadetblue {
+    background-color: #5f9ea0;
+    color: white;
+    border: none;
+  }
+
+  .btn-cadetblue:hover {
+    background-color: #538c8d;
+    color: white;
+  }
+
+  .custom-card {
+    border-radius: 1rem;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-select:focus {
+    border-color: #5f9ea0;
+    box-shadow: 0 0 0 0.2rem rgba(95, 158, 160, 0.25);
+  }
+</style>
 
 <body>
   <div class="container-fluid position-relative d-flex p-0">
@@ -59,121 +73,38 @@ else{
           </div>
         </div>
 
-        <div class="container">
+        <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-10 col-lg-8 col-xl-6">
       <form action="../Shared/customizefeed.php" method="post" class="gx-4 gy-3">
-        <div class="card h-100 shadow-sm">
+        <div class="card custom-card p-4">
           <div class="card-body">
-            <h5 class="card-title">Choose your Category</h5>
-            <p class="text-muted">Available Categories:</p>
-            <div class="row">
-              <div class="col-6">
-                <select name="category" class="form-select" aria-label="Default select example">
-                  <option selected disabled>Select a category</option>
-                  <?php foreach ($categories as $category): ?>
-                    <option value="<?= $category['id'] ?>">
-                      <?= htmlspecialchars($category['name']) ?>
-                    </option>
-                  <?php endforeach; ?>
-                </select>
-              </div>
+            <h2 class="card-title text-center mb-4">Choose Your Category</h2>
+            <p class="text-muted text-center mb-4 fs-5">Select one of the available categories to customize your feed.</p>
+
+            <div class="mb-4">
+              <label for="category" class="form-label fw-semibold fs-5">Available Categories:</label>
+              <select name="category" id="category" class="form-select form-select-lg">
+                <option selected disabled>Select a category</option>
+                <?php foreach ($categories as $category): ?>
+                  <option value="<?= $category['id'] ?>">
+                    <?= htmlspecialchars($category['name']) ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-cadetblue btn-lg rounded-pill">
+                Submit
+              </button>
             </div>
           </div>
-        </div>
-
-        <div class="text-center mt-3">
-          <button type="submit" class="btn btn-cadetblue btn-lg px-5">
-            Submit
-          </button>
         </div>
       </form>
     </div>
   </div>
 </div>
-      <div class="container py-5">
-        <div class="row mb-4">
-          <div class="col text-center">
-            <h1 class="display-4 text-cadetblue">The Blog</h1>
-          </div>
-        </div>
-
-        <?php 
-        if($mark == 0){
-$count = 0;
-foreach ($articles as $article) {
-    if ($count % 3 == 0) {
-        echo '<div class="row mb-4">';
-    }
-    ?>
-    
-    <div class="col-12 col-md-4">
-        <div class="card h-100 shadow-sm">
-            <img  src="<?php echo $article["image"] ?>"
-                class="card-img-top" alt="<?php echo $article["title"] ?>" style="height: 200px; object-fit: cover;">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title"><?php echo $article["title"] ?></h5>
-                <p class="card-text flex-grow-1">
-                    <?php echo substr($article["content"], 0, 100) . '...' ?>
-                </p>
-                <a href="#" class="mt-3 align-self-start">Read more →</a>
-            </div>
-        </div>
-    </div>
-
-    <?php
-    $count++;
-    if ($count % 3 == 0) {
-        echo '</div>';
-    }
-}
-if ($count % 3 != 0) {
-    echo '</div>';
-}
-         }else{
-           $count = 0;
- foreach ($catarticles as $article) {
-     if ($count % 3 == 0) {
-         echo '<div class="row mb-4">';
-     }
-     ?>
-    
-     <div class="col-12 col-md-4">
-         <div class="card h-100 shadow-sm">
-             <img  src="<?php echo $article["image"] ?>"
-                 class="card-img-top" alt="<?php echo $article["title"] ?>" style="height: 200px; object-fit: cover;">
-             <div class="card-body d-flex flex-column">
-                 <h5 class="card-title"><?php echo $article["title"] ?></h5>
-                 <p class="card-text flex-grow-1">
-                     <?php echo substr($article["content"], 0, 100) . '...' ?>
-                 </p>
-                 <a href="#" class="mt-3 align-self-start">Read more →</a>
-             </div>
-         </div>
-    </div>
-
-     <?php
-    $count++;
-    if ($count % 3 == 0) {
-        echo '</div>';
-    }
-}
-if ($count % 3 != 0) {
-    echo '</div>';
-}
-        }
-        
-
- ?>
-      </div>
-
-      <!-- Sale & Revenue end-->
-      <!-- Footer Start -->
-      <?php require_once '../utils/footer.php' ?>
-      <!-- Footer End -->
-
-    </div>
-    <!-- Content End -->
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top">

@@ -46,6 +46,16 @@ class Category {
         return false;
       }
   }
+  public static function getCategoryById($categoryId){
+    $quary="select * from categories where id=$categoryId";
+    $result=DBController::select($quary);
+    if($result){
+      return $result;
+    }
+    else{
+      return false;
+    }
+  }
 
 }
 ?>
