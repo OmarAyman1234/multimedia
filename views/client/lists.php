@@ -56,34 +56,46 @@ if (isset($_POST['list_id_to_delete'])) {
       <?php require_once '../utils/nav.php'?>
       <!-- Navbar End -->
 
-    <div class="container-fluid pt-4 px-4">
-      <?php foreach ($lists as $list): ?>
-      <div class="bg-secondary rounded-top p-4">
-        <div class="row">
-          <div class="col-12 col-sm-6 text-main text-center text-sm-start">
-            <a href="list.php?id=<?php echo $list['id']?>"><?php echo htmlspecialchars($list['name']); ?></a>
-          </div>
-          <div class="col-12 col-sm-6 text-center text-sm-end text-main">
-            <?php if ($list['name'] != 'Bookmarks'): ?>
-              <!-- <div class="col-12 col-sm-6 text-main text-center text-sm-start"> -->
-              <a href="editList.php?id=<?php echo htmlspecialchars($list['id']); ?>"><i class="bi bi-pencil"></i></a>
-              <!-- </div> -->
-              
-              <form method="POST" action="lists.php?id=<?php $list['userId'] ?>" class="delete-form">
-                <input type="hidden" name="list_id_to_delete" value="<?php $list['id'] ?>">
-                <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
-                  <i class="bi bi-trash3"></i>
-                </button>
-              </form>
-            <?php endif; ?>
-          </div>
+      <div class="container-fluid pt-4 px-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="text-title fw-bold display-5 d-flex align-items-center gap-3 mb-0">
+            <i class="bi bi-journal-text fs-2"></i> Your Lists
+          </h1>
+          <button type="button" class="btn btn-light" onclick="location.href='addList.php'">
+            <i class="bi bi-plus-square me-2"></i>Add New List
+          </button>
+        </div>
+
+
+        <div class="row g-4">
+          <?php foreach ($lists as $list): ?>
+            <div class="col-12">
+              <div class="bg-secondary rounded d-flex justify-content-between align-items-center p-4 shadow-sm">
+                <div class="text-title fs-5 fw-semibold">
+                  <a href="list.php?id=<?php echo $list['id']; ?>" class="text-decoration-none text-title">
+                    <i class="bi bi-list-ul me-2"></i><?php echo htmlspecialchars($list['name']); ?>
+                  </a>
+                </div>
+
+                <?php if ($list['name'] !== 'Bookmarks'): ?>
+                  <div class="d-flex align-items-center gap-3">
+                    <a href="editList.php?id=<?php echo htmlspecialchars($list['id']); ?>" class="text-light">
+                      <i class="bi bi-pencil fs-5"></i>
+                    </a>
+
+                    <form method="POST" action="lists.php?id=<?php echo htmlspecialchars($userId); ?>" class="m-0">
+                      <input type="hidden" name="list_id_to_delete" value="<?php echo htmlspecialchars($list['id']); ?>">
+                      <button type="submit" style="border: none; background: none; color: #ddd;">
+                        <i class="bi bi-trash3 fs-5"></i>
+                      </button>
+                    </form>
+                  </div>
+                <?php endif; ?>
+              </div>
+            </div>
+          <?php endforeach; ?>
         </div>
       </div>
-      <br>
-      <?php endforeach; ?>
-    </div>
-
-      <button type="button" class="btn btn-light m-2" onclick="location.href='addList.php'"><i class="bi bi-plus-square"></i> Add list</button>
 
       <!-- Footer Start -->
       <?php require_once '../utils/footer.php' ?>
