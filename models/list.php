@@ -25,6 +25,12 @@ class Lists {
         return $this->userId;  
     }
 
+    public static function getList($listId) {
+        $query = "SELECT * FROM lists WHERE id=$listId";
+        $result = DBController::select($query);
+        return $result;
+    }
+
     public function editList(Lists $list){
         $listId = $list->getListId();
         $listNewName = $list->getListName();

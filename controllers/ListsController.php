@@ -3,7 +3,24 @@ require_once '../../models/client.php';
 require_once '../../models/list.php';
 require_once '../../controllers/DBController.php';
 require_once '../../controllers/AuthController.php';
+
 class ListsController{
+    public static function getList($listId) {
+        if(AuthController::isLoggedIn()) {
+            $result = Lists::getList($listId);
+
+            if($result === false) {
+                echo 'Error in query';
+                return false;
+            } 
+            else {
+                return $result;
+            }          
+        }
+        else {
+            $_SESSION['errMsg'] = 'Unauthorized!';
+        }
+    }
     public static function getLists($userId){
         if(AuthController::isLoggedIn() && $_SESSION['userId'] == $userId) {
 
