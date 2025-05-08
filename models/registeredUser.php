@@ -64,37 +64,30 @@ abstract class RegisteredUser {
       return false;
     }
   }
+
+  public static function fetchProfileData($userId) {
+    $query = "SELECT u.*, r.name as roleName FROM registeredusers as u JOIN roles as r ON r.id = u.roleId WHERE u.id = $userId";
+    $result = DBController::select($query);
+
+    return $result;
+  }
+
+  public static function updateEmail($userId, $newEmail) {
+    $query = "UPDATE registeredusers SET email='$newEmail' WHERE id=" . $userId;
+    $result = DBController::update($query);
+
+    return $result;
+  }
+
+  public static function updatePassword($userId, $newPass) {
+    $query = "UPDATE registeredusers SET password='$newPass' WHERE id=" . $userId;
+    $result = DBController::update($query);
+
+    return $result;
+  }
+  
 }
 
-
-// require_once(__DIR__ . '/DBController.php');
-
-// if (session_status() !== PHP_SESSION_ACTIVE) {
-//     session_start();
-// }
- 
-
-// class ProfileController {
-//     public $db;
-//     public static function fetchProfileData($userId) {
-//         $db = new DBController();
-//         if($db->openConnection()) {
-//             $query = "SELECT * FROM registeredusers WHERE id = $userId";
-//             $result = $db->select($query);
-
-//             if($result === false) {
-//                 echo 'Error in query';
-//                 return;
-//             } 
-//             else if(count($result) === 0) {
-//                 header('location: ../../views/404.php');
-//                 exit;
-//             }
-//             else {
-//                 return $result;
-//             }
-//         }
-//     }
 // $db= new DBController;
 //     public static function changePassword($newPass,$userId) {
 //         $db = new DBController();

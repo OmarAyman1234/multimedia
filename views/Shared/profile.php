@@ -1,151 +1,172 @@
 <?php
+require_once '../../controllers/ProfileController.php';
 
-require_once('../../controllers/AuthController.php');
-require_once('../../controllers/DBController.php');
-require_once('../../controllers/profileController.php');
+$id = $_GET['id'] ?? null;
+if (!$id) {
+    header('location: ../../views/Shared/404.php');
+    exit;
+}
 
-$userId = $_SESSION['userId'];
-$user= ProfileController::fetchProfileData($userId);
+if(session_start() === PHP_SESSION_NONE) 
+session_start();
 
+$user = ProfileController::fetchProfileData($id);
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'] ?? null;
+    $newPassword = $_POST['newPassword'] ?? null;
+    $confirmPassword = $_POST['confirmPassword'] ?? null;
 
+    if ($email && $email !== $user[0]['email']) {
+        // update only if email is changed
+        ProfileController::updateEmail($email);
+    }
+    else {
+        $_SESSION['errMsg'] = "Email can't be empty";
+    }
 
- ?>
+    if ($newPassword && $confirmPassword) {
+        if ($newPassword === $confirmPassword) {
+            ProfileController::updatePassword($newPassword);
+        } else {
+            $_SESSION['errMsg'] = "Password and confirm password don't match";
+        }
+    }
+    else {
+        $_SESSION['errMsg'] = "Password can't be empty";
+    }
+
+    // go to the same again to prevent "confirm form resubmission"
+    header('location: ../../views/Shared/profile.php?id=' . $id);
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>User Profile - DarkPan</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+  <!-- Favicon -->
+  <link href="img/favicon.ico" rel="icon" />
+  
+  <!-- Link to external CSS stylesheets -->
+  <?php require_once '../utils/linkTags.php' ?>
+</head>
+
+<body>
+<?php if (isset($_SESSION['errMsg'])): ?>
+    <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3" style="z-index: 9999;" role="alert">
+        <i class="fa fa-exclamation-circle me-2"></i>
+        <?php echo $_SESSION['errMsg']; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     
-    <!DOCTYPE html>
-    <html lang="ar">
-        
-        <head>
-            <meta charset="UTF-8">
-            <title>profile </title>
-            <?php require_once('../../views/utils/linkTags.php');?>
-            <style>
-                .profile-table {
-                    width: 60%;
-                    margin: 40px auto;
-                    border-collapse: collapse;
-                    font-family: Arial, sans-serif;
-                    background-color: #fff;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                }
+<?php endif; ?>
+
+  <div class="container-fluid position-relative d-flex p-0">
+    <!-- Spinner Start -->
+    <?php require_once '../utils/spinner.php'?>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    <?php require_once '../utils/sidebar.php'?>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+      <!-- Navbar Start -->
+      <?php require_once '../utils/nav.php'?>
+      <!-- Navbar End -->
+
+      <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+          <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+              <h3 class="text-primary mb-4">
+                <i class="fa fa-user-circle me-2"></i>User Profile
+              </h3>
+              
+              <!-- Profile Picture -->
+              <div class="row mb-4">
+                <div class="col-md-4 text-center mb-3 mb-md-0">
+                  <img src="../assets/img/cat1.jpg" alt="Profile Picture" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover; border: 2px solid var(--primary);">
+                  <form action="uploadProfilePic.php" method="post" enctype="multipart/form-data" class="mt-3">
+                    <div class="d-flex justify-content-center">
+                      <input type="file" name="profilePic" class="form-control bg-dark border-0 text-light" style="max-width: 250px;">
+                    </div>
+                    <button class="btn btn-primary btn-sm mt-2" type="submit">
+                      <i class="fa fa-upload me-1"></i> Update Photo
+                    </button>
+                  </form>
+                </div>
                 
-                .profile-table th,
-                .profile-table td {
-                    padding: 12px 20px;
-                    border: 1px solid #ddd;
-                    text-align: right;
-                }
-                
-                .profile-table th {
-                    background-color: #f5f5f5;
-                }
-                
-                input[type='email'],
-                input[type='password'] {
-                    width: 90%;
-                    padding: 8px;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    direction: ltr;
-                }
-                
-                .save-btn {
-                    padding: 8px 16px;
-                    background-color: #007bff;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    transition: background 0.3s;
-                }
-                
-                .save-btn:hover {
-                    background-color: #0056b3;
-                }
-                
-                .error-message {
-                    color: red;
-                    text-align: center;
-                }
-                
-                h2 {
-                    text-align: center;
-                    color: #333;
-                }
-                </style>
-    </head>
-    
-    <body>
-        <?php
-        require_once('../../views/utils/nav.php');
-        require_once('../../views/utils/sidebar.php');
-        ?>
-        
-        <h2>Hello <?= htmlspecialchars($user['username']) ?></h2>
-        
-        <table class="profile-table">
-            <thead>
-                <tr>
-                    <th>Field</th>
-                    <th>Current value</th>
-                    <th>New value</th>
-                    <th>Button</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-                <tr>
-                    <td>username</td>
-                    <td><?= htmlspecialchars($user['username']) ?></td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
-                
-                
-                <tr>
-                    <td>email</td>
-                    <td><?= htmlspecialchars($user['email']) ?>
-                </td>
-                <td colspan="2">
-                    <form method="POST" style="margin:0;">
-                        <input type="hidden" name="field" value="email">
-                        <input type="email" name="value" placeholder="New email" required>
-                        <button class="save-btn" type="submit">Save</button>
-                    </form>
-                </td>
-            </tr>
-            
-            
-            <tr>
-                <td>password</td>
-                <td>********</td>
-                <td colspan="2">
-                    <form method="POST" style="margin:0;">
-                        <input type="hidden" name="field" value="password">
-                        <input type="password" name="value" placeholder="New password" required>
-                        <button class="save-btn" type="submit">Save</button>
-                    </form>
-                </td>
-            </tr>
-            
-            
-            <tr>
-                <td>Role id</td>
-                <td colspan="3"><?= htmlspecialchars($_SESSION['roleName']) ?></td>
-            </tr>
-            
-            
-            <tr>
-                <td>joinDate</td>
-                <td colspan="3"><?= htmlspecialchars($user['joinDate']) ?></td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <?php require_once('../../views/utils/footer.php'); ?>
-    
-    <?php require_once('../../views/utils/scripts.php'); ?>
-   
+                <!-- Profile Info -->
+                <div class="col-md-8">
+                  <form action="profile.php?id=<?=$id?>" method="post">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">Username</label>
+                        <input type="text" class="form-control bg-dark border-0 text-light" value="<?= $user[0]['username']?>" disabled>
+                      </div>
+
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">Email</label>
+                        <input name="email" type="email" class="form-control bg-dark border-0 text-light" value="<?= $user[0]['email']?>" required>
+                      </div>
+
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">Role</label>
+                        <input type="text" class="form-control bg-dark border-0 text-light" value="<?= $user[0]['roleName']?>" disabled>
+                      </div>
+
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">Join Date</label>
+                        <input type="text" class="form-control bg-dark border-0 text-light" value="<?= $user[0]['joinDate']?>" disabled>
+                      </div>
+                    </div>
+                    
+                    <hr class="bg-dark">
+                    <h4 class="text-light mb-3">Change Password</h4>
+                    
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">New Password</label>
+                        <input name="newPassword" type="password" class="form-control bg-dark border-0 text-light">
+                      </div>
+
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">Confirm New Password</label>
+                        <input name="confirmPassword" type="password" class="form-control bg-dark border-0 text-light">
+                      </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fa fa-save me-2"></i>Update Profile
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Start -->
+      <?php require_once '../utils/footer.php' ?>
+      <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top">
+      <i class="bi bi-arrow-up"></i>
+    </a>
+  </div>
+
+  <!-- JavaScript Libraries and Template JS -->
+  <?php require_once '../utils/scripts.php' ?>
 </body>
-
 </html>
