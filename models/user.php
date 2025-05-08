@@ -11,7 +11,7 @@
             $result = DBController::insert($query);
 
             // Add a default list called Bookmarks for every user.
-            $query1 = "INSERT INTO lists (name, userId) VALUES ('Bookmarks', '$result')";
+            $query1 = "INSERT INTO lists (name, userId) VALUES ('Bookmarks', $result)";
             DBController::insert($query1);
             
             return $result;     

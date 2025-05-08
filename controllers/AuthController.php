@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/DBController.php';
+require_once '../../models/client.php';
+require_once '../../models/user.php';
 
 class AuthController
 {
@@ -93,22 +95,20 @@ class AuthController
     //     return false;
     // }
     // }
-    public static function registerController(users $guest){
-        $result = $guest->register($guest);
-        if ($result != false){
-            if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-            $_SESSION["userId"] = $result;
-            $_SESSION["username"] = $guest->getUsername();
-            $_SESSION['roleId'] = 3;
-            $_SESSION['roleName']='Client';
-            header('location: ../views/client/index.php');
-        }
-        else{
-            header('location: ../Shared/404.php');
-        }
+    public static function register(Client $c){
+        $result = User::register($c);
+
+        if ($result){
+            if (session_status() === PHP_SESSION_NONE)
+                session_start();
+
+                $_SESSION["userId"] = $result;
+                $_SESSION["username"] = $c->getUsername();
+                $_SESSION['roleId'] = 3;
+                $_SESSION['roleName']='Client';
+                header('location: ../../views/Shared/main.php');
         
-        return true;
+            return true;
         }
     }
 
