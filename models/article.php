@@ -111,6 +111,16 @@ class Article {
       return false;
     }
   }
+  public static function getAllArticles(){
+      $quary="select articles.id,articles.image,articles.title,articles.content,articles.categoryId,categories.name as categoryName from articles join categories on categories.id=articles.categoryId";
+      $result=DBController::select($quary);
+      if($result){
+        return $result;
+      }
+      else{
+        return false;
+      }
+  }
 }
 
 ?>
