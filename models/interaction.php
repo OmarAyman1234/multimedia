@@ -123,6 +123,13 @@ class Interaction {
 
     return $comments;
   }
+
+  public static function addComment($content, $articleId, $userId) {
+    $query = "INSERT INTO interactions (typeId, content, userId, articleId) VALUES (2, '$content', $userId, $articleId)";
+    $result = DBController::insert($query);
+
+    return $result;
+  }
 }
 
 ?>
