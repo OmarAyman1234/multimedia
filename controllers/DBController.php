@@ -36,47 +36,51 @@ class DBController {
     }
 
     public static function insert($qry){
-        DBController::openConnection();
-        $result = DBController::$connection->query($qry);
-        if (!$result){
-            echo "Error : ".mysqli_error(DBController::$connection);
-            return false;
-        }
-        else{
-            return DBController::$connection->insert_id;
+        if(DBController::openConnection()) {
+            $result = DBController::$connection->query($qry);
+            if (!$result){
+                echo "Error : ".mysqli_error(DBController::$connection);
+                return false;
+            }
+            else{
+                return DBController::$connection->insert_id;
+            }
         }
     }
 
     public static function select($qry) {
-        DBController::openConnection();
-        $result = DBController::$connection->query($qry);
-        if (!$result) {
-            echo "Error in query: " . mysqli_error(DBController::$connection);
-            return false;
-        } else {
-            return $result->fetch_all(MYSQLI_ASSOC);
+        if(DBController::openConnection()) {
+            $result = DBController::$connection->query($qry);
+            if (!$result) {
+                echo "Error in query: " . mysqli_error(DBController::$connection);
+                return false;
+            } else {
+                return $result->fetch_all(MYSQLI_ASSOC);
+            }
         }
     }
 
     public static function update($qry) {
-        DBController::openConnection();
-        $result = DBController::$connection->query($qry);
-        if(!$result) {
-            echo "Error in query: " . mysqli_error(DBController::$connection);
-            return false;
+        if(DBController::openConnection()) {
+            $result = DBController::$connection->query($qry);
+            if(!$result) {
+                echo "Error in query: " . mysqli_error(DBController::$connection);
+                return false;
+            }
+            return true;
         }
-        return true;
     }
 
     public static function delete($qry){
-        DBController::openConnection();
-        $result = DBController::$connection->query($qry);
-        if (!$result){
-            echo "Error : " . mysqli_error(DBController::$connection);
-            return false;
-        }
-        else{
-            return true;
+        if(DBController::openConnection()) {
+            $result = DBController::$connection->query($qry);
+            if (!$result){
+                echo "Error : " . mysqli_error(DBController::$connection);
+                return false;
+            }
+            else{
+                return true;
+            }
         }
     }
     
