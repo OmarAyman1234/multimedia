@@ -4,6 +4,7 @@ require_once "../../controllers/AuthController.php";
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+$userId = $_SESSION['userId'];
 
 // if (isset($_GET['id'])) {
   // }
@@ -13,17 +14,20 @@ if (session_status() === PHP_SESSION_NONE) {
     
     
     // Check if form was submitted with newName
-if (isset($_POST['newName'])){
-  if (!empty($_POST['newName'])){
+// if (isset($_POST['newName'])){
+//   if (!empty($_POST['newName'])){
 
-    $name = $_POST['newName'];
-  }
-}
+//     $name = $_POST['newName'];
+//   }
+// }
 $listId = $_GET['id'];
 if (isset($_POST['newName']) && !empty($_POST['newName'])) {
-  ListsController::editList(listId: $listId, newName: $name);
-  header("Location: ../client/lists.php?id=<?php echo htmlspecialchars($listId); ?>");
-  exit(); // Always exit after header redirect
+  $list = new Lists;
+  $list->setListName($_POST['newName']);
+  $list->setListId($_GET['id']);
+  $list->setUserId($_SESSION['userId']);
+  ListsController::editList($list);
+   // Always exit after header redirect
 }
 
 

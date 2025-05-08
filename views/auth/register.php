@@ -1,16 +1,17 @@
 <?php
 session_start();
 require_once "../../models/registeredUser.php";
+require_once "../../models/guest.php";
 require_once "../../controllers/AuthController.php";
 require_once "../../controllers/ArticleController.php";
 require_once "../../models/client.php";
 if (isset($_POST['username']) && isset($_POST['password'])){
   if (!empty($_POST['username']) && !empty($_POST['password'])){
        if($_POST['password'] == $_POST['confirmPassword']){
-        $newClient = new Client;
+        $newClient = new Guest;
         $newClient->setEmail($_POST['email']);
         $newClient->setUsername($_POST['username']);
-        $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($_POST['password'], PASSWORD_BCRYPT);
         $newClient->setPassword(newPassword: $hashedPassword);
         $newClient->setRoleId(3);
         AuthController::registerController($newClient);

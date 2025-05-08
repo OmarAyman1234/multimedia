@@ -1,42 +1,37 @@
 <?php
 require_once '../../models/client.php';
+require_once '../../models/list.php';
 require_once '../../controllers/DBController.php';
 class ListsController{
     public static function getLists($userId){
-        $db = new  DBController;
-        $db->openConnection();
-        $query = "SELECT * FROM lists WHERE isDeleted = 0 and userId='" . $userId . "'";
-        $result =  $db->select($query);
+        $list = new Lists();
+        $result = $list->getLists($userId) ;
         if($result === false) {
             echo 'Error in query';
             return;
         } 
         else if(count($result) === 0) {
-            header('location: 404.php');
+            header('location: ../views/Shared/404.php');
         }
         else {
             return $result;
         }          
     }
-    public static function addList($listId, $listName){
-        $db = new  DBController;
-        $db->openConnection();
-        $query = "INSERT INTO lists (name, userId) VALUES ('$listName', '$listId')"; 
-        $result = $db->insert($query);
+    public static function addList(Lists $newList){
+        $userId = $newList->getUserId();
+        $result = $newList->addList($newList);
         if($result === false) {
             echo 'Error in query';
             return;
         } 
         else {
+            header("Location: ../views/client/lists.php?id=<?php echo htmlspecialchars($userId); ?>");
             return $result;
         } 
-
     }
     public static function deleteList($listId){
-        $db = new  DBController;
-        $db->openConnection();
-        $query = "UPDATE lists SET isDeleted = 1 WHERE id = '" . $listId . "'";
-        $result = $db->delete($query);
+        $list = new Lists();
+        $result = $list->deleteList($listId);
         if($result === false) {
             echo 'Error in query';
             return;
@@ -46,29 +41,23 @@ class ListsController{
         }        
 
     }
-    public static function editlist($listId, $newName){
-        $db = new DBController;
-        $db->openConnection();
-        $query = "UPDATE `lists` SET `name`='$newName' WHERE id = '" . $listId . "'";
-        $result = $db->delete($query);
+    public static function editlist(Lists $list){
+        $userId = $list->getUserId();
+        $result = $list->editList($list);
         if($result === false) {
             echo 'Error in query';
             return false;
         } 
         else {
-            return $result;
+            header("Location: ../views/client/lists.php?=" . htmlspecialchars($userId));           
+            return true;
         } 
-
     }
 
     public static function fetchListArticles($listId){
-        $db = new DBController;
-        $db->openConnection(); 
-        $query = "SELECT a.id AS article_id, a.title, a.content, a.image 
-          FROM articles a 
-          JOIN lists_articles la ON a.id = la.articleId 
-          WHERE la.listId = " . $listId; // Direct embedding - DANGEROUS!
-        $result = $db->select($query);
+        $list = new Lists;
+
+        $result = $list->getListArticles($listId);
         if($result === false) {
             echo 'Error in query';
             return;
@@ -81,9 +70,8 @@ class ListsController{
         } 
     }
 
-    public static function deleteArticle( $listId,$articleId){
-        $db = new  DBController;
-        $db->openConnection();
+    public static function removeArticleFromList( $listId,$articleId){
+
         $query = "DELETE FROM lists_articles WHERE articleId = " . $articleId . " and listId = " . $listId;
         $result = $db->delete($query);
         if($result === false) {

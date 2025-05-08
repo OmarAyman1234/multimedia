@@ -1,6 +1,8 @@
 
 <?php
-require_once "../../controllers/ListController.php";
+require_once "../../controllers/ListsController.php";
+require_once "../../models/list.php";
+
 
 // if (!$id) {
 //   header('location: 404.php');
@@ -18,12 +20,11 @@ if (!$userId) {
   exit;
 }
 // $id = $_GET['id'];
-
-$lists = ListController::getLists($id);
+$lists  = ListsController::getLists($userId);
 if (isset($_POST['list_id_to_delete'])) {
   $listId = $_POST['list_id_to_delete'];
   // Assuming you have a ListController class with a static method deleteList
-  ListController::deleteList(listId: $listId);
+  ListsController::deleteList(listId: $listId);
 }
 
 ?>
