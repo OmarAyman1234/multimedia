@@ -1,46 +1,16 @@
 <?php
 require_once '../../controllers/UserController.php';
+require_once '../../controllers/AuthController.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// Ensure only admins can access this page
-if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 1) {
-    header('Location: ../auth/login.php'); 
+if (!AuthController::isAdmin()) {
+    header('Location: ../auth/login.php');
     exit;
 }
 
-// Fetch all users except the logged-in admin
+
 $users = array_filter(Admin::getAllUsers(), function ($user) {
     return $user['id'] != $_SESSION['userId'];
 });
-
-// Handle user deletion
-if (isset($_GET['deleteRegisteredUserId'])) {
-    $deleteUserId = $_GET['deleteRegisteredUserId'];
-    if ($deleteUserId != $_SESSION['userId']) {
-        Admin::deleteUser($deleteUserId);
-    }
-    header('Location: UserManagement.php');
-    exit;
-}
-
-// Handle specific user role update
-if (isset($_POST['updateSpecificUserRole'])) {
-    $specificUserId = $_POST['specificUserId'];
-    $specificNewRoleId = $_POST['specificNewRoleId'];
-
-    try {
-        if ($specificUserId != $_SESSION['userId']) { 
-            Admin::updateUserRole($specificUserId, $specificNewRoleId);
-        }
-        header('Location: UserManagement.php');
-        exit;
-    } catch (Exception $e) {
-        echo '<div class="alert alert-danger">Error: ' . $e->getMessage() . '</div>';
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -49,23 +19,20 @@ if (isset($_POST['updateSpecificUserRole'])) {
   <meta charset="utf-8" />
   <title>User Management</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-
-  <!-- Favicon -->
   <link href="img/favicon.ico" rel="icon" />
-  <!-- Link to external CSS stylesheets -->
-  <?php require_once '../utils/linkTags.php' ?>
+  <?php require_once '../utils/linkTags.php'; ?>
 </head>
 
 <body>
   <div class="container-fluid position-relative d-flex p-0">
     <!-- Sidebar Start -->
-    <?php require_once '../utils/sidebar.php' ?>
+    <?php require_once '../utils/sidebar.php'; ?>
     <!-- Sidebar End -->
 
     <!-- Content Start -->
     <div class="content">
       <!-- Navbar Start -->
-      <?php require_once '../utils/nav.php' ?>
+      <?php require_once '../utils/nav.php'; ?>
       <!-- Navbar End -->
 
       <!-- User Management Section -->
@@ -91,7 +58,7 @@ if (isset($_POST['updateSpecificUserRole'])) {
                   <td><?php echo $user['email']; ?></td>
                   <td><?php echo $user['roleName']; ?></td>
                   <td>
-                    <a href="UserController.php?action=deleteUser&deleteRegisteredUserId=<?php echo $user['id']; ?>" class="btn btn-danger btn-sm">Delete</a>
+                    <a href="../../controllers/UserController.php?action=deleteUser&deleteRegisteredUserId=<?php echo $user['id']; ?>" class="btn btn-danger btn-sm">Delete</a>
                   </td>
                 </tr>
               <?php endforeach; ?>
@@ -101,33 +68,33 @@ if (isset($_POST['updateSpecificUserRole'])) {
 
         <!-- Update Specific User Role Section -->
         <div class="container mt-4">
-            <h2>Update Specific User Role</h2>
-            <form method="POST" action="UserController.php?action=updateUserRole">
-                <div class="mb-3">
-                    <label for="specificUserId" class="form-label">Select User</label>
-                    <select class="form-control" id="specificUserId" name="specificUserId" required>
-                        <?php foreach ($users as $user): ?>
-                            <option value="<?php echo $user['id']; ?>">
-                                <?php echo $user['username'] . " (" . $user['roleName'] . ")"; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="specificNewRoleId" class="form-label">New Role</label>
-                    <select class="form-control" id="specificNewRoleId" name="specificNewRoleId" required>
-                        <option value="1">Admin</option>
-                        <option value="2">Editor</option>
-                        <option value="3">Client</option>
-                    </select>
-                </div>
-                <button type="submit" name="updateSpecificUserRole" class="btn btn-primary">Update Role</button>
-            </form>
+          <h2>Update Specific User Role</h2>
+          <form method="POST" action="../../controllers/UserController.php?action=updateUserRole">
+            <div class="mb-3">
+              <label for="specificUserId" class="form-label">Select User</label>
+              <select class="form-control" id="specificUserId" name="specificUserId" required>
+                <?php foreach ($users as $user): ?>
+                  <option value="<?php echo $user['id']; ?>">
+                    <?php echo $user['username'] . " (" . $user['roleName'] . ")"; ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="specificNewRoleId" class="form-label">New Role</label>
+              <select class="form-control" id="specificNewRoleId" name="specificNewRoleId" required>
+                <option value="1">Admin</option>
+                <option value="2">Editor</option>
+                <option value="3">Client</option>
+              </select>
+            </div>
+            <button type="submit" name="updateSpecificUserRole" class="btn btn-primary">Update Role</button>
+          </form>
         </div>
       </div>
 
       <!-- Footer Start -->
-      <?php require_once '../utils/footer.php' ?>
+      <?php require_once '../utils/footer.php'; ?>
       <!-- Footer End -->
     </div>
     <!-- Content End -->
@@ -139,6 +106,6 @@ if (isset($_POST['updateSpecificUserRole'])) {
   </div>
 
   <!-- Scripts -->
-  <?php require_once '../utils/scripts.php' ?>
+  <?php require_once '../utils/scripts.php'; ?>
 </body>
 </html>

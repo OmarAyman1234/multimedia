@@ -108,7 +108,10 @@ class AuthController
             $_SESSION['roleName']='Client';
             header('location: ../views/client/index.php');
         }
-        header('location: ../Shared/404.php');
+        else{
+            header('location: ../Shared/404.php');
+        }
+        
         return true;
         }
     }

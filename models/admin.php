@@ -1,10 +1,9 @@
 <?php
 require_once 'RegisteredUser.php';
-require_once __DIR__ . '/../controllers/DBController.php'; // Include DBController
+require_once __DIR__ . '/../controllers/DBController.php';
 
 class Admin extends RegisteredUser {
     public static function getAllUsers() {
-        // Use static method from DBController
         DBController::openConnection();
 
         $query = "
@@ -26,6 +25,7 @@ class Admin extends RegisteredUser {
 
         $result = DBController::select($query);
 
+  
         if ($result === false) {
             throw new Exception("Error fetching users: " . DBController::getConnection()->error);
         }
@@ -34,7 +34,6 @@ class Admin extends RegisteredUser {
     }
 
     public static function updateUserRole($userId, $newRoleId) {
-        // Use static method from DBController
         DBController::openConnection();
 
         $query = "UPDATE registeredusers SET roleId = ? WHERE id = ?";
@@ -49,7 +48,6 @@ class Admin extends RegisteredUser {
     }
 
     public static function deleteUser($userId) {
-        // Use static method from DBController
         DBController::openConnection();
 
         $query = "UPDATE registeredusers SET isDeleted = 1 WHERE id = ?";
