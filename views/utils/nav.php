@@ -59,7 +59,7 @@
         <?php
         }
         ?>
-        <a href="#" class="dropdown-item text-main">
+        <a href="../auth/logout.php" class="dropdown-item text-main">
           Log Out
         </a>
       </div>
