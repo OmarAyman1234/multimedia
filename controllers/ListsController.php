@@ -43,8 +43,16 @@ class ListsController{
     }
     public static function addList(Lists $newList){
         $userId = $newList->getUserId();
+        $listName = $newList->getListName();
+        
         if(AuthController::isLoggedIn() && $_SESSION['userId'] == $userId) {
-            
+            // Check if the new name is "Bookmarks" - if so, don't allow it
+            if(strtolower(trim($listName)) === "bookmarks") {
+                $_SESSION['errMsg'] = '"Bookmarks" is a reserved list name and cannot be used.';
+                // Redirect back to the lists page
+                header("Location: ../../views/client/lists.php?id=$userId");
+                exit;
+            }
             $result = $newList->addList($newList);
             if($result === false) {
                 echo 'Error in query';
@@ -77,9 +85,19 @@ class ListsController{
             $_SESSION['errMsg'] = 'Unauthorized!';
         }
     }
-    public static function editlist(Lists $list){
+    public static function editList(Lists $list){
         $userId = $list->getUserId();
+        $newName = $list->getListName();
+        
         if(AuthController::isLoggedIn() && $_SESSION['userId'] == $userId) {
+            // Check if the new name is "Bookmarks" - if so, don't allow it
+            if(strtolower(trim($newName)) === "bookmarks") {
+                $_SESSION['errMsg'] = '"Bookmarks" is a reserved list name and cannot be used.';
+                // Redirect back to the lists page
+                header("Location: ../../views/client/lists.php?id=$userId");
+                exit; // Important to exit after header redirect
+            }
+            
             $result = $list->editList($list);
             if($result === false) {
                 echo 'Error in query';
@@ -89,9 +107,6 @@ class ListsController{
                 header("Location: ../../views/client/lists.php?id=$userId");           
                 return true;
             } 
-        } 
-        else {
-            $_SESSION['errMsg'] = 'Unauthorized!';
         }
     }
 
