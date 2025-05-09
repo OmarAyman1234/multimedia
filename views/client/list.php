@@ -19,12 +19,12 @@ if (!$id) {
 if(isset($_POST['articleToRemove'])){
   $articleId = $_POST['articleToRemove'];
   ListsController::removeArticleFromList($id, $articleId);
-  header('location: ../Shared/404.php'); 
 }
-if(isset($_POST['articleID'])){
-  $articleId = $_POST['articleID'];
-  header('location: ../Shared/article.php?id=<php echo htmlspecialchars($articleId); ?>'); 
-}
+
+// if(isset($_POST['articleID'])){
+//   $articleId = $_POST['articleID'];
+//   header("location: ../Shared/article.php?id=<php echo htmlspecialchars($articleId); >"); 
+// }
 
 // $listId = $_GET['id'];
 

@@ -192,12 +192,14 @@ class ListsController{
         if(AuthController::isLoggedIn()) {
             $li = new Lists();
             $result = $li->removeArticleFromList($listId, $articleId);
+
             if($result === false) {
                 echo 'Error in query';
                 return;
             } 
             else {
-                return $result;
+                header("location: ../../views/client/list.php?id=$listId");
+                exit;
             } 
         }
         else {
