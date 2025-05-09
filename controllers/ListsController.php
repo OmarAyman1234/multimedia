@@ -195,12 +195,8 @@ class ListsController{
 
             if($result === false) {
                 echo 'Error in query';
-                return;
-            } 
-            else {
-                header("location: ../../views/client/list.php?id=$listId");
-                exit;
-            } 
+                return false;
+            }
         }
         else {
             $_SESSION['errMsg'] = 'Unauthorized!';
