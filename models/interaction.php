@@ -107,7 +107,7 @@ class Interaction {
   }
   
   public static function getArticleComments($articleId) {
-    $query = "SELECT i.*, u.username as username, u.profilePicture as userProfilePic FROM interactions as i JOIN registeredusers as u ON u.id=i.userId WHERE typeId=2 and i.articleId=$articleId";
+    $query = "SELECT i.*, u.username as username, u.profilePicture as userProfilePic FROM interactions as i JOIN registeredusers as u ON u.id=i.userId WHERE typeId=2 and i.articleId=$articleId and i.isDeleted=0";
     $result = DBController::select($query);
 
     if(empty($result)) {
@@ -145,6 +145,12 @@ class Interaction {
   public static function editComment($commentId, $newEdit) {
     $query = "UPDATE interactions SET content = '$newEdit' WHERE interactions.id = $commentId";
     $result = DBController::update($query);
+    return $result;
+  }
+
+  public static function deleteComment($commentId) {
+    $query = "UPDATE interactions SET isDeleted=1 WHERE id=$commentId";
+    $result = DBController::delete($query);
     return $result;
   }
 }

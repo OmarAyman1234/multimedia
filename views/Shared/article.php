@@ -38,6 +38,11 @@ if(isset($_POST['newComment'])) {
   }
 }
 
+if(isset($_POST['commentToRemove'])) {
+  $commentToRemove = InteractionController::getComment($_POST['commentToRemove']);
+  InteractionController::deleteComment($commentToRemove);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -157,9 +162,12 @@ if(isset($_POST['newComment'])) {
                     <a href="editComment.php?id=<?php echo $comment->getId() ?>" class="text-decoration-none me-2" title="Edit">
                       <i class="bi bi-pencil-square text-light"></i>
                     </a>
-                    <a href="delete.php?id=<?php echo $comment->getId() ?>" class="text-decoration-none" title="Delete" onclick="return confirm('Are you sure you want to delete this comment?')">
-                      <i class="bi bi-trash text-danger"></i>
-                    </a>
+                    <form method="POST" action="article.php?id=<?=$id?>" class="d-inline">
+                      <input type="hidden" name="commentToRemove" value="<?=$comment->getId()?>">
+                      <button type="submit" class="btn p-0" title="Delete" onclick="return confirm('Are you sure you want to delete this comment?')">
+                        <i class="bi bi-trash text-danger"></i>
+                      </button>
+                    </form>
                   </div>
                 </div>
                 <p class="text-main mb-0" style="white-space: pre-wrap; word-break: break-word;"><?php echo $comment->getContent() ?></p>

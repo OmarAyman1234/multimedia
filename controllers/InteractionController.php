@@ -48,17 +48,23 @@ class InteractionController {
     }
   }
 
-  public static function deleteComment($commentId, $userId) {
+  public static function deleteComment(Interaction $comm) {
     //userId is needed to check that the comment if the user's, not another user's comment.
-    $db = new DBController;
-    if($db->openConnection()) {
-      if($userId == $_SESSION['userId']) {
-        $query = "SELECT * FROM interactions where id=$commentId and userId=$userId";
+    if(AuthController::isLoggedIn()) {
+      if($_SESSION['userId'] == $comm->getUserId()) {
+        Interaction::deleteComment($comm->getId());
       }
       else {
-        $_SESSION['errMsg'] = 'Unauthorized to delete that comment';
+        $_SESSION['errMsg'] = "Cannot delete other users comments";
       }
+      header('location: ../../views/Shared/article.php?id=' . $comm->getArticleId());
+      exit;
     }
+    else {
+      header("location: ../../views/auth/login.php");
+      exit;
+    }
+   
   }
 }
 ?>
