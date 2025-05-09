@@ -106,7 +106,7 @@ else{
             ?>
                   </button>
           </p>
-          <a href="../Shared/article.php"><h2 class="card-title" style="color: red;" id="title<?= $i ?>">
+          <a href="../Shared/article.php?id=<?php echo $article['id']; ?>"><h2 class="card-title" style="color: red;" id="title<?= $i ?>">
             <?= htmlspecialchars($article['title']) ?>
           </h2></a>
           <p class="card-text" id="text<?= $i ?>">
@@ -197,11 +197,18 @@ foreach ($articles as $article) {
             <img  src="<?php echo $article["image"] ?>"
                 class="card-img-top" alt="<?php echo $article["title"] ?>" style="height: 200px; object-fit: cover;">
             <div class="card-body d-flex flex-column" style="background-color: black;">
+              <button type="button" class="btn btn-primary m-2"
+              >
+            <?php  $result=category::getCategoryById($article['categoryId']);
+            echo $result[0]['name'];
+            ?>
+                  </button>
                 <h5 class="card-title"><?php echo $article["title"] ?></h5>
+                
                 <p class="card-text flex-grow-1">
                     <?php echo substr($article["content"], 0, 100) . '...' ?>
                 </p>
-                <a href="#" class="mt-3 align-self-start">Read more →</a>
+                <a href="../Shared/article.php?id=<?php echo $article['id']; ?>" class="mt-3 align-self-start">Read more →</a>
             </div>
         </div>
     </div>
@@ -228,11 +235,17 @@ if ($count % 3 != 0) {
              <img  src="<?php echo $article["image"] ?>"
                  class="card-img-top" alt="<?php echo $article["title"] ?>" style="height: 200px; object-fit: cover;">
              <div class="card-body d-flex flex-column">
+              <button type="button" class="btn btn-primary m-2">
+            <?php  $result=category::getCategoryById($article['categoryId']);
+            echo $result[0]['name'];
+            ?>
+                  </button>
                  <h5 class="card-title"><?php echo $article["title"] ?></h5>
+                 
                  <p class="card-text flex-grow-1">
                      <?php echo substr($article["content"], 0, 100) . '...' ?>
                  </p>
-                 <a href="#" class="mt-3 align-self-start">Read more →</a>
+                 <a href="../Shared/article.php?id=<?php echo $article['id']; ?>"   class="mt-3 align-self-start">Read more →</a>
              </div>
          </div>
     </div>
