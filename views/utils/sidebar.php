@@ -19,7 +19,7 @@
     <?php 
       if(isset($_SESSION['username']) && isset($_SESSION['roleName'])) {
         ?>
-        <div class="d-flex align-items-center ms-4 mb-4">
+        <a href="../../views/Shared/profile.php?id=<?=$userId?>" class="d-flex align-items-center ms-4 mb-4">
           <div class="position-relative">
             <img
               class="rounded-circle"
@@ -32,7 +32,7 @@
             <h6 class="mb-0 text-title"> <?php echo $_SESSION['username'] ?></h6>
             <span class="text-main"><?php echo $_SESSION['roleName'] ?></span>
           </div>
-        </div>   
+        </a>   
 
         <div class="navbar-nav w-100">
           <?php 
