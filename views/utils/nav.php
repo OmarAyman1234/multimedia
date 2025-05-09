@@ -1,4 +1,11 @@
-<?php   
+ <?php   
+  if(session_status() === PHP_SESSION_NONE){
+    session_start();
+  }
+  if(isset($_POST['search'])){
+    $_SESSION['search']=$_POST['search'];
+  }
+       
   if(session_status() === PHP_SESSION_NONE)
     session_start();
 
@@ -11,11 +18,12 @@
     <i class="fa fa-bars"></i>
   </a>
 
-  <form class="d-none d-md-flex ms-4">
+  <form class="d-none d-md-flex ms-4" method="post" action="../Shared/search.php">
     <input
       class="form-control bg-dark border-0"
       type="search"
       placeholder="Search"
+      name="search"
     />
   </form>
 

@@ -56,6 +56,17 @@ class Category {
       return false;
     }
   }
+  public function getCategoryByArticleId(category $category){
+    $articleId=$category->getId();
+    $quary="select categories.id,categories.name from articles join categories on categories.id=articles.categoryId where articles.id=$articleId";
+    $result=DBController::select($quary);
+    if($result){
+      return $result;
+    }
+    else{
+      return false;
+    }
+  }
 
 }
 ?>
