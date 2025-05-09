@@ -4,13 +4,14 @@ require_once '../../controllers/ArticleController.php';
 require_once '../../models/article.php';
 require_once '../../controllers/SearchController.php';
 require_once '../../models/category.php';
+require_once '../../models/searchHistory.php';
 if(session_status() === PHP_SESSION_NONE){
     session_start();
   }
 $title=$_POST['search'];
-$article=SearchController::getArticleByTitle($title);
-$articleId=$article->getId();
-$category=SearchController::getCategoryByArticleId($articleId);
+$articles=SearchController::getArticlesByKeyword($title);
+// $articleId=$article->getId();
+// $category=SearchController::getCategoryByArticleId($articleId);
 ?>
 
 
@@ -62,42 +63,60 @@ $category=SearchController::getCategoryByArticleId($articleId);
       <!-- Navbar End -->
 <!-- Sale & Revenue Start -->
 
-<div class="row justify-content-center my-5">
-    <div class="col-12 col-md-10 col-lg-8 col-xl-6">
-        <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="background-color: #121212;">
-            <!-- Article Image -->
-            <img src="<?php echo $article->getImage(); ?>"
-                 alt="<?php echo htmlspecialchars($article->getTitle()); ?>"
-                 class="card-img-top"
-                 style="height: 300px; object-fit: cover;">
-
-            <!-- Card Body -->
-            <div class="card-body text-white p-4">
-                <!-- Article Title -->
-                <h2 class="card-title mb-3 fw-bold">
-                    <?php echo htmlspecialchars($article->getTitle()); ?>
-                </h2>
-
-                <!-- Category Badge -->
-                <?php if (!empty($category[0]['name'])): ?>
-                    <span class="badge rounded-pill text-bg-primary px-3 py-2 mb-3 text-uppercase fs-6 shadow-sm">
-                        <?php echo htmlspecialchars($category[0]['name']); ?>
-                    </span>
-                <?php endif; ?>
-
-                <!-- Article Snippet -->
-                <p class="card-text lh-lg mb-4" style="opacity: 0.9;">
-                    <?php echo htmlspecialchars(substr($article->getContent(), 0, 250)) . '...'; ?>
-                </p>
-
-                <!-- Read More Button -->
-                <a href="article.php" class="btn btn-outline-light rounded-pill px-4 py-2 fw-semibold transition-all">
-                    Read more →
-                </a>
-            </div>
+<div class="container my-5">
+    <?php if (empty($articles)): ?>
+        <div class="alert alert-warning text-center fw-bold rounded-3">
+            No articles found for your search.
         </div>
-    </div>
+    <?php else: ?>
+        <?php 
+        $count = 0;
+        $total = count($articles);
+
+        foreach ($articles as $index => $article) {
+            if ($count % 3 == 0) {
+                echo '<div class="row justify-content-center g-4 mb-4">';
+            }
+            ?>
+            
+            <div class="col-12 col-sm-10 col-md-6 col-lg-4 d-flex justify-content-center">
+                <div class="card h-100 shadow-lg rounded-4 overflow-hidden w-100" style="background-color: #1e1e1e; color: white;">
+                    <img src="<?php echo htmlspecialchars($article["image"]); ?>" 
+                        alt="<?php echo htmlspecialchars($article["title"]); ?>" 
+                        class="card-img-top" 
+                        style="height: 220px; object-fit: cover;">
+
+                    <div class="card-body d-flex flex-column p-4">
+                        <h5 class="card-title fw-bold mb-3">
+                            <?php echo htmlspecialchars($article["title"]); ?>
+                        </h5>
+                        <button type="button" class="btn btn-primary m-2">
+            <?php  $result=category::getCategoryById($article['categoryId']);
+            echo $result[0]['name'];
+            ?>
+                  </button>
+                        <p class="card-text flex-grow-1" style="opacity: 0.85;">
+                            <?php echo htmlspecialchars(substr($article["content"], 0, 120)) . '...'; ?>
+                        </p>
+                        <a href="../Shared/article.php?id=<?php echo $article['id']; ?>" class="btn btn-outline-light mt-3 rounded-pill align-self-start px-4 py-2">
+                            Read more →
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <?php
+            $count++;
+            if ($count % 3 == 0 || $index == $total - 1) {
+                echo '</div>';
+            }
+        }
+        ?>
+    <?php endif; ?>
 </div>
+
+
+
 
 
 <!-- Sale & Revenue end-->

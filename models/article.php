@@ -141,6 +141,17 @@ class Article {
       return false;
     }
   }
+  public static function getArticlesByKeyword($keyword) {
+    $query = "SELECT * FROM articles WHERE title LIKE '%$keyword%' OR content LIKE '%$keyword%'";
+    $result = DBController::select($query);
+
+    if($result) {
+      return $result;
+    } 
+    else {
+      return false;
+    }
+  }
 }
 
 ?>

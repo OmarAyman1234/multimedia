@@ -4,6 +4,7 @@
   }
   if(isset($_POST['search'])){
     $_SESSION['search']=$_POST['search'];
+    SearchController::save($_SESSION['search'], $_SESSION['userId']);
   }
        
   if(session_status() === PHP_SESSION_NONE)

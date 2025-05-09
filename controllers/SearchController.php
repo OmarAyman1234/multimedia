@@ -18,5 +18,22 @@ class SearchController {
         $category->setId($articleId);
         return $category->getCategoryByArticleId($category);
     }
+    public static function getArticlesByKeyword($keyword){
+        return article::getArticlesByKeyword($keyword);
+    }
+    public static function save($searchTerm, $userId) {
+        $searchHistory = new SearchHistory;
+        $searchHistory->setSearchTerm($searchTerm);
+        $searchHistory->setUserId($userId);
+        return $searchHistory->save($searchHistory);
+    }
+    public static function getSearchHistoryByUserId($userId) {
+        $searchHistory = new SearchHistory;
+        return $searchHistory->getSearchHistoryByUserId($userId);
+    }
+    public static function deleteSearchHistory($id) {
+        $searchHistory = new SearchHistory;
+        return $searchHistory->deleteSearchHistory($id);
+    }
     
 }
