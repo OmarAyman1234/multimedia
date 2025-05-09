@@ -73,6 +73,62 @@ class Lists {
         $result = DBController::delete($query);
         return $result;
     }
+
+    public static function getBookmarksId($userId) {
+        $getBookmarks = "SELECT * FROM lists WHERE userId=$userId AND name='Bookmarks'";
+        $bookmarksResult = DBController::select($getBookmarks);
+        return $bookmarksResult ? $bookmarksResult[0]['id'] : false;
+    }
+
+    public static function addArticleToBookmarks($articleId, $userId) {
+        $listId = self::getBookmarksId($userId);
+        $articleAddition = "INSERT INTO lists_articles (listId, articleId) VALUES ($listId, $articleId)";
+        $result = DBController::insert($articleAddition);
+        return $result;
+    }
+
+    public static function removeArticleFromBookmarks($articleId, $userId) {
+        $bookmarksId = self::getBookmarksId($userId);
+        if (!$bookmarksId) return false;
+        
+        $query = "DELETE FROM lists_articles WHERE listId=$bookmarksId AND articleId=$articleId";
+        $result = DBController::delete($query);
+        return $result;
+    }
+
+    public static function isArticleBookmarked($articleId, $userId) {
+        $bookmarksId = self::getBookmarksId($userId);
+
+        $query = "SELECT * FROM lists_articles WHERE listId=$bookmarksId AND articleId=$articleId";
+        $result = DBController::select($query);
+
+        if(!empty($result)) 
+            return true;
+
+        return false;
+    }
+
+    public static function addArticleToList($listId, $articleId) {
+        // First check if article is already in the list
+        $checkQuery = "SELECT * FROM lists_articles WHERE listId=$listId AND articleId=$articleId";
+        $checkResult = DBController::select($checkQuery);
+        
+        if(!empty($checkResult)) {
+            // Article already exists in this list
+            return false;
+        }
+        
+        // Add article to list
+        $query = "INSERT INTO lists_articles (listId, articleId) VALUES ($listId, $articleId)";
+        $result = DBController::insert($query);
+        return $result;
+    }
+    
+    public static function getUserListsExceptBookmarks($userId) {
+        $query = "SELECT * FROM lists WHERE isDeleted = 0 AND userId = $userId AND name != 'Bookmarks'";
+        $result = DBController::select($query);
+        return $result;
+    }
 }
 
 ?>

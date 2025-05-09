@@ -8,6 +8,7 @@
 // add to list
 
 require_once '../../controllers/ArticleController.php';
+require_once '../../controllers/ListsController.php';
 require_once '../../controllers/InteractionController.php';
 require_once '../../models/interaction.php';
 
@@ -41,6 +42,20 @@ if(isset($_POST['newComment'])) {
 if(isset($_POST['commentToRemove'])) {
   $commentToRemove = InteractionController::getComment($_POST['commentToRemove']);
   InteractionController::deleteComment($commentToRemove);
+}
+
+if(isset($_POST['bookmark'])) {
+  ListsController::addArticleToBookmarks($id);
+}
+
+$userLists = [];
+if(isset($_SESSION['userId'])) {
+    $userLists = Lists::getUserListsExceptBookmarks($_SESSION['userId']);
+}
+
+// Add this code to handle the form submission
+if(isset($_POST['addToList']) && isset($_POST['selectedList'])) {
+    ListsController::addArticleToList($id, $_POST['selectedList']);
 }
 
 ?>
@@ -101,13 +116,51 @@ if(isset($_POST['commentToRemove'])) {
         </div>
         <div class="d-flex align-items-center justify-content-between mb-3">
           <span class="badge bg-info text-dark py-2"><?php echo $article->getCategoryName() ?></span>
-          <?php
-          if(isset($_SESSION['username'])) {
-          ?>
-            <button class="btn btn-danger">Report <i class="fa fa-exclamation-circle"></i></button>
-          <?php
-          }
-          ?>
+
+          <?php if(isset($_SESSION['username'])): ?>
+          <div class="d-flex gap-2">
+
+            <?php $isBookmarked = ListsController::isArticleBookmarked($id); ?>
+            <form method="POST" action="article.php?id=<?= $id ?>" class="d-inline">
+              <input type="hidden" name="bookmark" value="<?=$id?>">
+              <button type="submit" class="btn <?= $isBookmarked ? 'btn-warning text-dark' : 'btn-outline-light' ?>" title="<?= $isBookmarked ? 'Remove Bookmark' : 'Bookmark' ?>">
+                <i class="fa fa-bookmark"></i> <?= $isBookmarked ? 'Bookmarked' : 'Bookmark' ?>
+              </button>
+            </form>
+
+
+            <div class="dropdown d-inline">
+              <button class="btn btn-outline-light dropdown-toggle" type="button" id="addToListDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Add to List">
+                <i class="fa fa-list-ul"></i> Add to List
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="addToListDropdown">
+                <?php if(count($userLists) > 0): ?>
+                  <?php foreach($userLists as $list): ?>
+                    <li>
+                      <form method="POST" action="article.php?id=<?= $id ?>" class="dropdown-item">
+                        <input type="hidden" name="addToList" value="<?= $id ?>">
+                        <input type="hidden" name="selectedList" value="<?= $list['id'] ?>">
+                        <button type="submit" class="btn btn-link text-white p-0"><?= $list['name'] ?></button>
+                      </form>
+                    </li>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <li><span class="dropdown-item">No lists available</span></li>
+                <?php endif; ?>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="../../views/client/lists.php?id=<?= $_SESSION['userId'] ?>">Manage Lists</a></li>
+              </ul>
+            </div>
+
+
+
+
+            <button class="btn btn-danger" title="Report">
+              <i class="fa fa-exclamation-circle me-1"></i> Report
+            </button>
+          </div>
+          <?php endif; ?>
+
         </div>
 
         <div class="mb-4 border-1 border border-white rounded-1">

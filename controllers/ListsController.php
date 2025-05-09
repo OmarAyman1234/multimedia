@@ -111,6 +111,67 @@ class ListsController{
         } 
     }
 
+    public static function addArticleToBookmarks($articleId) {
+        if(AuthController::isLoggedIn()) {
+            $userId = $_SESSION['userId'];
+            
+            // Check if article is already bookmarked
+            if(Lists::isArticleBookmarked($articleId, $userId)) {
+                // Article is already bookmarked, so remove it
+                if(Lists::removeArticleFromBookmarks($articleId, $userId)) {
+                    header("location: ../../views/Shared/article.php?id=$articleId");
+                    return true;
+                }
+            } else {
+                // Article is not bookmarked, add it
+                if(Lists::addArticleToBookmarks($articleId, $userId)) {
+                    header("location: ../../views/Shared/article.php?id=$articleId");
+                    return true;
+                }
+            }
+            
+            header("location: ../../views/Shared/article.php?id=$articleId");
+            return false;
+        }
+        else {
+            header('location: ../../views/auth/login.php');
+            exit;
+        }
+    }
+
+    public static function isArticleBookmarked($articleId) {
+        if(AuthController::isLoggedIn()) {
+            if(Lists::isArticleBookmarked($articleId, $_SESSION['userId'])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function addArticleToList($articleId, $listId) {
+        if(AuthController::isLoggedIn()) {
+            $userId = $_SESSION['userId'];
+            
+            // Verify that the list belongs to the current user
+            $lists = Lists::getLists($userId);
+            $userListIds = array_column($lists, 'id');
+            
+            if(in_array($listId, $userListIds)) {
+                if(Lists::addArticleToList($listId, $articleId)) {
+                    header("location: ../../views/Shared/article.php?id=$articleId");
+                    return true;
+                }
+            }
+            
+            header("location: ../../views/Shared/article.php?id=$articleId");
+            return false;
+        }
+        else {
+            header('location: ../../views/auth/login.php');
+            exit;
+        }
+    }
+
     public static function removeArticleFromList($listId, $articleId){
 
         if(AuthController::isLoggedIn()) {
