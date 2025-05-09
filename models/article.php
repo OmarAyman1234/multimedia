@@ -129,6 +129,18 @@ class Article {
     $shuffledArticles = self::shuffleArticles($articles);
     return array_slice($shuffledArticles, 0, 4);
   }
+  public function getArticleByTitle(article $article) {
+    $title = $article->getTitle();
+    $query = "SELECT * FROM articles WHERE title='$title'";
+    $result = DBController::select($query);
+
+    if($result) {
+      return new Article($result[0]);
+    } 
+    else {
+      return false;
+    }
+  }
 }
 
 ?>

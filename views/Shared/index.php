@@ -2,21 +2,21 @@
 session_start();
 
 
-require_once "../../controllers/AuthController.php";
-require_once "../../models/client.php";
+// require_once "../../controllers/AuthController.php";
+// require_once "../../models/client.php";
 require_once "../../models/article.php";
-require_once "../../controllers/DBController.php";
-require_once"../../models/category.php";
+require_once "../../models/category.php";
 $rl=0;
 if(isset($_SESSION["userId"])){
     $rl= $_SESSION["userId"];
 
 }
+
 $articles=article::getAllArticles();
 $articlesShuffeld=article::getShuffledArticles($articles);
 $categories=category::getAllCategory();
 
-if($_SESSION['category']){
+if(isset($_SESSION['category'])){
   $mark = 1;
   $category=new category();
   $category->setId($_SESSION['category']);
@@ -91,7 +91,7 @@ else{
     
   ?>
     <div class="col-12 col-md-6">
-      <div class="card h-100 shadow-sm" id="div<?= $i ?>">
+      <div class="card h-100 shadow-sm" style="background-color: black;" id="div<?= $i ?>">
         <img
           id="img<?= $i ?>"
           src="<?= htmlspecialchars($article['image']) ?>"
@@ -106,9 +106,9 @@ else{
             ?>
                   </button>
           </p>
-          <h2 class="card-title" id="title<?= $i ?>">
+          <a href="../Shared/article.php"><h2 class="card-title" style="color: red;" id="title<?= $i ?>">
             <?= htmlspecialchars($article['title']) ?>
-          </h2>
+          </h2></a>
           <p class="card-text" id="text<?= $i ?>">
             <?= nl2br(htmlspecialchars(substr($article["content"], 0, 200))) ?>
           </p>
@@ -154,9 +154,9 @@ if(!$rl){
                         <p class="text-muted fs-5 mb-2">Deliver amazing digital <br> experiences.</p>
                         <p class="card-text mb-4">We’ve helped thousands of companies, just like yours, change their businesses.</p>
                         <div class="d-flex flex-column gap-2">
-                            <button class="btn btn-primary">Talk to us today</button>
-                            <button class="btn btn-secondary">Sign in</button>
-                            <button class="btn btn-success">Register</button>
+                            <a href="#"><button class="btn btn-primary" style="width: 365px;">Talk to us today</button></a>
+                            <a href="../auth/login.php"><button class="btn btn-secondary" style="width: 365px;">Sign in</button></a>
+                            <a href="../auth/register.php"><button class="btn btn-success " style="width: 365px;">Register</button></a>
                         </div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@ if(!$rl){
     <!-- Repeat for each post -->
      
     <?php 
-        if($mark == 0||$_SESSION['category'] == 0){
+        if($mark == 0){
 $count = 0;
 foreach ($articles as $article) {
     if ($count % 3 == 0) {
@@ -193,10 +193,10 @@ foreach ($articles as $article) {
     ?>
     
     <div class="col-12 col-md-4">
-        <div class="card h-100 shadow-sm">
+        <div class="card h-100 shadow-sm"  style="background-color: black;">
             <img  src="<?php echo $article["image"] ?>"
                 class="card-img-top" alt="<?php echo $article["title"] ?>" style="height: 200px; object-fit: cover;">
-            <div class="card-body d-flex flex-column">
+            <div class="card-body d-flex flex-column" style="background-color: black;">
                 <h5 class="card-title"><?php echo $article["title"] ?></h5>
                 <p class="card-text flex-grow-1">
                     <?php echo substr($article["content"], 0, 100) . '...' ?>
@@ -224,7 +224,7 @@ if ($count % 3 != 0) {
      ?>
     
      <div class="col-12 col-md-4">
-         <div class="card h-100 shadow-sm">
+         <div class="card h-100 shadow-sm" style="background-color: black;">
              <img  src="<?php echo $article["image"] ?>"
                  class="card-img-top" alt="<?php echo $article["title"] ?>" style="height: 200px; object-fit: cover;">
              <div class="card-body d-flex flex-column">
