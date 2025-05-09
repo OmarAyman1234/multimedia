@@ -100,7 +100,7 @@ class Interaction {
   }
 
   public static function getArticleLikesCount($articleId) {
-    $query = "SELECT i.typeId FROM interactions as i WHERE typeId=1 and i.articleId=$articleId";
+    $query = "SELECT i.typeId FROM interactions as i WHERE typeId=1 and i.articleId=$articleId and isDeleted=0";
     $result = DBController::select($query);
     
     return empty($result) ? 0 : count($result);
@@ -152,6 +152,29 @@ class Interaction {
     $query = "UPDATE interactions SET isDeleted=1 WHERE id=$commentId";
     $result = DBController::delete($query);
     return $result;
+  }
+
+  public static function isArticleLiked($articleId, $userId) {
+    $query = "SELECT * FROM interactions WHERE typeId=1 AND articleId=$articleId AND userId=$userId AND isDeleted=0";
+    $result = DBController::select($query);
+
+    if(!empty($result)) 
+        return true;
+
+    return false;
+}
+
+  public static function addLike($articleId, $userId) {
+      $query = "INSERT INTO interactions (typeId, content, userId, articleId) VALUES (1, '', $userId, $articleId)";
+      $result = DBController::insert($query);
+      return $result;
+  }
+
+  public static function removeLike($articleId, $userId) {
+      // Option 1: Set isDeleted=1
+      $query = "UPDATE interactions SET isDeleted=1 WHERE typeId=1 AND articleId=$articleId AND userId=$userId";
+      $result = DBController::delete($query);
+      return $result;
   }
 }
 

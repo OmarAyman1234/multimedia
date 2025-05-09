@@ -58,6 +58,10 @@ if(isset($_POST['addToList']) && isset($_POST['selectedList'])) {
     ListsController::addArticleToList($id, $_POST['selectedList']);
 }
 
+if(isset($_POST['like'])) {
+  InteractionController::addLike($id);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -182,8 +186,15 @@ if(isset($_POST['addToList']) && isset($_POST['selectedList'])) {
           
 
         <div class="d-flex justify-content-start align-items-center gap-4 mt-3 mb-4">
-          <span class="text-light"><i class="fa fa-thumbs-up m-1"></i><?php echo $likesCount ?></span>
-          <span class="text-light"><i class="fa fa-comments m-1"></i><?php echo count($articleComments) ?>   Comments</span>
+          <?php $isLiked = InteractionController::isArticleLiked($id); ?>
+          <form method="POST" action="article.php?id=<?= $id ?>" class="d-inline">
+            <input type="hidden" name="like" value="<?=$id?>">
+            <button type="submit" class="btn <?= $isLiked ? 'btn-primary' : 'btn-outline-primary' ?>" title="<?= $isLiked ? 'Unlike' : 'Like' ?>">
+              <i class="fa fa-thumbs-up"></i> <?= $isLiked ? 'Liked' : 'Like' ?>
+            </button>
+          </form>
+
+          <span class="text-light"><?php echo $likesCount ?> Likes</span>
         </div>
 
         <div class="container mt-5">

@@ -66,5 +66,42 @@ class InteractionController {
     }
    
   }
+
+  public static function addLike($articleId) {
+    if(AuthController::isLoggedIn()) {
+        $userId = $_SESSION['userId'];
+        
+        // Check if article is already liked
+        if(Interaction::isArticleLiked($articleId, $userId)) {
+            // Article is already liked, so remove it
+            if(Interaction::removeLike($articleId, $userId)) {
+                header("location: ../../views/Shared/article.php?id=$articleId");
+                return true;
+            }
+        } else {
+            // Article is not liked, add it
+            if(Interaction::addLike($articleId, $userId)) {
+                header("location: ../../views/Shared/article.php?id=$articleId");
+                return true;
+            }
+        }
+        
+        header("location: ../../views/Shared/article.php?id=$articleId");
+        return false;
+    }
+    else {
+        header('location: ../../views/auth/login.php');
+        exit;
+    }
+  }
+
+  public static function isArticleLiked($articleId) {
+      if(AuthController::isLoggedIn()) {
+          if(Interaction::isArticleLiked($articleId, $_SESSION['userId'])) {
+              return true;
+          }
+      }
+      return false;
+  }
 }
 ?>
