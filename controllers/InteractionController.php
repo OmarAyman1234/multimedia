@@ -21,32 +21,30 @@ class InteractionController {
   }
 
   public static function getComment($commentId) {
-    $db = new DBController;
-    if($db->openConnection()) {
-      $query = "SELECT * FROM interactions WHERE id=$commentId";
-      $result = $db->select($query);
+    $result = Interaction::getComment($commentId);
 
-      if($result === false) {
-        $_SESSION['errMsg'] = 'Error in query';
-        return false;
-      } 
-      else if(count($result) === 0) {
-        return false;
-      } 
-      else {
-        return $result;
-      }
+    if(empty($result)) {
+      return [];
     }
 
+    return $result;
   }
 
-  public static function editComment($commentId, $newEdit) {
-    $db = new DBController;
-    if($db->openConnection()) {
-      $query = "UPDATE interactions SET content = '$newEdit' WHERE interactions.id = $commentId";
-      $result = $db->update($query);
-
-      return $result; // Returns true or false.
+  public static function editComment(Interaction $comm, $newEdit) {
+    if(AuthController::isLoggedIn()) {
+      if($comm->getUserId() == $_SESSION['userId']) {
+        Interaction::editComment($comm->getId(), $newEdit);
+      }
+      else {
+        $_SESSION['errMsg'] = 'Editing other users comments is not allowed!';
+      }
+      header('location: article.php?id=' . $comm->getArticleId());
+      exit;
+    }
+    else {
+      $_SESSION['errMsg'] = 'Unauthorized!';
+      header('location: ../../views/Shared/404.php');
+      exit;
     }
   }
 

@@ -1,5 +1,6 @@
 <?php
-    require_once "../../controllers/InteractionController.php";
+require_once "../../controllers/InteractionController.php";
+require_once "../../models/interaction.php";
 
     if(session_status() === PHP_SESSION_NONE)
       session_start();
@@ -12,17 +13,12 @@
     }
 
     $comment = InteractionController::getComment($id);
-    if(!$comment || empty($comment[0]['content'])) {
-      //if the content is empty, that's a like.
-      header('location: 404.php');
-    }
-
+    
     if(isset($_POST['editedComment']))
     {
       if(!empty($_POST['editedComment']))
       {
-        if(InteractionController::editComment($id, $_POST['editedComment']))
-          header("location: article.php?id=" . $comment[0]['articleId']);
+        InteractionController::editComment($comment, $_POST['editedComment']);
       }
       else {
         $_SESSION['errMsg'] = 'Comment cannot be empty!';
@@ -38,7 +34,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>DarkPan - Bootstrap 5 Admin Template</title>
+    <title>Edit comment</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="" name="keywords" />
     <meta content="" name="description" />
@@ -83,7 +79,7 @@
               class="form-control bg-dark border-0 text-light" 
               placeholder="Edit your comment"
               style="min-height: 150px; height: auto; resize: none; padding: 12px; font-size: 16px; width: 100%;"
-            ><?= htmlspecialchars($comment[0]['content']) ?></textarea>
+            ><?= htmlspecialchars($comment->getContent()) ?></textarea>
           </div>
 
           <button type="submit" class="btn btn-primary w-100 py-3">

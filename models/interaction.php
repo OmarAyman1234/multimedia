@@ -124,10 +124,27 @@ class Interaction {
     return $comments;
   }
 
+  public static function getComment($commentId) {
+    $query = "SELECT * FROM interactions WHERE id=$commentId";
+    $result = DBController::select($query);
+
+    if(empty($result)) {
+      return null;
+    }
+
+    return new Interaction($result[0]);
+  }
+
   public static function addComment($content, $articleId, $userId) {
     $query = "INSERT INTO interactions (typeId, content, userId, articleId) VALUES (2, '$content', $userId, $articleId)";
     $result = DBController::insert($query);
 
+    return $result;
+  }
+
+  public static function editComment($commentId, $newEdit) {
+    $query = "UPDATE interactions SET content = '$newEdit' WHERE interactions.id = $commentId";
+    $result = DBController::update($query);
     return $result;
   }
 }
