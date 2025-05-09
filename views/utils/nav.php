@@ -1,7 +1,11 @@
-<!-- <?php   
+<?php   
   if(session_status() === PHP_SESSION_NONE)
-    session_start()
-?> -->
+    session_start();
+
+  if(isset($_SESSION['userId'])) {
+    $userId = $_SESSION['userId'];
+  }
+?>
 <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
   <a href="#" class="sidebar-toggler flex-shrink-0">
     <i class="fa fa-bars"></i>
@@ -39,7 +43,7 @@
         <span class="d-none d-lg-inline-flex text-main"><?php echo $_SESSION['username']?></span>
       </a>
       <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-        <a href="#" class="dropdown-item text-main">
+        <a href="../../views/Shared/profile.php?id=<?php echo htmlspecialchars($userId); ?>" class="dropdown-item text-main">
           My Profile
         </a>
 
