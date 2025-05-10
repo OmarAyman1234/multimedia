@@ -13,5 +13,26 @@ class ReportController {
       Report::saveReport($r);
     }
   }
+
+  public static function getReports() {
+    if(AuthController::isAdmin()) {
+      return Report::getReports();
+    }
+    else {
+      header('location: ../../views/auth/login.php');
+      exit;
+    }
+  }
+
+  public static function dismissReport($reportId) {
+    if(AuthController::isAdmin()) {
+      Report::dismissReport($reportId);
+    }
+    else {
+      header('location: ../../views/auth/login.php');
+      exit;
+    }
+  }
+  
 }
 ?>

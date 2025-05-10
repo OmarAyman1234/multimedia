@@ -80,6 +80,21 @@ class Report {
         $result = DBController::insert($query);
         return $result;
     }
+
+    public static function getReports() {
+        $query = "SELECT * FROM reports WHERE isDismissed=0";
+        $result = DBController::select($query);
+        
+        if(empty($result))
+            return [];
+
+        return $result;
+    }
+
+    public static function dismissReport($reportId) {
+        $query = "UPDATE reports SET isDismissed=1 WHERE id=$reportId";
+        return DBController::update($query);
+    }
 }
 
 ?>

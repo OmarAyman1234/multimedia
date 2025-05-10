@@ -63,7 +63,7 @@
         <a href="#" class="dropdown-item text-main">
           Manage Users <i class="fa fa-user-edit"></i>
         </a>
-        <a href="#" class="dropdown-item text-main">
+        <a href="../../views/admin/reports.php" class="dropdown-item text-main">
           Reports <i class="fa fa-flag"></i>
         </a>
         <a href="#" class="dropdown-item text-main">
