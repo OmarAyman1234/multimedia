@@ -1,77 +1,45 @@
 <?php
-require_once __DIR__ . '/../models/Admin.php';
-require_once __DIR__ . '/AuthController.php';
+require_once '../../models/Admin.php';
+require_once '../../controllers/AuthController.php';
 
 class UserController {
-    public static function index() {
+    public static function getAllUsers() {
         if (!AuthController::isAdmin()) {
-            header('Location: ../auth/login.php');
+            header('Location: ../../views/auth/login.php');
             exit;
         }
 
+        // get all users but the current user
         $users = array_filter(Admin::getAllUsers(), function ($user) {
             return $user['id'] != $_SESSION['userId'];
         });
 
-        require_once __DIR__ . '/../views/admin/userManagement.php';
+        return $users;
     }
 
-    public static function deleteUser() {
+    public static function deleteUser($userId) {
         if (!AuthController::isAdmin()) {
-            header('Location: ../auth/login.php');
+            header('Location: ../../views/auth/login.php');
             exit;
         }
 
-        if (isset($_GET['deleteRegisteredUserId'])) {
-            $deleteUserId = $_GET['deleteRegisteredUserId'];
-            if ($deleteUserId != $_SESSION['userId']) { 
-                Admin::deleteUser($deleteUserId);
-            }
-            header('Location: ../views/admin/userManagement.php');
+        if (Admin::deleteUser($userId)) {
+            header('Location: ../../views/admin/userManagement.php');
             exit;
         }
     }
 
-    public static function updateUserRole() {
+    public static function updateUserRole($userId, $newRoleId) {
         if (!AuthController::isAdmin()) {
-            header('Location: ../auth/login.php');
+            header('Location: ../../views/auth/login.php');
             exit;
         }
-
-        if (isset($_POST['updateSpecificUserRole'])) {
-            $specificUserId = $_POST['specificUserId'];
-            $specificNewRoleId = $_POST['specificNewRoleId'];
-
-            try {
-                if ($specificUserId != $_SESSION['userId']) { 
-                    Admin::updateUserRole($specificUserId, $specificNewRoleId);
-                }
-                header('Location: ../views/admin/userManagement.php');
-                exit;
-            } catch (Exception $e) {
-                echo '<div class="alert alert-danger">Error: ' . $e->getMessage() . '</div>';
-            }
+        
+        if (Admin::updateUserRole($userId, $newRoleId)) {
+            header('Location: ../../views/admin/userManagement.php');
+            exit;
         }
-    }
-}
-
-// Routing logic
-if (isset($_GET['action'])) {
-    $action = $_GET['action'];
-
-    switch ($action) {
-        case 'mainPage':
-            UserController::mainPage(); 
-            break;
-        case 'deleteUser':
-            UserController::deleteUser();
-            break;
-        case 'updateUserRole':
-            UserController::updateUserRole();
-            break;
-        default:
-            echo "Invalid action.";
-            break;
+        
     }
 }
 ?>

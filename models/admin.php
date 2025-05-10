@@ -1,6 +1,6 @@
 <?php
-require_once 'RegisteredUser.php';
-require_once __DIR__ . '/../controllers/DBController.php';
+require_once 'registeredUser.php';
+require_once '../../controllers/DBController.php';
 
 class Admin extends RegisteredUser {
     public static function getAllUsers() {

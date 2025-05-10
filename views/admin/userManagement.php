@@ -2,15 +2,15 @@
 require_once '../../controllers/UserController.php';
 require_once '../../controllers/AuthController.php';
 
-if (!AuthController::isAdmin()) {
-    header('Location: ../auth/login.php');
-    exit;
+$users = UserController::getAllUsers();
+
+if(isset($_POST['delUser'])) {
+  UserController::deleteUser($_POST['delUser']);
 }
 
-
-$users = array_filter(Admin::getAllUsers(), function ($user) {
-    return $user['id'] != $_SESSION['userId'];
-});
+if(isset($_POST['userIdToEditRole'], $_POST['newRoleId'])) {
+  UserController::updateUserRole($_POST['userIdToEditRole'], $_POST['newRoleId']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -37,60 +37,51 @@ $users = array_filter(Admin::getAllUsers(), function ($user) {
 
       <!-- User Management Section -->
       <div class="container-fluid mt-4">
-        <h1 class="text-title mb-4">User Management</h1>
+        <h1 class="text-title mb-4">User Management (<?=count($users)?> users)</h1>
 
-        <div class="table-responsive">
-          <table class="table table-dark table-striped">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
+      <div class="table-responsive rounded shadow-sm border border-secondary">
+        <table class="table table-dark table-hover align-middle mb-0">
+          <thead class="thead-light text-uppercase big">
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Username</th>
+              <th scope="col">Email</th>
+              <th scope="col">Role</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($users as $index => $user): ?>
+              <tr class="border-top border-secondary">
+                <td><?php echo $user['id']; ?></td>
+                <td><?php echo $user['username']; ?></td>
+                <td><?php echo $user['email']; ?></td>
+                <td><?php echo $user['roleName']; ?></td>
+                <td class="d-flex align-items-center gap-2">
+                  <!-- Delete Form -->
+                  <form action="userManagement.php" method="POST">
+                    <input type="hidden" name="delUser" value="<?= $user['id'] ?>">
+                    <button class="btn btn-outline-danger btn-sm">Delete</button>
+                  </form>
+
+                  <!-- Update Role Form -->
+                  <form method="POST" action="userManagement.php" class="d-flex flex-column align-items-start">
+                    <input type="hidden" name="userIdToEditRole" value="<?= $user['id'] ?>">
+                    <select name="newRoleId" class="form-select form-select-sm bg-dark text-white border-light w-auto" required>
+                      <option value="1" <?= $user['roleName'] === 'Admin' ? 'selected' : '' ?>>Admin</option>
+                      <option value="2" <?= $user['roleName'] === 'Editor' ? 'selected' : '' ?>>Editor</option>
+                      <option value="3" <?= $user['roleName'] === 'Client' ? 'selected' : '' ?>>Client</option>
+                    </select>
+                    <button type="submit" name="updateSpecificUserRole" class="btn btn-outline-success btn-sm mt-1">Update</button>
+                  </form>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($users as $user): ?>
-                <tr>
-                  <td><?php echo $user['id']; ?></td>
-                  <td><?php echo $user['username']; ?></td>
-                  <td><?php echo $user['email']; ?></td>
-                  <td><?php echo $user['roleName']; ?></td>
-                  <td>
-                    <a href="../../controllers/UserController.php?action=deleteUser&deleteRegisteredUserId=<?php echo $user['id']; ?>" class="btn btn-danger btn-sm">Delete</a>
-                  </td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-        </div>
+              <tr><td colspan="5"><hr class="w-100" style="border-top: 3px solid white; margin-bottom: 20px;"></td></tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
 
-        <!-- Update Specific User Role Section -->
-        <div class="container mt-4">
-          <h2>Update Specific User Role</h2>
-          <form method="POST" action="../../controllers/UserController.php?action=updateUserRole">
-            <div class="mb-3">
-              <label for="specificUserId" class="form-label">Select User</label>
-              <select class="form-control" id="specificUserId" name="specificUserId" required>
-                <?php foreach ($users as $user): ?>
-                  <option value="<?php echo $user['id']; ?>">
-                    <?php echo $user['username'] . " (" . $user['roleName'] . ")"; ?>
-                  </option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="specificNewRoleId" class="form-label">New Role</label>
-              <select class="form-control" id="specificNewRoleId" name="specificNewRoleId" required>
-                <option value="1">Admin</option>
-                <option value="2">Editor</option>
-                <option value="3">Client</option>
-              </select>
-            </div>
-            <button type="submit" name="updateSpecificUserRole" class="btn btn-primary">Update Role</button>
-          </form>
-        </div>
       </div>
 
       <!-- Footer Start -->
