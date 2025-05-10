@@ -10,6 +10,7 @@
 require_once '../../controllers/ArticleController.php';
 require_once '../../controllers/ListsController.php';
 require_once '../../controllers/InteractionController.php';
+require_once '../../controllers/ReportController.php';
 require_once '../../models/interaction.php';
 
 if(session_status() === PHP_SESSION_NONE)
@@ -60,6 +61,28 @@ if(isset($_POST['addToList']) && isset($_POST['selectedList'])) {
 
 if(isset($_POST['like'])) {
   InteractionController::addLike($id);
+}
+
+if(isset($_POST['reportArticle']) && isset($_POST['reportReason'])) {
+  if(isset($_SESSION['userId'])) {
+    $reportComment = $_POST['reportComment'] ?? '';
+    $reportReason = $_POST['reportReason'];
+    
+    $report = new Report($_SESSION['userId'], $reportReason, $reportComment);
+    $report->setArticleId($id);
+    
+    if(ReportController::sendReportToAdmin($report)) {
+      $_SESSION['errMsg'] = 'Report submitted successfully. Thank you for helping us maintain quality content.';
+    } else {
+      $_SESSION['errMsg'] = 'There was an error submitting your report. Please try again.';
+    }
+  } else {
+    $_SESSION['errMsg'] = 'You must be logged in to report an article.';
+  }
+  
+  // Redirect to prevent form resubmission
+  header("Location: article.php?id=$id");
+  exit();
 }
 
 ?>
@@ -156,12 +179,10 @@ if(isset($_POST['like'])) {
               </ul>
             </div>
 
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#reportModal" title="Report">
+            <i class="fa fa-exclamation-circle me-1"></i> Report
+          </button>
 
-
-
-            <button class="btn btn-danger" title="Report">
-              <i class="fa fa-exclamation-circle me-1"></i> Report
-            </button>
           </div>
           <?php endif; ?>
 
@@ -253,6 +274,55 @@ if(isset($_POST['like'])) {
       <i class="bi bi-arrow-up"></i>
     </a>
   </div>
+
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-main">
+      <div class="modal-header" style="background-color: #343a40; border-bottom: 1px solid #495057;">
+        <h5 class="modal-title" id="reportModalLabel">Report Article</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" action="article.php?id=<?= $id ?>">
+        <div class="modal-body">
+          <input type="hidden" name="reportArticle" value="<?= $id ?>">
+
+          <div class="mb-4">
+            <label class="form-label fw-bold text-main">Reason for reporting:</label>
+            <?php 
+              $reportReasons = ReportController::getReportReasons();
+              if (count($reportReasons) > 0):
+                foreach ($reportReasons as $reason): 
+            ?>
+              <div class="form-check mt-2">
+                <input class="form-check-input border border-light" type="radio" name="reportReason" 
+                      id="reason<?= $reason['id'] ?>" value="<?= $reason['id'] ?>" required>
+                <label class="form-check-label" for="reason<?= $reason['id'] ?>">
+                  <?= htmlspecialchars($reason['reason']) ?>
+                </label>
+              </div>
+            <?php 
+              endforeach;
+            else: 
+            ?>
+              <div class="alert alert-warning text-dark">No report reasons available</div>
+            <?php endif; ?>
+          </div>
+
+          <div class="mb-3">
+            <label for="reportComment" class="form-label fw-bold text-main">Additional comments (optional):</label>
+            <textarea class="form-control bg-dark text-main border-light" 
+                      id="reportComment" name="reportComment" rows="3"
+                      placeholder="Provide additional details about the issue..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer" style="background-color: #343a40; border-top: 1px solid #495057;">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Submit Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
   <?php require_once '../utils/scripts.php' ?>
 
