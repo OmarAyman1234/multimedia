@@ -295,7 +295,7 @@ if(isset($_POST['reportArticle']) && isset($_POST['reportReason'])) {
             ?>
               <div class="form-check mt-2">
                 <input class="form-check-input border border-light" type="radio" name="reportReason" 
-                      id="reason<?= $reason['id'] ?>" value="<?= $reason['id'] ?>" required>
+                      id="reason<?= $reason['id'] ?>" value="<?= $reason['reason'] ?>" required>
                 <label class="form-check-label" for="reason<?= $reason['id'] ?>">
                   <?= htmlspecialchars($reason['reason']) ?>
                 </label>
