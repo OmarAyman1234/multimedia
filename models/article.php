@@ -100,7 +100,7 @@ class Article {
   }
 
   public static function getArticleById($articleId) {
-    $query = "SELECT a.*, rg.username AS editorUsername, cat.name AS categoryName FROM articles AS a JOIN registeredUsers AS rg ON a.editorId = rg.id JOIN categories AS cat ON cat.id = a.categoryId WHERE a.id=$articleId";
+    $query = "SELECT a.*, rg.username AS editorUsername, cat.name AS categoryName FROM articles AS a JOIN registeredUsers AS rg ON a.editorId = rg.id JOIN categories AS cat ON cat.id = a.categoryId WHERE a.id=$articleId AND a.isDeleted=0";
     $result = DBController::select($query);
 
     if($result) {
@@ -151,6 +151,11 @@ class Article {
     else {
       return false;
     }
+  }
+
+  public static function removeArticle($articleId) {
+    $query = "UPDATE articles SET isDeleted=1 WHERE id=$articleId";
+    return DBController::update($query);
   }
 }
 

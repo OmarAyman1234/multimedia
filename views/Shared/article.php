@@ -8,6 +8,7 @@
 // add to list
 
 require_once '../../controllers/ArticleController.php';
+require_once '../../controllers/AuthController.php';
 require_once '../../controllers/ListsController.php';
 require_once '../../controllers/InteractionController.php';
 require_once '../../controllers/ReportController.php';
@@ -85,6 +86,10 @@ if(isset($_POST['reportArticle']) && isset($_POST['reportReason'])) {
   exit();
 }
 
+if(isset($_POST['removeArticleBtn'])) {
+  ArticleController::removeArticle($id);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -135,12 +140,22 @@ if(isset($_POST['reportArticle']) && isset($_POST['reportReason'])) {
               foreach ($articleLangs as $articleLang) {
               ?>
                 <option value="<?php echo $articleLang['id']?>"><?php echo $articleLang['name']?></option>
-              <?php
+                <?php
               }
               ?>
             </select>
           </div>
         </div>
+
+        <?php if(AuthController::isAdmin()):?>
+        <form action="article.php?id=<?=$id?>" method="POST">
+          <div class="d-flex justify-content-center align-items-center">
+            <input type="hidden" name="removeArticleBtn" id="<?=$id?>">
+            <button class="btn btn-danger">Remove article</button>
+          </div>
+        </form>
+        <?php endif ?>
+
         <div class="d-flex align-items-center justify-content-between mb-3">
           <span class="badge bg-info text-dark py-2"><?php echo $article->getCategoryName() ?></span>
 

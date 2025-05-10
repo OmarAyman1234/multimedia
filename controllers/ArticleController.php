@@ -37,5 +37,18 @@ class ArticleController {
   public static function getArticleComments($articleId) {
     return Interaction::getArticleComments($articleId);
   }
+
+  public static function removeArticle($articleId) {
+    if(AuthController::isAdmin()) {
+      Article::removeArticle($articleId);
+      header('location: ../../views/Shared/');
+      exit;
+    }
+    else {
+      header('location: ../../views/auth/login.php');
+      exit;
+    }
+    
+  }
 }
 ?>
