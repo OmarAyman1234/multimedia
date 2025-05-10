@@ -60,7 +60,7 @@
         if($_SESSION['roleId'] == 1)
         {
         ?>
-        <a href="#" class="dropdown-item text-main">
+        <a href="../../views/admin/userManagement.php" class="dropdown-item text-main">
           Manage Users <i class="fa fa-user-edit"></i>
         </a>
         <a href="../../views/admin/reports.php" class="dropdown-item text-main">
