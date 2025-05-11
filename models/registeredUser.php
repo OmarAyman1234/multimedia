@@ -8,6 +8,7 @@ abstract class RegisteredUser {
   private $isDeleted;
   private $joinDate;
   private $roleId;
+  private $profilePicture;
 
 
   public function getId() {
@@ -27,6 +28,12 @@ abstract class RegisteredUser {
   }
   public function setEmail($newEmail) {
     $this->email = $newEmail;
+  }
+  public function getProfilePicture() {
+    return $this->profilePicture;
+  }
+  public function setProfilePicture($newProfilePicture) {
+    $this->profilePicture = $newProfilePicture;
   }
 
   // Should be hashed!
@@ -81,6 +88,12 @@ abstract class RegisteredUser {
 
   public static function updatePassword($userId, $newPass) {
     $query = "UPDATE registeredusers SET password='$newPass' WHERE id=" . $userId;
+    $result = DBController::update($query);
+
+    return $result;
+  }
+  public static function updateProfilePicture($userId, $newProfilePicture) {
+    $query = "UPDATE registeredusers SET profilePicture='$newProfilePicture' WHERE id=" . $userId;
     $result = DBController::update($query);
 
     return $result;
