@@ -112,7 +112,7 @@ class Article {
     }
   }
   public static function getAllArticles(){
-      $quary="select articles.id,articles.image,articles.title,articles.content,articles.categoryId,categories.name as categoryName from articles join categories on categories.id=articles.categoryId";
+      $quary="select articles.id,articles.image,articles.title,articles.content,articles.categoryId,categories.name as categoryName,username,profilePicture,publishDate from articles join categories on categories.id=articles.categoryId join registeredUsers on registeredUsers.id=articles.editorId where articles.isDeleted=0 ";
       $result=DBController::select($quary);
       if($result){
         return $result;
@@ -157,6 +157,7 @@ class Article {
     $query = "UPDATE articles SET isDeleted=1 WHERE id=$articleId";
     return DBController::update($query);
   }
+  
 }
 
 ?>
