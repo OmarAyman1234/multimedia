@@ -7,6 +7,9 @@ require_once '../../controllers/DBController.php';
 require_once '../../models/category.php';
 
 class ArticleController {
+  public static function getAllArticles(){
+    return article::getAllArticles();
+  }
 
   public static function getArticle($articleId) {
     if(!$articleId) {
