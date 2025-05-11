@@ -1,0 +1,17 @@
+{
+    "name": "hp/multimedia",
+    "autoload": {
+        "psr-4": {
+            "Hp\\Multimedia\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "OmarAyman1234",
+            "email": "omarayman9124@gmail.com"
+        }
+    ],
+    "require": {
+        "setasign/fpdf": "^1.8"
+    }
+}
