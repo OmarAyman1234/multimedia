@@ -17,6 +17,10 @@ require_once '../../models/interaction.php';
 if(session_status() === PHP_SESSION_NONE)
   session_start();
 
+if (!isset($_SESSION['roleId'])) {
+  $_SESSION['roleId'] = null;
+}
+
 $id = $_GET['id'] ?? null;
 
 $article = ArticleController::getArticle($id);
