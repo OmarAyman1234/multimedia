@@ -11,7 +11,6 @@ if(session_start() === PHP_SESSION_NONE)
 session_start();
 
 $user = ProfileController::fetchProfileData($id);
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? null;
     $newPassword = $_POST['newPassword'] ?? null;
@@ -35,10 +34,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     else {
         $_SESSION['errMsg'] = "Password can't be empty";
     }
-
+ $_SESSION['err']='';
     // go to the same again to prevent "confirm form resubmission"
     header('location: ../../views/Shared/profile.php?id=' . $id);
 }
+if(isset($_SERVER['REQUEST_METHOD'])&&isset($_FILES['profilePic'])){
+    $targetDir = "../assets/img/";
+    $targetFile = $targetDir . basename($_FILES["profilePic"]["name"]);
+    $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+    $check = getimagesize($_FILES["profilePic"]["tmp_name"]);
+    if ($check !== false) {
+        if (move_uploaded_file($_FILES["profilePic"]["tmp_name"], $targetFile)) {
+            ProfileController::updateProfilePicture($targetFile);
+        } else {
+            $_SESSION['err'] = "Error uploading file.";
+        }
+    } else {
+        $_SESSION['err'] = "File is not an image.";
+    }
+    
+}
+$_SESSION['profilePicture'] = $user[0]['profilePicture'];
 
 ?>
 
@@ -92,8 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <!-- Profile Picture -->
               <div class="row mb-4">
                 <div class="col-md-4 text-center mb-3 mb-md-0">
-                  <img src="../assets/img/cat1.jpg" alt="Profile Picture" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover; border: 2px solid var(--primary);">
-                  <form action="uploadProfilePic.php" method="post" enctype="multipart/form-data" class="mt-3">
+                  <img src="<?php echo $user[0]['profilePicture']; ?>" alt="Profile Picture" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover; border: 2px solid var(--primary);">
+                  <form action="../../views/Shared/profile.php?id=<?=$id?>" method="post" enctype="multipart/form-data" class="mt-3">
                     <div class="d-flex justify-content-center">
                       <input type="file" name="profilePic" class="form-control bg-dark border-0 text-light" style="max-width: 250px;">
                     </div>

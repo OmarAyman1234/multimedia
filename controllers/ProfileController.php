@@ -42,6 +42,18 @@ class ProfileController {
             return false;
         }
     }
+    public static function updateProfilePicture($newProfilePicture) {
+        if(AuthController::isLoggedIn()) {
+            // session started when checking if the user is logged in or not
+            RegisteredUser::updateProfilePicture($_SESSION['userId'], $newProfilePicture);
+            return true;
+        }
+        else {
+            // session started when checking if the user is logged in or not
+            $_SESSION['errMsg'] = 'Unauthorized!';
+            return false;
+        }
+    }
 }
 //$db= new DBController;
 //     public static function changePassword($newPass,$userId) {

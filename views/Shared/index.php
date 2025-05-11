@@ -4,6 +4,7 @@ session_start();
 
 // require_once "../../controllers/AuthController.php";
 // require_once "../../models/client.php";
+require_once "../../controllers/ProfileController.php";
 require_once "../../models/article.php";
 require_once "../../models/category.php";
 $rl=0;
@@ -25,6 +26,8 @@ if(isset($_SESSION['category'])){
 else{
   $mark = 0;
 }
+// $user=ProfileController::fetchProfileData($_SESSION['userId']);
+// $_SESSION['profilePicture'] = $user[0]['profilePicture'];
 
 ?>
 <!DOCTYPE html>
