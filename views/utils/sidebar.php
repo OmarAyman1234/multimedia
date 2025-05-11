@@ -44,6 +44,9 @@
           <?php
             }
           ?>
+          <a href="../../views/Shared/searchHistory.php?id=<?php echo htmlspecialchars($userId); ?>" class="nav-item nav-link text-main">
+            <i class="fa fa-list me-2"></i>Search History
+          </a>
           <a href="../../views/client/lists.php?id=<?php echo htmlspecialchars($userId); ?>" class="nav-item nav-link text-main">
             <i class="fa fa-list me-2"></i>Lists
           </a>
