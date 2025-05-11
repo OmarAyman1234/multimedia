@@ -45,11 +45,14 @@
             }
           ?>
           <a href="../../views/Shared/searchHistory.php?id=<?php echo htmlspecialchars($userId); ?>" class="nav-item nav-link text-main">
-            <i class="fa fa-list me-2"></i>Search History
+            <i class="fa fa-search me-2"></i>Search History
           </a>
           <a href="../../views/client/lists.php?id=<?php echo htmlspecialchars($userId); ?>" class="nav-item nav-link text-main">
             <i class="fa fa-list me-2"></i>Lists
           </a>
+          <a href="../Shared/randomArticle.php?random=1" id="randomArticleBtn" class="nav-item nav-link text-main">
+            <i class="fa fa-random me-2"></i>Random Article</a>
+
           <div class="nav-item dropdown">
             <a
               href="index.php"
