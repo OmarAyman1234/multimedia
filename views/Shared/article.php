@@ -6,6 +6,7 @@ require_once '../../controllers/ListsController.php';
 require_once '../../controllers/InteractionController.php';
 require_once '../../controllers/ReportController.php';
 require_once '../../models/interaction.php';
+require_once '../utils/alert.php';
 
 if(session_status() === PHP_SESSION_NONE)
   session_start();
@@ -32,10 +33,7 @@ if(isset($_POST['newComment'])) {
     InteractionController::addComment($_POST['newComment'], $id, $_SESSION['userId']);
   } 
   else {
-    $_SESSION['alert'] = [
-      "type" => "danger", 
-      "message" => "Cannot post an empty comment."
-    ];
+    Alert::setAlert('warning', 'Cannot post an empty commment.');
   }
 }
 
@@ -63,7 +61,6 @@ if(isset($_POST['like'])) {
 }
 
 if(isset($_POST['reportArticle']) && isset($_POST['reportReason'])) {
-  if(isset($_SESSION['userId'])) {
     $reportComment = $_POST['reportComment'] ?? '';
     $reportReason = $_POST['reportReason'];
     
@@ -71,18 +68,14 @@ if(isset($_POST['reportArticle']) && isset($_POST['reportReason'])) {
     $report->setArticleId($id);
     
     if(ReportController::sendReportToAdmin($report)) {
-      $_SESSION['errMsg'] = 'Report submitted successfully. Thank you for helping us maintain quality content.';
-    } else {
-      $_SESSION['errMsg'] = 'There was an error submitting your report. Please try again.';
+
     }
-  } else {
-    $_SESSION['errMsg'] = 'You must be logged in to report an article.';
-  }
-  
-  // Redirect to prevent form resubmission
-  header("Location: article.php?id=$id");
-  exit();
-}
+    else {
+      Alert::setAlert('danger', 'There was a problem in sending your report, please try again.');
+      header("location: article.php?id=$id");
+      exit;
+    }
+  } 
 
 if(isset($_POST['removeArticleBtn'])) {
   ArticleController::removeArticle($id);
@@ -94,7 +87,7 @@ if(isset($_POST['searchkeyword'])) {
     $article->setContent($result);
   }
   else{
-    $_SESSION['errMsg'] = 'No results found.';
+    Alert::setAlert('danger', 'No results found');
   }
 }
 // $userIdComment= ProfileController::fetchProfileData($articleComments->getUserId());
@@ -111,16 +104,10 @@ if(isset($_POST['searchkeyword'])) {
   <link href="img/favicon.ico" rel="icon" />
   <?php require_once '../utils/linkTags.php' ?>
   <style>
-    .top-right-alert {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 25rem;
-      z-index: 1050;
-    }
 /* Container and layout */
 .search-form {
   max-width: 320px;
+  margin-top: 1rem;
 }
 
 /* Input group styling */
@@ -183,20 +170,11 @@ if(isset($_POST['searchkeyword'])) {
 </head>
 <body>
 
-  <?php if(isset($_SESSION['alert']) && !empty($_SESSION['alert'])):?>
-    <div class="top-right-alert">
-      <div class="alert alert-<?=$_SESSION['alert']['type']?> alert-dismissible fade show" role="alert">
-        <i class="fa fa-exclamation-circle me-2"></i> <?= $_SESSION['alert']['message'] ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    </div>
-    <?php $_SESSION['alert'] = ''; ?>
-  <?php endif ?>
-
+  <?php Alert::renderAlert() ?>
 
   <div class="container-fluid position-relative d-flex p-0">
 
-   
+    <?php require_once '../utils/spinner.php'?>
 
     <?php require_once '../utils/sidebar.php'?>
 
