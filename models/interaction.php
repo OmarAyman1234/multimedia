@@ -107,7 +107,7 @@ class Interaction {
   }
   
   public static function getArticleComments($articleId) {
-    $query = "SELECT i.*, u.username as username, u.profilePicture as userProfilePic FROM interactions as i JOIN registeredusers as u ON u.id=i.userId WHERE typeId=2 and i.articleId=$articleId and i.isDeleted=0";
+    $query = "SELECT i.*, u.username as username,userid, u.profilePicture as userProfilePic FROM interactions as i JOIN registeredusers as u ON u.id=i.userId WHERE typeId=2 and i.articleId=$articleId and i.isDeleted=0";
     $result = DBController::select($query);
 
     if(empty($result)) {

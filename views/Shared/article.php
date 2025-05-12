@@ -97,6 +97,7 @@ if(isset($_POST['searchkeyword'])) {
     $_SESSION['errMsg'] = 'No results found.';
   }
 }
+// $userIdComment= ProfileController::fetchProfileData($articleComments->getUserId());
 
 
 ?>
@@ -195,7 +196,7 @@ if(isset($_POST['searchkeyword'])) {
 
   <div class="container-fluid position-relative d-flex p-0">
 
-    <?php require_once '../utils/spinner.php'?>
+   
 
     <?php require_once '../utils/sidebar.php'?>
 
@@ -345,7 +346,7 @@ if(isset($_POST['searchkeyword'])) {
               <div class="flex-grow-1">
                 <div class="d-flex justify-content-between align-items-start mb-1">
                   <div>
-                    <strong class="text-title me-2"><?php echo $comment->getUsername() ?></strong>
+                    <a href="../../views/Shared/viewProfile.php?id=<?php echo $comment->getUserId()  ?>"><strong class="text-title me-2"><?php echo $comment->getUsername() ?></strong></a>
                     <small style="color: rgb(150, 150, 150)"><?php echo $comment->getDate() ?></small>
                   </div>
                   <div>
