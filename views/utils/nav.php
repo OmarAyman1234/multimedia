@@ -43,12 +43,21 @@
     ?>
     <div class="nav-item dropdown">
       <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-        <img
-          class="rounded-circle me-lg-2"
-          src="../assets/img/user.jpg"
-          alt="User"
-          style="width: 40px; height: 40px"
-        />
+        <?php if(isset($_SESSION['profilePicture'])) : ?>
+          <img
+            class="rounded-circle"
+            src="<?php echo $_SESSION['profilePicture']?>"
+            alt="User"
+            style="width: 40px; height: 40px"
+          />
+          <?php else: ?>
+            <img
+              class="rounded-circle"
+              src="../../views/assets/img/profilePics/blank-profile-pic.png"
+              alt="User"
+              style="width: 40px; height: 40px"
+            />
+          <?php endif?>
         <span class="d-none d-lg-inline-flex text-main"><?php echo $_SESSION['username']?></span>
       </a>
       <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">

@@ -21,12 +21,21 @@
         ?>
         <a href="../../views/Shared/profile.php?id=<?=$userId?>" class="d-flex align-items-center ms-4 mb-4">
           <div class="position-relative">
-            <img
-              class="rounded-circle"
-              src="../assets/img/user.jpg"
-              alt="User"
-              style="width: 40px; height: 40px"
-            />
+            <?php if(isset($_SESSION['profilePicture'])) : ?>
+              <img
+                class="rounded-circle"
+                src="<?php echo $_SESSION['profilePicture']?>"
+                alt="User"
+                style="width: 40px; height: 40px"
+              />
+              <?php else: ?>
+                <img
+                  class="rounded-circle"
+                  src="../../views/assets/img/profilePics/blank-profile-pic.png"
+                  alt="User"
+                  style="width: 40px; height: 40px"
+                />
+              <?php endif?>
           </div>
           <div class="ms-3">
             <h6 class="mb-0 text-title"> <?php echo $_SESSION['username'] ?></h6>
