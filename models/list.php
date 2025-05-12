@@ -56,7 +56,7 @@ class Lists {
     public function deleteList($listId){
         $query = "UPDATE lists SET isDeleted = 1 WHERE id = $listId";
         $result = DBController::delete($query);
-        return $result;
+        return $result !== false;
     }
 
     public function getListArticles($listId){
