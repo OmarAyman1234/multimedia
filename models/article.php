@@ -157,6 +157,10 @@ class Article {
     $query = "UPDATE articles SET isDeleted=1 WHERE id=$articleId";
     return DBController::update($query);
   }
+  public static function highlightKeyword($content,$keyword) {
+    $highlightedContent = preg_replace("/($keyword)/i", "<span class='highlight'>$1</span>", $content);
+    return $highlightedContent;
+  }
   
 }
 

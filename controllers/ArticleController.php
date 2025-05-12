@@ -53,5 +53,21 @@ class ArticleController {
     }
     
   }
+  public static function highlightKeyword($articleId, $keyword) {
+    $article = self::getArticle($articleId);
+    $content = $article->getContent();
+
+    if (stripos($content, $keyword) !== false) {
+        $highlighted = preg_replace(
+            "/(" . preg_quote($keyword, "/") . ")/i",
+            '<span style="background-color: yellow; color: black;">$1</span>',
+            $content
+        );
+        return $highlighted;
+    }
+
+    return false;
+}
+
 }
 ?>

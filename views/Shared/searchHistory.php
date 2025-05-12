@@ -181,5 +181,32 @@ if($result){
 
   <!-- JavaScript Libraries and Template JS -->
   <?php require_once '../utils/scripts.php' ?>
+  <script>
+$(document).ready(function(){
+  $(document).on('click', '.custom-delete-btn', function(e){
+    e.preventDefault();
+
+    var deleteUrl = $(this).attr('href');
+    var row = $(this).closest('tr');
+    $.ajax({
+      type: 'GET',
+      url: deleteUrl,
+      success: function(response) {
+        if(response === 'success') {
+          row.fadeOut(function() {
+            $(this).remove();
+          });
+        } else {
+          alert('Failed to delete search history. Please try again.');
+        }
+      },
+      error: function() {
+        alert('An error occurred. Please try again.');
+      }
+    });
+  });
+});
+</script>
+
 </body>
 </html>
