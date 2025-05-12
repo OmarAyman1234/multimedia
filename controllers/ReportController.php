@@ -10,12 +10,26 @@ class ReportController {
   }
   
   public static function sendReportToAdmin(Report $r) {
-    if(AuthController::isLoggedIn() && !AuthController::isAdmin()) {
+    $articleId = $r->getArticleId();
+
+    if(AuthController::isAdmin()) {
+      Alert::setAlert('danger', 'Admins cannot report');
+      header("location: ../../views/Shared/article.php?id=" . $articleId);
+      exit;
+    }
+    
+    if(AuthController::isLoggedIn()) {
       Report::saveReport($r);
-      Alert::setAlert('success', 'Report sent to admins and they will review it!');
+
+      Alert::setAlert('success', 'The report is sent to the admins and they will review it!');
+
+      header("location: ../../views/Shared/article.php?id=" . $articleId);
+      exit;
     }
     else {
-      Alert::setAlert('danger', 'Admins cannot report or you have to log in');
+      Alert::setAlert("danger", "You have to be logged in to issue a report");
+      header('location: ../../views/auth/login.php');
+      exit;
     }
   }
 
@@ -34,10 +48,15 @@ class ReportController {
   public static function dismissReport($reportId) {
     if(AuthController::isAdmin()) {
       Report::dismissReport($reportId);
-      Alert::setAlert('danger', "Report #$reportId dismissed");
+
+      Alert::setAlert('dark', "Report #$reportId dismissed");
+
+      header('location: reports.php');
+      exit;
     }
     else {
       Alert::setAlert('danger', 'You do not have access to this page');
+
       header('location: ../../views/auth/login.php');
       exit;
     }
