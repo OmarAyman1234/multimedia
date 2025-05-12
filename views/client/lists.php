@@ -1,4 +1,3 @@
-
 <?php
 require_once "../../controllers/ListsController.php";
 require_once "../../models/list.php";
@@ -16,13 +15,29 @@ if (!$userId) {
   exit;
 }
 
+// Default sort direction
+$sortDirection = isset($_GET['sort']) ? $_GET['sort'] : 'asc';
+
+// Get lists and sort them
 $lists = ListsController::getLists($userId);
+
+// Sort the lists based on the direction
+if ($sortDirection === 'asc') {
+  usort($lists, function($a, $b) {
+    return strcasecmp($a['name'], $b['name']);
+  });
+} elseif ($sortDirection === 'desc') {
+  usort($lists, function($a, $b) {
+    return strcasecmp($b['name'], $a['name']);
+  });
+}
+
+// Handle list deletion
 if (isset($_POST['list_id_to_delete'])) {
   $listId = $_POST['list_id_to_delete'];
   // Assuming you have a ListController class with a static method deleteList
   ListsController::deleteList(listId: $listId);
 }
-
 ?>
 
 
@@ -64,11 +79,34 @@ if (isset($_POST['list_id_to_delete'])) {
           <h1 class="text-title fw-bold display-5 d-flex align-items-center gap-3 mb-0">
             <i class="bi bi-journal-text fs-2"></i> Your Lists
           </h1>
-          <button type="button" class="btn btn-light" onclick="location.href='addList.php'">
-            <i class="bi bi-plus-square me-2"></i>Add New List
-          </button>
+          <div class="d-flex gap-2">
+            <!-- Sort Dropdown -->
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-sort-alpha-down me-1"></i>Sort
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                <li>
+                  <a class="dropdown-item <?php echo $sortDirection === 'asc' ? 'active' : ''; ?>" 
+                     href="lists.php?id=<?php echo htmlspecialchars($userId); ?>&sort=asc">
+                    <i class="bi bi-sort-alpha-down me-2"></i>A to Z
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item <?php echo $sortDirection === 'desc' ? 'active' : ''; ?>" 
+                     href="lists.php?id=<?php echo htmlspecialchars($userId); ?>&sort=desc">
+                    <i class="bi bi-sort-alpha-up me-2"></i>Z to A
+                  </a>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- Add New List Button -->
+            <button type="button" class="btn btn-light" onclick="location.href='addList.php'">
+              <i class="bi bi-plus-square me-2"></i>Add New List
+            </button>
+          </div>
         </div>
-
 
         <div class="row g-4">
           <?php foreach ($lists as $list): ?>
@@ -86,7 +124,7 @@ if (isset($_POST['list_id_to_delete'])) {
                       <i class="bi bi-pencil fs-5"></i>
                     </a>
 
-                    <form method="POST" action="lists.php?id=<?php echo htmlspecialchars($userId); ?>" class="m-0">
+                    <form method="POST" action="lists.php?id=<?php echo htmlspecialchars($userId); ?><?php echo isset($_GET['sort']) ? '&sort=' . htmlspecialchars($_GET['sort']) : ''; ?>" class="m-0">
                       <input type="hidden" name="list_id_to_delete" value="<?php echo htmlspecialchars($list['id']); ?>">
                       <button type="submit" style="border: none; background: none; color: #ddd;">
                         <i class="bi bi-trash3 fs-5"></i>
