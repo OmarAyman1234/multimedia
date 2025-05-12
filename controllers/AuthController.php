@@ -63,7 +63,8 @@ class AuthController
         if (!$userData || count($userData) === 0) {
             // user not found
             Alert::setAlert("danger", "Incorrect credentials");
-            return false;
+            header('location: ../../views/auth/login.php');
+            exit;
         }
 
         $hashedPassword = $userData[0]['password'];
@@ -80,12 +81,12 @@ class AuthController
 
             Alert::setAlert('success', "Welcome back, " . $_SESSION['username'] . "!");
             header('location: ../../views/Shared/index.php');
-
-            return true;
+            exit;
         } 
         else {
             Alert::setAlert("danger", "Incorrect credentials");
-            return false;
+            header('location: ../../views/auth/login.php');
+            exit;
         }
     }
 
