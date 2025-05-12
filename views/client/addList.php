@@ -1,13 +1,12 @@
 <?php
+      require_once "../../controllers/ListsController.php";
+      require_once "../../controllers/AuthController.php";
+      require_once "../../views/utils/alert.php";
+
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    require_once "../../controllers/ListsController.php";
-    require_once "../../controllers/AuthController.php";
     $userId = $_SESSION['userId'];
-    // if(!$userId){
-    //   header('location: ../Shared/404.php');
-    // }
 
     if(isset($_POST['listName']))
     {
@@ -17,6 +16,9 @@
         $newList->setListName($_POST["listName"]);
         $newList->setUserId($_SESSION['userId']);
         ListsController::addList($newList);
+      } 
+      else {
+        Alert::renderAlert('danger', 'List name cannot be empty');
       }
     }
 ?>
@@ -35,6 +37,9 @@
   </head>
 
   <body>
+
+    <?php Alert::renderAlert() ?>
+
     <div class="container-fluid position-relative d-flex p-0">
       <!-- Spinner Start -->
       <?php require_once '../utils/spinner.php'?>

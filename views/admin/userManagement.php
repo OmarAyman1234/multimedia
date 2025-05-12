@@ -1,6 +1,7 @@
 <?php
 require_once '../../controllers/UserController.php';
 require_once '../../controllers/AuthController.php';
+require_once '../../views/utils/alert.php';
 
 $users = UserController::getAllUsers();
 
@@ -24,6 +25,8 @@ if(isset($_POST['userIdToEditRole'], $_POST['newRoleId'])) {
 </head>
 
 <body>
+  <?php Alert::renderAlert() ?>
+  
   <div class="container-fluid position-relative d-flex p-0">
     <!-- Sidebar Start -->
     <?php require_once '../utils/sidebar.php'; ?>

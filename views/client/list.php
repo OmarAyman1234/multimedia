@@ -4,6 +4,7 @@ require_once '../../controllers/InteractionController.php';
 require_once '../../models/interaction.php';
 require_once '../../controllers/AuthController.php';
 require_once '../../controllers/ListsController.php';
+require_once '../../views/utils/alert.php';
 
 if(session_status() === PHP_SESSION_NONE)
   session_start();
@@ -34,6 +35,8 @@ $listArticles = ListsController::fetchListArticles($id);
   <?php require_once '../utils/linkTags.php' ?>
 </head>
 <body>
+  <?php Alert::renderAlert() ?>
+
   <div class="container-fluid position-relative d-flex p-0">
     <?php require_once '../utils/spinner.php'?>
     <?php require_once '../utils/sidebar.php'?>

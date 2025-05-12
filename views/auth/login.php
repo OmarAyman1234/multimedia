@@ -2,25 +2,21 @@
 require_once '../../models/registeredUser.php';
 require_once '../../controllers/AuthController.php';
 require_once '../../models/client.php';
+require_once '../../views/utils/alert.php';
 
 if(session_status() === PHP_SESSION_NONE) 
   session_start();
 
 if (isset($_POST['username']) && isset($_POST['password'])) {
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
-        
-      $loginStatus = AuthController::login($_POST['username'], $_POST['password']);
-
-      $loginStatus === false ? $_SESSION["errMsg"] = "Incorrect credentials": "";
+      AuthController::login($_POST['username'], $_POST['password']);
     }
     else {
-        $_SESSION['errMsg'] = "Please fill all fields.";
+      Alert::setAlert('danger', "Please fill up all fields!");
+      header('location: ../../views/auth/login.php');
+      exit;        
     }
 }
-
-// Store the error message and clear it from session
-$errorMessage = isset($_SESSION['errMsg']) ? $_SESSION['errMsg'] : '';
-unset($_SESSION['errMsg']); // Clear the error message after use
 ?>
 
 
@@ -47,14 +43,7 @@ unset($_SESSION['errMsg']); // Clear the error message after use
   </head>
 
   <body>
-    <?php if(!empty($errorMessage)):?>
-      <div class="top-right-alert">
-        <div class="alert alert-primary alert-dismissible fade show" role="alert">
-          <i class="fa fa-exclamation-circle me-2"></i> <?=$errorMessage?>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      </div>
-    <?php endif ?>
+    <?php Alert::renderAlert() ?>
     
     <div class="container-fluid position-relative d-flex p-0">
       <!-- Spinner Start -->

@@ -5,6 +5,7 @@ require_once '../../models/translation.php';
 require_once '../../models/interaction.php';
 require_once '../../controllers/DBController.php';
 require_once '../../models/category.php';
+require_once '../../views/utils/alert.php';
 
 class ArticleController {
   public static function getAllArticles(){
@@ -44,10 +45,15 @@ class ArticleController {
   public static function removeArticle($articleId) {
     if(AuthController::isAdmin()) {
       Article::removeArticle($articleId);
+
+      Alert::setAlert('success', "Article #$articleId removed");
+      
       header('location: ../../views/Shared/');
       exit;
     }
     else {
+      Alert::setAlert('danger', "Only admins can delete articles");
+      
       header('location: ../../views/auth/login.php');
       exit;
     }

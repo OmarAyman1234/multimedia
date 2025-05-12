@@ -1,6 +1,7 @@
 <?php
 require_once '../../controllers/ReportController.php';
 require_once '../../controllers/AuthController.php';
+require_once  '../../views/utils/alert.php';
 
 // Redirect if not admin
 if (!AuthController::isAdmin()) {
@@ -12,9 +13,6 @@ if (!AuthController::isAdmin()) {
 if (isset($_POST['dismiss']) && isset($_POST['report_id'])) {
     $reportId = $_POST['report_id'];
     ReportController::dismissReport($reportId);
-    // Redirect to refresh the page
-    header('location: reports.php');
-    exit;
 }
 
 // Get all active reports
@@ -37,6 +35,7 @@ $reports = ReportController::getReports();
 </head>
 
 <body>
+  <?php Alert::renderAlert() ?>
   <div class="container-fluid position-relative d-flex p-0">
     <!-- Spinner Start -->
     <?php require_once '../utils/spinner.php'?>

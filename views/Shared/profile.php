@@ -1,5 +1,6 @@
 <?php
 require_once '../../controllers/ProfileController.php';
+require_once '../../views/utils/alert.php';
 
 $id = $_GET['id'] ?? null;
 if (!$id) {
@@ -21,23 +22,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ProfileController::updateEmail($email);
     }
     else {
-        $_SESSION['errMsg'] = "Email can't be empty";
+      Alert::setAlert('danger', 'Email cannot be empty');
     }
 
     if ($newPassword && $confirmPassword) {
         if ($newPassword === $confirmPassword) {
             ProfileController::updatePassword($newPassword);
         } else {
-            $_SESSION['errMsg'] = "Password and confirm password don't match";
+          Alert::setAlert('warning', "Password and confirm password do not match");
+          header("location: profile.php?id=" . $_SESSION['userId']);
+          exit;
         }
     }
     else {
-        $_SESSION['errMsg'] = "Password can't be empty";
+      Alert::setAlert('danger', "Password cannot be empty");
+      header("location: profile.php?id=" . $_SESSION['userId']);
+      exit;
     }
- $_SESSION['err']='';
-    // go to the same again to prevent "confirm form resubmission"
-    header('location: ../../views/Shared/profile.php?id=' . $id);
 }
+
 if(isset($_SERVER['REQUEST_METHOD'])&&isset($_FILES['profilePic'])){
     $targetDir = "../assets/img/";
     $targetFile = $targetDir . basename($_FILES["profilePic"]["name"]);
@@ -62,7 +65,7 @@ $_SESSION['profilePicture'] = $user[0]['profilePicture'];
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>User Profile - DarkPan</title>
+  <title>User Profile</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
   <!-- Favicon -->
@@ -73,14 +76,7 @@ $_SESSION['profilePicture'] = $user[0]['profilePicture'];
 </head>
 
 <body>
-<?php if (isset($_SESSION['errMsg'])): ?>
-    <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3" style="z-index: 9999;" role="alert">
-        <i class="fa fa-exclamation-circle me-2"></i>
-        <?php echo $_SESSION['errMsg']; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    
-<?php endif; ?>
+  <?php Alert::renderAlert() ?>
 
   <div class="container-fluid position-relative d-flex p-0">
     <!-- Spinner Start -->

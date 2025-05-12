@@ -11,7 +11,7 @@
 ?>
 <div class="sidebar pe-4 pb-3 overflow-hidden">
   <nav class="navbar bg-secondary navbar-dark">
-    <a href="index.php" class="navbar-brand mx-4 mb-3">
+    <a href="../../views/Shared/index.php" class="navbar-brand mx-4 mb-3">
       <h3 class="text-primary">
         Multimedia
       </h3>

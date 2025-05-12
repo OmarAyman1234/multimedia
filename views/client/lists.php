@@ -2,6 +2,7 @@
 <?php
 require_once "../../controllers/ListsController.php";
 require_once "../../models/list.php";
+require_once "../../views/utils/alert.php";
 
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
@@ -41,6 +42,8 @@ if (isset($_POST['list_id_to_delete'])) {
 </head>
 
 <body>
+  <?php Alert::renderAlert() ?>
+  
   <div class="container-fluid position-relative d-flex p-0">
     <!-- Spinner Start -->
     <?php require_once '../utils/spinner.php'?>

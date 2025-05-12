@@ -1,6 +1,8 @@
 <?php
 require_once "../../controllers/ListsController.php";
 require_once "../../controllers/AuthController.php";
+require_once "../../views/utils/alert.php";
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -8,26 +10,26 @@ if (session_status() === PHP_SESSION_NONE) {
 $userId = $_SESSION['userId'];
 
 $listId = $_GET['id'];
-if (isset($_POST['newName']) && !empty($_POST['newName'])) {
+if (isset($_POST['newName'])) {
+  if(!empty($_POST['newName'])) {
   $list = new Lists;
   $list->setListName($_POST['newName']);
   $list->setListId($_GET['id']);
   $list->setUserId($_SESSION['userId']);
   ListsController::editList($list);
-   // Always exit after header redirect
+  } else {
+    Alert::setAlert('danger', 'List name cannot be empty');
+  }
 }
 
 
 ?>
 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>DarkPan - Bootstrap 5 Admin Template</title>
+    <title>Edit List</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="" name="keywords" />
     <meta content="" name="description" />
@@ -37,6 +39,8 @@ if (isset($_POST['newName']) && !empty($_POST['newName'])) {
   </head>
 
   <body>
+    <?php Alert::renderAlert() ?>
+
     <div class="container-fluid position-relative d-flex p-0">
       <!-- Spinner Start -->
       <?php require_once '../utils/spinner.php'?>
@@ -57,15 +61,14 @@ if (isset($_POST['newName']) && !empty($_POST['newName'])) {
 
               <form action="editList.php?id=<?php echo htmlspecialchars($listId); ?>" method="POST"> 
                 <div class="form-floating mb-3">
-                  <input type="text" name="newName" class="form-control" id="floatingInput" placeholder="text" />
+                  <input type="text" name="newName" class="form-control" id="floatingInput" value=""/>
                   <label for="floatingInput">New Name </label>
                 </div>
 
                 </div>
 
                 <button type="submit" class="btn btn-primary py-3 w-100 mb-4">
-                        New Name
-
+                  New Name
                 </button>
               </form>
             </div>
