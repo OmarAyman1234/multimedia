@@ -7,6 +7,7 @@ require_once "../../models/client.php";
 require_once "../../controllers/AuthController.php";
 require_once "../../controllers/ArticleController.php";
 require_once "../../models/client.php";
+require_once "../../views/utils/alert.php";
 
 if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])){
   if (!empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['email'])){
@@ -16,13 +17,10 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['emai
     }
   } 
   else {
-    $_SESSION['errMsg'] = 'Please fill out all fields!';
+    Alert::setAlert('danger' ,'Please fill up all fields!');
   }
 }
 
-// Store the error message and clear it from session
-$errorMessage = isset($_SESSION['errMsg']) ? $_SESSION['errMsg'] : '';
-unset($_SESSION['errMsg']); // Clear the error message after use
 ?>
 
 <!DOCTYPE html>
@@ -40,27 +38,10 @@ unset($_SESSION['errMsg']); // Clear the error message after use
     <!-- Link to external CSS stylesheets -->
     <?php require_once '../utils/linkTags.php' ?>
     
-    <!-- Custom CSS to ensure alerts are on top -->
-    <style>
-      .top-right-alert {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 25rem;
-        z-index: 9999;
-      }
-    </style>
   </head>
 
   <body>
-    <?php if(!empty($errorMessage)):?>
-    <div class="top-right-alert">
-      <div class="alert alert-primary alert-dismissible fade show" role="alert">
-        <i class="fa fa-exclamation-circle me-2"></i> <?=$errorMessage?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    </div>
-    <?php endif ?>
+    <?php Alert::renderAlert() ?>
     
     <div class="container-fluid position-relative d-flex p-0">
       <!-- Spinner Start -->
