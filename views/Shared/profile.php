@@ -1,5 +1,6 @@
 <?php
 require_once '../../controllers/ProfileController.php';
+require_once '../../views/utils/alert.php';
 
 $id = $_GET['id'] ?? null;
 if (!$id) {
@@ -7,87 +8,69 @@ if (!$id) {
     exit;
 }
 
-if(session_start() === PHP_SESSION_NONE) 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $user = ProfileController::fetchProfileData($id);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'] ?? null;
-    $newPassword = $_POST['newPassword'] ?? null;
-    $confirmPassword = $_POST['confirmPassword'] ?? null;
+    if (isset($_POST['updateProfile'])) {
+        $email = $_POST['email'] ?? null;
+        $newPassword = $_POST['newPassword'] ?? null;
+        $confirmPassword = $_POST['confirmPassword'] ?? null;
 
-    if ($email && $email !== $user[0]['email']) {
-        ProfileController::updateEmail($email);
-    }
-    else {
-        $_SESSION['errMsg'] = "Email can't be empty";
-    }
-
-    if ($newPassword && $confirmPassword) {
-        if ($newPassword === $confirmPassword) {
-            ProfileController::updatePassword($newPassword);
+        if ($email && $email !== $user[0]['email']) {
+            ProfileController::updateEmail($email);
         } else {
-            $_SESSION['errMsg'] = "Password and confirm password don't match";
+            Alert::setAlert('danger', 'Email cannot be empty or unchanged');
+        }
+
+        if ($newPassword || $confirmPassword) {
+            if ($newPassword === $confirmPassword) {
+                ProfileController::updatePassword($newPassword);
+            } else {
+                Alert::setAlert('warning', "Password and confirm password do not match");
+                header("location: profile.php?id=" . $_SESSION['userId']);
+                exit;
+            }
         }
     }
-    else {
-        $_SESSION['errMsg'] = "Password can't be empty";
-    }
- $_SESSION['err']='';
-    header('location: ../../views/Shared/profile.php?id=' . $id);
-}
-if(isset($_SERVER['REQUEST_METHOD'])&&isset($_FILES['profilePic'])){
-    $targetDir = "../assets/img/";
-    $targetFile = $targetDir.$_FILES["profilePic"]["name"];
+
+    if (isset($_POST['updatePhoto']) && isset($_FILES['profilePic'])) {
+        $targetDir = "../assets/img/";
+        $targetFile = $targetDir . basename($_FILES["profilePic"]["name"]);
         if (move_uploaded_file($_FILES["profilePic"]["tmp_name"], $targetFile)) {
             ProfileController::updateProfilePicture($targetFile);
         } else {
-            $_SESSION['err'] = "Error uploading file.";
+            Alert::setAlert('danger', 'Error uploading file');
+            header("location: profile.php?id=$id");
+            exit;
         }
-    
+    }
 }
-$_SESSION['profilePicture'] = $user[0]['profilePicture'];
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>User Profile - DarkPan</title>
+  <title>User Profile</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-  <!-- Favicon -->
   <link href="img/favicon.ico" rel="icon" />
-  
-  <!-- Link to external CSS stylesheets -->
   <?php require_once '../utils/linkTags.php' ?>
 </head>
 
 <body>
-<?php if (isset($_SESSION['errMsg'])): ?>
-    <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3" style="z-index: 9999;" role="alert">
-        <i class="fa fa-exclamation-circle me-2"></i>
-        <?php echo $_SESSION['errMsg']; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    
-<?php endif; ?>
+  <?php Alert::renderAlert() ?>
 
   <div class="container-fluid position-relative d-flex p-0">
-    <!-- Spinner Start -->
     <?php require_once '../utils/spinner.php'?>
-    <!-- Spinner End -->
-
-    <!-- Sidebar Start -->
     <?php require_once '../utils/sidebar.php'?>
-    <!-- Sidebar End -->
 
-    <!-- Content Start -->
     <div class="content">
-      <!-- Navbar Start -->
       <?php require_once '../utils/nav.php'?>
-      <!-- Navbar End -->
 
       <div class="container-fluid pt-4 px-4">
         <div class="row g-4">
@@ -97,23 +80,23 @@ $_SESSION['profilePicture'] = $user[0]['profilePicture'];
                 <i class="fa fa-user-circle me-2"></i>User Profile
               </h3>
               
-              <!-- Profile Picture -->
               <div class="row mb-4">
+                <!-- Profile Picture -->
                 <div class="col-md-4 text-center mb-3 mb-md-0">
                   <img src="<?php echo $user[0]['profilePicture']; ?>" alt="Profile Picture" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover; border: 2px solid var(--primary);">
-                  <form action="../../views/Shared/profile.php?id=<?=$id?>" method="post" enctype="multipart/form-data" class="mt-3">
+                  <form action="profile.php?id=<?= $id ?>" method="post" enctype="multipart/form-data" class="mt-3">
                     <div class="d-flex justify-content-center">
                       <input type="file" name="profilePic" class="form-control bg-dark border-0 text-light" style="max-width: 250px;">
                     </div>
-                    <button class="btn btn-primary btn-sm mt-2" type="submit">
+                    <button name="updatePhoto" class="btn btn-primary btn-sm mt-2" type="submit">
                       <i class="fa fa-upload me-1"></i> Update Photo
                     </button>
                   </form>
                 </div>
-                
+
                 <!-- Profile Info -->
                 <div class="col-md-8">
-                  <form action="profile.php?id=<?=$id?>" method="post">
+                  <form action="profile.php?id=<?= $id ?>" method="post">
                     <div class="row">
                       <div class="col-md-6 mb-3">
                         <label class="form-label text-light">Username</label>
@@ -135,7 +118,7 @@ $_SESSION['profilePicture'] = $user[0]['profilePicture'];
                         <input type="text" class="form-control bg-dark border-0 text-light" value="<?= $user[0]['joinDate']?>" disabled>
                       </div>
                     </div>
-                    
+
                     <hr class="bg-dark">
                     <h4 class="text-light mb-3">Change Password</h4>
                     
@@ -151,30 +134,26 @@ $_SESSION['profilePicture'] = $user[0]['profilePicture'];
                       </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
+                    <button name="updateProfile" type="submit" class="btn btn-primary">
                       <i class="fa fa-save me-2"></i>Update Profile
                     </button>
                   </form>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Footer Start -->
       <?php require_once '../utils/footer.php' ?>
-      <!-- Footer End -->
     </div>
-    <!-- Content End -->
 
-    <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top">
       <i class="bi bi-arrow-up"></i>
     </a>
   </div>
 
-  <!-- JavaScript Libraries and Template JS -->
   <?php require_once '../utils/scripts.php' ?>
 </body>
 </html>

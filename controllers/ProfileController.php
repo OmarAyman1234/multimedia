@@ -51,6 +51,8 @@ class ProfileController {
     public static function updateProfilePicture($newProfilePicture) {
         if(AuthController::isLoggedIn()) {
             RegisteredUser::updateProfilePicture($_SESSION['userId'], $newProfilePicture);
+            
+            $_SESSION['profilePicture'] = $newProfilePicture;
 
             Alert::setAlert('success', 'Profile picture changed!');
 
