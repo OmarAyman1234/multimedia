@@ -167,14 +167,14 @@ class Interaction {
   public static function addLike($articleId, $userId) {
       $query = "INSERT INTO interactions (typeId, content, userId, articleId) VALUES (1, '', $userId, $articleId)";
       $result = DBController::insert($query);
-      return $result;
+      return $result !== false;
   }
 
   public static function removeLike($articleId, $userId) {
       // Option 1: Set isDeleted=1
       $query = "UPDATE interactions SET isDeleted=1 WHERE typeId=1 AND articleId=$articleId AND userId=$userId";
       $result = DBController::delete($query);
-      return $result;
+      return $result !== false;
   }
 }
 

@@ -2,6 +2,7 @@
 require_once '../../controllers/DBController.php';
 require_once '../../controllers/AuthController.php';
 require_once '../../models/interaction.php';
+require_once '../../views/utils/alert.php';
 
 if(session_status() === PHP_SESSION_NONE)
   session_start();
@@ -11,14 +12,15 @@ class InteractionController {
 
     if(AuthController::isLoggedIn()) {
       Interaction::addComment($content, $articleId, $userId);
-      $_SESSION['alert'] = [
-        "type" => "success",
-        "message" => "Comment added!"
-      ];
+
+      Alert::setAlert("success", "Comment added!");
+      
       header("location: ../../views/Shared/article.php?id=$articleId");
       exit;
     }
     else {
+      Alert::setAlert("danger", "You need to be logged in to add a comment!");
+
       header('location: ../../views/auth/login.php');
       exit;
     }   
@@ -36,17 +38,19 @@ class InteractionController {
 
   public static function editComment(Interaction $comm, $newEdit) {
     if(AuthController::isLoggedIn()) {
-      if($comm->getUserId() == $_SESSION['userId']) {
+      if($comm->getUserId() == $_SESSION['userId'] || AuthController::isAdmin()) {
         Interaction::editComment($comm->getId(), $newEdit);
+
+        Alert::setAlert('success', 'Comment edited');
       }
       else {
-        $_SESSION['errMsg'] = 'Editing other users comments is not allowed!';
+        Alert::setAlert('danger', 'Cannot edit other users comments!');
       }
       header('location: article.php?id=' . $comm->getArticleId());
       exit;
     }
     else {
-      $_SESSION['errMsg'] = 'Unauthorized!';
+      Alert::setAlert('danger', 'Unauthorized!');
       header('location: ../../views/Shared/404.php');
       exit;
     }
@@ -57,14 +61,17 @@ class InteractionController {
     if(AuthController::isLoggedIn()) {
       if($_SESSION['userId'] == $comm->getUserId() || AuthController::isAdmin()) {
         Interaction::deleteComment($comm->getId());
+        Alert::setAlert('light', 'Comment deleted');
       }
       else {
-        $_SESSION['errMsg'] = "Cannot delete other users comments";
+        Alert::setAlert('danger', 'Cannot delete other users comments');
       }
+      
       header('location: ../../views/Shared/article.php?id=' . $comm->getArticleId());
       exit;
     }
     else {
+      Alert::setAlert('danger', 'Unauthorized!');
       header("location: ../../views/auth/login.php");
       exit;
     }
