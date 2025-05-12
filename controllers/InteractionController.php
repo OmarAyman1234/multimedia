@@ -51,7 +51,7 @@ class InteractionController {
   public static function deleteComment(Interaction $comm) {
     //userId is needed to check that the comment if the user's, not another user's comment.
     if(AuthController::isLoggedIn()) {
-      if($_SESSION['userId'] == $comm->getUserId()) {
+      if($_SESSION['userId'] == $comm->getUserId() || AuthController::isAdmin()) {
         Interaction::deleteComment($comm->getId());
       }
       else {

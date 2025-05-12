@@ -1,12 +1,5 @@
 <?php
 
-// store interactions
-// edit article
-// report article
-// search inside article
-// bookmark
-// add to list
-
 require_once '../../controllers/ArticleController.php';
 require_once '../../controllers/AuthController.php';
 require_once '../../controllers/ListsController.php';
@@ -353,15 +346,19 @@ if(isset($_POST['searchkeyword'])) {
                     <small style="color: rgb(150, 150, 150)"><?php echo $comment->getDate() ?></small>
                   </div>
                   <div>
+                    <?php if($_SESSION['userId'] == $comment->getUserId()): ?>
                     <a href="editComment.php?id=<?php echo $comment->getId() ?>" class="text-decoration-none me-2" title="Edit">
                       <i class="bi bi-pencil-square text-light"></i>
                     </a>
+                    <?php endif ?>
+                    <?php if($_SESSION['userId'] == $comment->getUserId() || AuthController::isAdmin()): ?>
                     <form method="POST" action="article.php?id=<?=$id?>" class="d-inline">
                       <input type="hidden" name="commentToRemove" value="<?=$comment->getId()?>">
                       <button type="submit" class="btn p-0" title="Delete" onclick="return confirm('Are you sure you want to delete this comment?')">
                         <i class="bi bi-trash text-danger"></i>
                       </button>
                     </form>
+                    <?php endif?>
                   </div>
                 </div>
                 <p class="text-main mb-0" style="white-space: pre-wrap; word-break: break-word;"><?php echo $comment->getContent() ?></p>
