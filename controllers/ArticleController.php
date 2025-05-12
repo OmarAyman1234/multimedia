@@ -5,6 +5,7 @@ require_once '../../models/translation.php';
 require_once '../../models/interaction.php';
 require_once '../../controllers/DBController.php';
 require_once '../../models/category.php';
+require_once '../../controllers/AuthController.php';
 require_once '../../views/utils/alert.php';
 
 class ArticleController {
@@ -74,6 +75,22 @@ class ArticleController {
 
     return false;
 }
+public static function updateArticle($articleId, $title, $content) {
+    if(AuthController::isEditor()) {
+      Article::updateArticle($articleId, $title, $content);
+
+      Alert::setAlert('success', "Article #$articleId updated");
+      
+       header('location: ../../views/Shared/article.php?id='.$articleId);
+      exit;
+    }
+    else {
+      Alert::setAlert('danger', "Only admins&editors can update articles");
+      
+      header('location: ../../views/auth/login.php');
+      exit;
+    }
+  }
 
 }
 ?>

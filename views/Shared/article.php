@@ -8,9 +8,9 @@ require_once '../../controllers/ReportController.php';
 require_once '../../models/interaction.php';
 require_once '../utils/alert.php';
 
-if(session_status() === PHP_SESSION_NONE)
+if(session_status() === PHP_SESSION_NONE){
   session_start();
-
+}
 if (!isset($_SESSION['roleId'])) {
   $_SESSION['roleId'] = null;
 }
@@ -174,7 +174,7 @@ if(isset($_POST['searchkeyword'])) {
 
   <div class="container-fluid position-relative d-flex p-0">
 
-    <?php require_once '../utils/spinner.php'?>
+    
 
     <?php require_once '../utils/sidebar.php'?>
 
@@ -281,13 +281,10 @@ if(isset($_POST['searchkeyword'])) {
         <div class="d-flex flex-column align-items-center mt-4">
           <hr class="w-100" style="border-top: 3px solid white; margin-bottom: 20px;">
 
-          <?php
-          if(isset($_SESSION['roleId']) && $_SESSION['roleId'] == 2) {
-          ?>
-            <button class="btn btn-light mb-3 px-5">Edit <i class="fa fa-pen"></i></button>
-          <?php
-          }
-          ?>
+          <?php if (AuthController::isEditor()): ?>
+            <a href="../Shared/editArticle.php?id=<?=$id?>" class="btn btn-light mb-3 px-5">Edit <i class="fa fa-pen"></i></a>
+          <?php endif; ?>
+
           
 
         <div class="d-flex justify-content-start align-items-center gap-4 mt-3 mb-4">

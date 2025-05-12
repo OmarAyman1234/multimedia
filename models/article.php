@@ -161,6 +161,10 @@ class Article {
     $highlightedContent = preg_replace("/($keyword)/i", "<span class='highlight'>$1</span>", $content);
     return $highlightedContent;
   }
+  public static function updateArticle($articleId, $title, $content) {
+    $query = "UPDATE articles SET title='$title', content='$content' WHERE id=$articleId";
+    return DBController::update($query);
+  }
   
 }
 
