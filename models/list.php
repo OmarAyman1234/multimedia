@@ -84,7 +84,7 @@ class Lists {
         $listId = self::getBookmarksId($userId);
         $articleAddition = "INSERT INTO lists_articles (listId, articleId) VALUES ($listId, $articleId)";
         $result = DBController::insert($articleAddition);
-        return $result;
+        return $result !== false; // Insert ID in this mixed table is zero so the previous version will validate to false if used with if "if(0)"
     }
 
     public static function removeArticleFromBookmarks($articleId, $userId) {
