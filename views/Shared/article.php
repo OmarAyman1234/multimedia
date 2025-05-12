@@ -89,6 +89,17 @@ if(isset($_POST['reportArticle']) && isset($_POST['reportReason'])) {
 if(isset($_POST['removeArticleBtn'])) {
   ArticleController::removeArticle($id);
 }
+if(isset($_POST['searchkeyword'])) {
+  $keyword = $_POST['searchkeyword'];
+  $result = ArticleController::highlightKeyword($id,$keyword);
+  if($result){
+    $article->setContent($result);
+  }
+  else{
+    $_SESSION['errMsg'] = 'No results found.';
+  }
+}
+
 
 ?>
 
@@ -108,7 +119,68 @@ if(isset($_POST['removeArticleBtn'])) {
       width: 25rem;
       z-index: 1050;
     }
-  </style>
+/* Container and layout */
+.search-form {
+  max-width: 320px;
+}
+
+/* Input group styling */
+.search-input-group {
+  display: flex;
+  align-items: center;
+  background-color: #1e1e1e;
+  border-radius: 50px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.search-input-group:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Input field */
+.search-input {
+  flex: 1;
+  padding: 10px 16px;
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  border-radius: 50px 0 0 50px;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+  transition: color 0.3s;
+}
+
+.search-input:focus {
+  outline: none;
+  background-color: #2a2a2a;
+  box-shadow: none;
+}
+
+/* Button */
+.search-btn {
+  background-color: #f8f9fa;
+  color: #000;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 0 50px 50px 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.search-btn:hover {
+  background-color: #e2e6ea;
+  color: #000;
+}
+
+/* Icon */
+.search-btn i {
+  font-size: 1.2rem;
+}
+</style>
 </head>
 <body>
 
@@ -158,6 +230,24 @@ if(isset($_POST['removeArticleBtn'])) {
 
         <div class="d-flex align-items-center justify-content-between mb-3">
           <span class="badge bg-info text-dark py-2"><?php echo $article->getCategoryName() ?></span>
+          
+  <form class="search-form d-flex ms-4 align-items-center" method="post"  action="article.php?id=<?= $id ?>" name="searchkeyword">
+    <input type="hidden" name="articleId" value="<?= $id ?>">
+  <div class="search-input-group">
+    <input
+  type="search"
+  name="searchkeyword"
+  class="form-control search-input"
+  placeholder="Search..."
+  aria-label="Search"
+/>
+
+    <button class="btn search-btn" type="submit">
+      <i class="bi bi-search"></i>
+    </button>
+  </div>
+</form>
+
 
           <?php if(isset($_SESSION['username'])): ?>
           <div class="d-flex gap-2">
