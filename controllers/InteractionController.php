@@ -96,9 +96,6 @@ class InteractionController {
                 return true;
             }
         }
-        
-        header("location: ../../views/Shared/article.php?id=$articleId");
-        return false;
     }
     else {
         header('location: ../../views/auth/login.php');
