@@ -27,14 +27,15 @@ foreach ($translations as $transl) {
 $likesCount = ArticleController::getArticleLikesCount($id);
 $articleComments = ArticleController::getArticleComments($id);
 
-$_SESSION['errMsg'] = ''; //empty it so that if the page is reloaded the errMsg disappears.
-
 if(isset($_POST['newComment'])) {
   if(!empty($_POST['newComment'])) {
     InteractionController::addComment($_POST['newComment'], $id, $_SESSION['userId']);
   } 
   else {
-    $_SESSION['errMsg'] = 'Cannot post an empty comment.';
+    $_SESSION['alert'] = [
+      "type" => "danger", 
+      "message" => "Cannot post an empty comment."
+    ];
   }
 }
 
@@ -181,14 +182,16 @@ if(isset($_POST['searchkeyword'])) {
 </head>
 <body>
 
-  <?php if(isset($_SESSION['errMsg']) && !empty($_SESSION['errMsg'])):?>
-  <div class="top-right-alert">
-    <div class="alert alert-primary alert-dismissible fade show" role="alert">
-      <i class="fa fa-exclamation-circle me-2"></i> <?=$_SESSION['errMsg']?>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  <?php if(isset($_SESSION['alert']) && !empty($_SESSION['alert'])):?>
+    <div class="top-right-alert">
+      <div class="alert alert-<?=$_SESSION['alert']['type']?> alert-dismissible fade show" role="alert">
+        <i class="fa fa-exclamation-circle me-2"></i> <?= $_SESSION['alert']['message'] ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
     </div>
-  </div>
+    <?php $_SESSION['alert'] = ''; ?>
   <?php endif ?>
+
 
   <div class="container-fluid position-relative d-flex p-0">
 

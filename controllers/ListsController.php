@@ -134,21 +134,30 @@ class ListsController{
             if(Lists::isArticleBookmarked($articleId, $userId)) {
                 // Article is already bookmarked, so remove it
                 if(Lists::removeArticleFromBookmarks($articleId, $userId)) {
+                    $_SESSION['alert'] = [
+                        "type" => "light",
+                        "message" => "Article removed from bookmarks"
+                    ];
                     header("location: ../../views/Shared/article.php?id=$articleId");
-                    return true;
+                    exit;
                 }
             } else {
                 // Article is not bookmarked, add it
                 if(Lists::addArticleToBookmarks($articleId, $userId)) {
+                    $_SESSION['alert'] = [
+                        "type" => "success",
+                        "message" => "Article added to bookmarks"
+                    ];
                     header("location: ../../views/Shared/article.php?id=$articleId");
-                    return true;
+                    exit;
                 }
             }
-            
-            header("location: ../../views/Shared/article.php?id=$articleId");
-            return false;
         }
         else {
+            $_SESSION['alert'] = [
+                "type" => "danger",
+                "message" => "You should be logged in to do this operation"
+            ];
             header('location: ../../views/auth/login.php');
             exit;
         }
@@ -173,6 +182,10 @@ class ListsController{
             
             if(in_array($listId, $userListIds)) {
                 if(Lists::addArticleToList($listId, $articleId)) {
+                    $_SESSION['alert'] = [
+                        "type" => "success",
+                        "message" => "Article added to list $listId!"
+                    ];
                     header("location: ../../views/Shared/article.php?id=$articleId");
                     return true;
                 }

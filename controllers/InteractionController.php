@@ -11,6 +11,10 @@ class InteractionController {
 
     if(AuthController::isLoggedIn()) {
       Interaction::addComment($content, $articleId, $userId);
+      $_SESSION['alert'] = [
+        "type" => "success",
+        "message" => "Comment added!"
+      ];
       header("location: ../../views/Shared/article.php?id=$articleId");
       exit;
     }
