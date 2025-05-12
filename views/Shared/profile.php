@@ -1,6 +1,5 @@
 <?php
 require_once '../../controllers/ProfileController.php';
-require_once '../../views/utils/alert.php';
 
 $id = $_GET['id'] ?? null;
 if (!$id) {
@@ -18,43 +17,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirmPassword = $_POST['confirmPassword'] ?? null;
 
     if ($email && $email !== $user[0]['email']) {
-        // update only if email is changed
         ProfileController::updateEmail($email);
     }
     else {
-      Alert::setAlert('danger', 'Email cannot be empty');
+        $_SESSION['errMsg'] = "Email can't be empty";
     }
 
     if ($newPassword && $confirmPassword) {
         if ($newPassword === $confirmPassword) {
             ProfileController::updatePassword($newPassword);
         } else {
-          Alert::setAlert('warning', "Password and confirm password do not match");
-          header("location: profile.php?id=" . $_SESSION['userId']);
-          exit;
+            $_SESSION['errMsg'] = "Password and confirm password don't match";
         }
     }
     else {
-      Alert::setAlert('danger', "Password cannot be empty");
-      header("location: profile.php?id=" . $_SESSION['userId']);
-      exit;
+        $_SESSION['errMsg'] = "Password can't be empty";
     }
+ $_SESSION['err']='';
+    header('location: ../../views/Shared/profile.php?id=' . $id);
 }
-
 if(isset($_SERVER['REQUEST_METHOD'])&&isset($_FILES['profilePic'])){
     $targetDir = "../assets/img/";
-    $targetFile = $targetDir . basename($_FILES["profilePic"]["name"]);
-    $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-    $check = getimagesize($_FILES["profilePic"]["tmp_name"]);
-    if ($check !== false) {
+    $targetFile = $targetDir.$_FILES["profilePic"]["name"];
         if (move_uploaded_file($_FILES["profilePic"]["tmp_name"], $targetFile)) {
             ProfileController::updateProfilePicture($targetFile);
         } else {
             $_SESSION['err'] = "Error uploading file.";
         }
-    } else {
-        $_SESSION['err'] = "File is not an image.";
-    }
     
 }
 $_SESSION['profilePicture'] = $user[0]['profilePicture'];
@@ -65,7 +54,7 @@ $_SESSION['profilePicture'] = $user[0]['profilePicture'];
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>User Profile</title>
+  <title>User Profile - DarkPan</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
   <!-- Favicon -->
@@ -76,7 +65,14 @@ $_SESSION['profilePicture'] = $user[0]['profilePicture'];
 </head>
 
 <body>
-  <?php Alert::renderAlert() ?>
+<?php if (isset($_SESSION['errMsg'])): ?>
+    <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3" style="z-index: 9999;" role="alert">
+        <i class="fa fa-exclamation-circle me-2"></i>
+        <?php echo $_SESSION['errMsg']; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+<?php endif; ?>
 
   <div class="container-fluid position-relative d-flex p-0">
     <!-- Spinner Start -->
