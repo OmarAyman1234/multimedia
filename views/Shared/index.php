@@ -7,6 +7,8 @@ session_start();
 require_once "../../controllers/ProfileController.php";
 require_once "../../models/article.php";
 require_once "../../models/category.php";
+require_once "../../views/utils/alert.php";
+
 $rl=0;
 if(isset($_SESSION["userId"])){
     $rl= $_SESSION["userId"];
@@ -34,7 +36,7 @@ else{
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Article page</title>
+  <title>Main page</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
   <!-- Favicon -->
@@ -191,6 +193,7 @@ else{
 </head>
 <body>
 
+  <?php Alert::renderAlert() ?>
 
   <div class="container-fluid position-relative d-flex p-0">
     <!-- Spinner Start -->

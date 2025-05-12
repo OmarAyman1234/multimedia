@@ -28,15 +28,6 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="" name="keywords" />
     <meta content="" name="description" />
-    <style>
-      .top-right-alert {
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          width: 25rem;
-          z-index: 9999;
-        }
-    </style>
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon" />
     <?php require_once '../utils/linkTags.php' ?>
