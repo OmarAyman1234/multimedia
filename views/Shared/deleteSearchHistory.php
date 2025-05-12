@@ -4,20 +4,19 @@ require_once '../../controllers/SearchController.php';
 require_once '../../models/searchHistory.php';
 session_start();
 
-$_GET['id'] = $_GET['id'] ?? null;
-if (isset($_GET['id'])) {
+// deleteSearchHistory.php
+require_once '../../controllers/SearchController.php';
+
+if(isset($_GET['id'])) {
     $id = $_GET['id'];
-    $result = SearchController::deleteSearchHistory($id);
-    if ($result) {
-        echo "<script>alert('Search history deleted successfully.');</script>";
-        header("Location: searchHistory.php");
-        exit();
+    
+    // Call your controller method to delete the search history by ID
+    $isDeleted = SearchController::deleteSearchHistory($id);
+
+    if($isDeleted) {
+        echo 'success'; // Send success response
     } else {
-        echo "<script>alert('Failed to delete search history.');</script>";
+        echo 'error'; // Send error response
     }
-} else {
-    echo "<script>alert('No search history ID provided.');</script>";
 }
-
-
 ?>
