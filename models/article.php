@@ -169,6 +169,12 @@ class Article {
      $query = "INSERT INTO articles (title, content, image, editorId, categoryId)VALUES('$title', '$content','$image', $editorId,$categoryId)";
     return DBController::insert($query);
   }
+
+  public static function deleteArticle($articleId) {
+    $query = "UPDATE articles SET isDeleted=1 WHERE id=$articleId";
+    $result = DBController::update($query);
+    return $result !== false;
+  }
   
 }
 

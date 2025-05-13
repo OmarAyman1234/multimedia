@@ -80,6 +80,9 @@ if(isset($_POST['reportArticle']) && isset($_POST['reportReason'])) {
 if(isset($_POST['removeArticleBtn'])) {
   ArticleController::removeArticle($id);
 }
+if(isset($_POST['deleteArticleEditor'])) {
+  ArticleController::deleteArticle($id, $_SESSION['userId']);
+}
 if(isset($_POST['searchkeyword'])) {
   $keyword = $_POST['searchkeyword'];
   $result = ArticleController::highlightKeyword($id,$keyword);
@@ -266,6 +269,13 @@ if(isset($_POST['searchkeyword'])) {
           <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#reportModal" title="Report">
             <i class="fa fa-exclamation-circle me-1"></i> Report
           </button>
+
+          <form method="post" action="article.php?id=<?=$id?>">
+            <div class="d-flex justify-content-center align-items-center">
+              <input type="hidden" name="deleteArticleEditor" id="<?=$id?>">
+              <button class="btn btn-danger">Delete article</button>
+            </div>
+          </form>
 
           </div>
           <?php endif; ?>

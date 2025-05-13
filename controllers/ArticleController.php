@@ -114,6 +114,20 @@ public static function updateArticle($articleId, $title, $content) {
       exit;
     }
   }
+
+  public static function deleteArticle($articleId, $userId) {
+    if(AuthController::isEditor() && $_SESSION['userId'] == $userId) {
+      Article::deleteArticle($articleId);
+      Alert::setAlert('dark', "Article $articleId deleted");
+      header('location: ../../views/Shared/index.php');
+      exit;      
+    } else {
+      Alert::setAlert('danger', "Unauthorized");
+      
+      header('location: ../../views/auth/login.php');
+      exit;      
+    }
+  }
   
 
 }
