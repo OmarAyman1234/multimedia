@@ -165,6 +165,10 @@ class Article {
     $query = "UPDATE articles SET title='$title', content='$content' WHERE id=$articleId";
     return DBController::update($query);
   }
+  public static function addArticle($title, $content,$image, $editorId ,$categoryId) {
+     $query = "INSERT INTO articles (title, content, image, editorId, categoryId)VALUES('$title', '$content','$image', $editorId,$categoryId)";
+    return DBController::insert($query);
+  }
   
 }
 

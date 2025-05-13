@@ -91,6 +91,30 @@ public static function updateArticle($articleId, $title, $content) {
       exit;
     }
   }
+  public static function addArticle($article) {
+    if(AuthController::isEditor()) {
+      $title = $article->getTitle();
+      $content = $article->getContent();
+      $image = $article->getImage();
+      $editorId = $article->getEditorId();
+      $categoryId = $article->getCategoryId();
+
+      Article::addArticle($title, $content, $image, $editorId, $categoryId);
+
+      Alert::setAlert('success', "Article added successfully");
+      
+      header('location: ../../views/Shared/');
+      return true;
+      exit;
+    }
+    else {
+      Alert::setAlert('danger', "Only admins&editors can add articles");
+      
+      header('location: ../../views/auth/login.php');
+      exit;
+    }
+  }
+  
 
 }
 ?>
