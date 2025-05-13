@@ -4,6 +4,7 @@ require_once '../../models/article.php';
 require_once '../../models/translation.php';
 require_once '../../models/interaction.php';
 require_once '../../controllers/DBController.php';
+require_once '../../controllers/AuthController.php';
 require_once '../../models/category.php';
 
 class SearchController {
@@ -22,10 +23,12 @@ class SearchController {
         return article::getArticlesByKeyword($keyword);
     }
     public static function save($searchTerm, $userId) {
-        $searchHistory = new SearchHistory;
-        $searchHistory->setSearchTerm($searchTerm);
-        $searchHistory->setUserId($userId);
-        return $searchHistory->save($searchHistory);
+        if(AuthController::isLoggedIn()) {
+            $searchHistory = new SearchHistory;
+            $searchHistory->setSearchTerm($searchTerm);
+            $searchHistory->setUserId($userId);
+            return $searchHistory->save($searchHistory);
+        }
     }
     public static function getSearchHistoryByUserId($userId) {
         $searchHistory = new SearchHistory;
