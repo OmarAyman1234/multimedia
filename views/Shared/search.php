@@ -8,10 +8,32 @@ require_once '../../models/searchHistory.php';
 if(session_status() === PHP_SESSION_NONE){
     session_start();
   }
-$title=$_POST['search'];
-$articles=SearchController::getArticlesByKeyword($title);
-// $articleId=$article->getId();
-// $category=SearchController::getCategoryByArticleId($articleId);
+
+// Get the search keyword
+$title = isset($_POST['search']) ? $_POST['search'] : '';
+
+// Get articles by keyword
+$articles = SearchController::getArticlesByKeyword($title);
+
+// Get all categories for filter dropdown
+$allCategories = category::getAllCategory();
+
+// Handle category filter if submitted
+$selectedCategory = isset($_POST['category_filter']) ? $_POST['category_filter'] : '';
+if (!empty($selectedCategory)) {
+  $articles = array_filter($articles, function($article) use ($selectedCategory) {
+    return $article['categoryId'] == $selectedCategory;
+  });
+}
+
+// Handle date filter if submitted
+$selectedDate = isset($_POST['date_filter']) ? $_POST['date_filter'] : '';
+if (!empty($selectedDate)) {
+  $articles = array_filter($articles, function($article) use ($selectedDate) {
+    // Filter based on date - assumes created_at is in YYYY-MM-DD format
+    return substr($article['created_at'], 0, 10) == $selectedDate;
+  });
+}
 ?>
 
 
@@ -61,6 +83,42 @@ $articles=SearchController::getArticlesByKeyword($title);
       <!-- Navbar Start -->
       <?php require_once '../utils/nav.php'?>
       <!-- Navbar End -->
+      
+      <!-- Filters Start -->
+      <div class="container-fluid pt-4 px-4">
+        <div class="bg-secondary rounded p-4 mb-4">
+          <form method="post" class="row g-3 align-items-end">
+            <!-- Keep the original search parameter -->
+            <input type="hidden" name="search" value="<?php echo htmlspecialchars($title); ?>">
+            
+            <!-- Category Filter -->
+            <div class="col-md-5">
+              <label for="category_filter" class="form-label">Filter by Category</label>
+              <select class="form-select" id="category_filter" name="category_filter">
+                <option value="">All Categories</option>
+                <?php foreach($allCategories as $category): ?>
+                <option value="<?php echo $category['id']; ?>" <?php echo ($selectedCategory == $category['id']) ? 'selected' : ''; ?>>
+                  <?php echo htmlspecialchars($category['name']); ?>
+                </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            
+            <!-- Date Filter -->
+            <div class="col-md-5">
+              <label for="date_filter" class="form-label">Filter by Date</label>
+              <input type="date" class="form-control" id="date_filter" name="date_filter" value="<?php echo $selectedDate; ?>">
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Filters End -->
+
 <!-- Sale & Revenue Start -->
 
 <div class="container my-5">
@@ -98,9 +156,16 @@ $articles=SearchController::getArticlesByKeyword($title);
                         <p class="card-text flex-grow-1" style="opacity: 0.85;">
                             <?php echo htmlspecialchars(substr($article["content"], 0, 120)) . '...'; ?>
                         </p>
-                        <a href="../Shared/article.php?id=<?php echo $article['id']; ?>" class="btn btn-outline-light mt-3 rounded-pill align-self-start px-4 py-2">
-                            Read more →
-                        </a>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <a href="../Shared/article.php?id=<?php echo $article['id']; ?>" class="btn btn-outline-light mt-3 rounded-pill align-self-start px-4 py-2">
+                              Read more →
+                          </a>
+                          <?php if(!empty($article['created_at'])): ?>
+                            <small class="text-muted mt-3">
+                              <?php echo date('M d, Y', strtotime($article['created_at'])); ?>
+                            </small>
+                          <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
