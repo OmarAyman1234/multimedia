@@ -28,7 +28,7 @@ if(isset($_POST['title'])&&isset($_POST['content'])&&isset($_POST['category'])&&
   }
   if(ArticleController::addArticle($article)){
     Alert::setAlert('success', "Article added successfully");
-    header('location: ../../views/Shared/articles.php');
+    header('location: ../../views/Shared/index.php');
     exit;
   }
   else{
@@ -36,7 +36,6 @@ if(isset($_POST['title'])&&isset($_POST['content'])&&isset($_POST['category'])&&
   }
   
 }
-
 
 }
 
@@ -137,7 +136,7 @@ if(isset($_POST['title'])&&isset($_POST['content'])&&isset($_POST['category'])&&
             <h4><i class="bi bi-file-earmark-plus"></i> Add New Article</h4>
           </div>
           <div class="card-body">
-            <form method="POST" action="../../views/Shared/index.php" enctype="multipart/form-data" id="article-form" novalidate>
+            <form method="POST" enctype="multipart/form-data" id="article-form" novalidate>
               <div class="mb-3">
                 <label for="title" class="form-label">Article Title</label>
                 <input name='title' type="text" class="form-control" id="title" placeholder="Enter article title" required />

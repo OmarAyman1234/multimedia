@@ -29,13 +29,23 @@
   </form>
 
   <div class="navbar-nav align-items-center ms-auto">
-    
+     <?php 
+    if(isset($_SESSION['userId'])) 
+    {if($_SESSION['roleId']==2)
+      {
+
+      
+    ?>
+      <a href="../Shared/addArticle.php"><button type="button" class="btn btn-light m-2">Add Article</button></a>
+    <?php
+    }
+    ?>
     <?php 
     if(isset($_SESSION['username'])) {
     ?>
       <a href="../Shared/customizefeed.php"><button type="button" class="btn btn-light m-2">Customize Feed</button></a>
     <?php
-    }
+    }}
     ?>
 
     <?php
