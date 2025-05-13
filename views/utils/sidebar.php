@@ -44,15 +44,6 @@
         </a>   
 
         <div class="navbar-nav w-100">
-          <?php 
-          if(isset($_SESSION['roleId']) && $_SESSION['roleId'] == 1) {
-          ?>
-            <a href="index.php" class="nav-item nav-link text-main">
-              <i class="fa fa-tachometer-alt me-2"></i>Dashboard
-            </a>
-          <?php
-            }
-          ?>
           <a href="../../views/Shared/searchHistory.php?id=<?php echo htmlspecialchars($userId); ?>" class="nav-item nav-link text-main">
             <i class="fa fa-history me-2"></i>Search History
           </a>
