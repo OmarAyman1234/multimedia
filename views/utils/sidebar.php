@@ -53,29 +53,6 @@
           <a href="../Shared/randomArticle.php?random=1" id="randomArticleBtn" class="nav-item nav-link text-main">
             <i class="fa fa-random me-2"></i>Random Article</a>
 
-          <div class="nav-item dropdown">
-            <a
-              href="index.php"
-              class="nav-link dropdown-toggle text-main"
-              data-bs-toggle="dropdown"
-            >
-              <i class="fa fa-laptop me-2"></i>Elements
-            </a>
-            <div class="dropdown-menu over bg-transparent border-0">
-              <a href="../../z_useful-elements/button.html" class="dropdown-item text-main">
-                Buttons
-              </a>
-              <a
-                href="../../z_useful-elements/typography.html"
-                class="dropdown-item text-main"
-              >
-                Typography
-              </a>
-              <a href="../../z_useful-elements/element.html" class="dropdown-item text-main">
-                Other Elements
-              </a>
-            </div>
-          </div>
         </div>
       <?php
       }
