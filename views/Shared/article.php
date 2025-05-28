@@ -270,7 +270,7 @@ if(isset($_POST['searchkeyword'])) {
             <i class="fa fa-exclamation-circle me-1"></i> Report
           </button>
 
-          <?php if($_SESSION['roleId'] == 2 && $article->getEditorId() == $_SESSION['userId']) { ?>
+          <?php if($_SESSION['roleId'] == 2) { ?>
           <form method="post" action="article.php?id=<?=$id?>">
             <div class="d-flex justify-content-center align-items-center">
               <input type="hidden" name="deleteArticleEditor" id="<?=$id?>">
