@@ -2,7 +2,7 @@
 # Multimedia
 
 
-A Wikipedia-like website m with role-based features.
+A Wikipedia-like website with role-based features.
 
 ---
 
